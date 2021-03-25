@@ -6,7 +6,6 @@ from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
-
 class Employee(db.Model, UserMixin):
     '''
         Base Class Employee
@@ -40,14 +39,6 @@ class Manager(Employee):
     def __repr__(self):
         return f'<Manager: {self.name}\n  HeadOffice: {self.branch}\n>'
     pass
-
-
-
-
-
-
-
-
 
 @login.user_loader
 def load_user(id):
