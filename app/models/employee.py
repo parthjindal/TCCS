@@ -15,12 +15,19 @@ class Employee(db.Model, UserMixin):
             email:string
             password_hash:string
     '''
-    role = "Employee"
+    __tablename__ = "employee"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)  # name
-    branch = db.Column(db.String(64), index=True)
+    branchID = db.Column(db.Integer,db.ForeignKey('office.id'))
     email = db.Column(db.String(120), index=True, unique=True)  # unique mail
     password_hash = db.Column(db.String(128))  # hashed password
+    role = db.Column(db.String(64)) 
+
+    __mapper_args__ = {
+        'polymorphic_identity':'employee',
+        'polymorphic_on':role
+    }
 
     def set_password(self, password: str = None):
         self.password_hash = generate_password_hash(password)
@@ -29,15 +36,19 @@ class Employee(db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return f'<Employee: {self.name}\n  Branch: {self.branch}\n>'
+        return f'<Employee: {self.name}, Role: {self.role}\n >'
 
 
 class Manager(Employee):
-    # returns User from db.
-    # Required to load user in memory
-    role = "Manager"
+    manager_name = db.Column(db.String(64),index = True)
+    headOffice = db.Column(db.Integer,db.ForeignKey('head.id'))
+
+    __mapper_args__ = {
+         'polymorphic_identity':'manager'
+    }
+
     def __repr__(self):
-        return f'<Manager: {self.name}\n  HeadOffice: {self.branch}\n>'
+        return f'<Manager: {self.name}\n  email: {self.email}\n>'
     pass
 
 @login.user_loader
