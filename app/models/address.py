@@ -9,7 +9,6 @@ class Address(db.Model):
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
     
-
     def __repr__(self) -> str:
         return f'< Address: {self.addressLine} \
            City: {self.city} PIN: {self.zipCode}>'
