@@ -12,3 +12,7 @@ class Address(db.Model):
     def __repr__(self) -> str:
         return f'< Address: {self.addressLine} \
            City: {self.city} PIN: {self.zipCode}>'
+
+
+
+# self._status = Enum(self.status)
