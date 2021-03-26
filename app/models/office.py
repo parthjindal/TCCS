@@ -1,6 +1,7 @@
+from app.models.consignment import Consignment
 from app.models import employee
 from app import db
-from abc import ABC,abstractmethod
+from abc import ABC, abstractmethod
 
 
 class Office(db.Model):
@@ -14,12 +15,17 @@ class Office(db.Model):
     adress_id = db.Column(db.Integer, db.ForeignKey('address.id'),
                           nullable=False)
     address = db.relationship('Address', uselist=False, lazy=False)
-    employees = db.relationship("Employee",uselist = True,lazy = False)
     type = db.Column(db.String(50))
+    employees = db.relationship("Employee", uselist=True, lazy=False)
+
+    consignments = db.relationship("Consignment",
+                                   foreign_keys=Consignment.srcBranchId,
+                                   uselist=True, lazy=False)
+    trucks = db.relationship("Truck", uselist=True, lazy=False)
 
     __mapper_args__ = {
-        'polymorphic_identity':'office',
-        'polymorphic_on':type
+        'polymorphic_identity': 'office',
+        'polymorphic_on': type
     }
 
     @abstractmethod
@@ -32,12 +38,12 @@ class Office(db.Model):
 
 class BranchOffice(Office):
     __tablename__ = 'branch'
-    id = db.Column(db.Integer,db.ForeignKey('office.id'),primary_key = True)
+    id = db.Column(db.Integer, db.ForeignKey('office.id'), primary_key=True)
 
     ## TODO ##
 
     __mapper_args__ = {
-        'polymorphic_identity':'branch',
+        'polymorphic_identity': 'branch',
     }
 
     def isBranch(self) -> bool:
@@ -46,16 +52,16 @@ class BranchOffice(Office):
 
 class HeadOffice(Office):
     __tablename__ = 'head'
-    id = db.Column(db.Integer,db.ForeignKey('office.id'),primary_key = True)
-    manager = db.relation("Manager",uselist = False,lazy = False)
+    id = db.Column(db.Integer, db.ForeignKey('office.id'), primary_key=True)
+    manager = db.relation("Manager", uselist=False, lazy=False)
 
     __mapper_args__ = {
-        'polymorphic_identity':'head',
+        'polymorphic_identity': 'head',
     }
 
-    def __init__(self,**kwargs) -> None:
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-    
+
     def isBranch(self) -> bool:
         return False
 

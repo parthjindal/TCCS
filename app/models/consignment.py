@@ -1,25 +1,48 @@
 from enum import Enum
 from app import db
 
+
 class ConsignmentStatus(Enum):
     Pending = 0
     Enroute = 1
     Delivered = 2
 
-join_table = db.Table('join_table',db.BASE.metadata,
-                     db.Column('consignmentID', db.Integer, db.ForeignKey('consignment.id')),
-                     db.Column('truckID', db.Integer, db.ForeignKey('truck.id')))
+
+join_table = db.Table(
+    'join_table', db.Model.metadata, db.Column(
+        'consignmentID', db.Integer, db.ForeignKey('consignment.id')),
+    db.Column('truckID', db.Integer, db.ForeignKey('truck.id')))
+
 
 class Consignment(db.Model):
-    __tablename__  = "consignment"
+    __tablename__ = "consignment"
     id = db.Column(db.Integer, primary_key=True)
     volume = db.Column(db.Integer, index=True)
-    senderAddress = db.relationship('Address', uselist=False, lazy=False)
-    receiverAddress = db.relationship('Address', uselist=False, lazy=False)
+
+    sId = db.Column(db.Integer, db.ForeignKey('address.id'),
+                    nullable=False)
+    senderAddress = db.relationship(
+        'Address', uselist=False, foreign_keys=sId, lazy=False)  # one-one relationship
+    rId = db.Column(db.Integer, db.ForeignKey('address.id'),
+                    nullable=False)
+    receiverAddress = db.relationship(
+        'Address', uselist=False, foreign_keys=rId, lazy=False)  # one-one relationship
+
     status = db.Column(db.Integer, index=True)
-    sourceBranch = db.Column(db.String(64), index=True)
-    destinationBranch = db.Column(db.String(64), index=True)
-    truckID = db.relationship("Truck", secondary=join_table, back_populates="consignments")
+
+    srcBranchId = db.Column(
+        db.String(64),
+        db.ForeignKey("office.id"),
+        index=True)             # one-to-many relation->Consignment->Branch
+
+    dstBranchId = db.Column(
+        db.String(64),
+        db.ForeignKey("office.id"),
+        index=True)
+
+    trucks = db.relationship(
+        "Truck", secondary=join_table, back_populates="consignments")
+
     charge = db.Column(db.Integer, index=True)
 
     def __init__(self, **kwargs) -> None:
@@ -27,10 +50,10 @@ class Consignment(db.Model):
         self._status = ConsignmentStatus(self.status)
 
     def __repr__(self) -> str:
-        return f'< ID: {self.id} Volume: {self.volume} Status: {self.status} Sender Address: {self.senderAddress} \
-            Receiver Address: {self.receiverAddress} Status: {ConsignmentStatus(self.status)} Source Branch: {self.sourceBranch} \
-            Destination Branch: {self.destinationBranch} Charge: {self.charge}>'
-            
+        return f'< ID: {self.id} Volume: {self.volume} Status: {self.status} Sender Address: {self.senderAddress}' \
+            f'Receiver Address: {self.receiverAddress} Status: {ConsignmentStatus(self.status)} Source Branch: {self.srcBranchId}' \
+            f'Destination Branch: {self.dstBranchId} Charge: {self.charge}>'
+
     ###################################### TODO #######################################
         # def getConsignmentID(self):
         #     return self.id
@@ -50,7 +73,7 @@ class Consignment(db.Model):
         #     return self.truckID
         # def getCharge(self):
         #     return self.charge
-        
+
         # def setVolume(self, a):
         #     self.volume = a
         # def setSenderAddress(self, e):

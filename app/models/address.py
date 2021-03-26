@@ -10,9 +10,5 @@ class Address(db.Model):
         super().__init__(**kwargs)
     
     def __repr__(self) -> str:
-        return f'< Address: {self.addressLine} \
-           City: {self.city} PIN: {self.zipCode}>'
-
-
-
-# self._status = Enum(self.status)
+        return f'< Address: {self.addressLine}' \
+           f'City: {self.city} PIN: {self.zipCode}>'
