@@ -1,11 +1,12 @@
+from app.models.address import Address
 from enum import Enum
 from app import db
 
 
 class ConsignmentStatus(Enum):
-    Pending = 0
-    Enroute = 1
-    Delivered = 2
+    PENDING = 0
+    ENROUTE = 1
+    DELIVERED = 2
 
 
 join_table = db.Table(
@@ -15,74 +16,74 @@ join_table = db.Table(
 
 
 class Consignment(db.Model):
-    __tablename__ = "consignment"
-    id = db.Column(db.Integer, primary_key=True)
-    volume = db.Column(db.Integer, index=True)
+    """
+        A class representing a generic consignment
+        ....
 
-    sId = db.Column(db.Integer, db.ForeignKey('address.id'),
-                    nullable=False)
+        Attributes
+        ---------
+        volume:  int
+            consignment volume
+        
+    """
+    __tablename__ = "consignment"
+
+    id = db.Column(db.Integer, primary_key=True)    # consignment-id
+    volume = db.Column(db.Integer, index=True)      # volume
+    volumeLeft = db.Column(db.Integer,index = True) #volume-left-to-be-assigned
+    status = db.Column(db.Integer, index=True)      # current-status
+    
+    #### SENDER ADDRESS #####
+    sId = db.Column(db.Integer, db.ForeignKey('address.id'), 
+                    nullable=False)                 
     senderAddress = db.relationship(
-        'Address', uselist=False, foreign_keys=sId, lazy=False)  # one-one relationship
+        'Address', uselist=False, foreign_keys=sId, lazy=False) 
+    
+    #### RECEIVER ADDRESS ####
     rId = db.Column(db.Integer, db.ForeignKey('address.id'),
                     nullable=False)
     receiverAddress = db.relationship(
-        'Address', uselist=False, foreign_keys=rId, lazy=False)  # one-one relationship
+        'Address', uselist=False, foreign_keys=rId, lazy=False)
 
-    status = db.Column(db.Integer, index=True)
-
+    #### Source Branch ######
     srcBranchId = db.Column(
         db.String(64),
         db.ForeignKey("office.id"),
-        index=True)             # one-to-many relation->Consignment->Branch
+        index=True)
 
+    #### Destination Branch #######
     dstBranchId = db.Column(
         db.String(64),
         db.ForeignKey("office.id"),
         index=True)
 
+    #### trucks #####
     trucks = db.relationship(
         "Truck", secondary=join_table, back_populates="consignments")
 
-    charge = db.Column(db.Integer, index=True)
-
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        self._status = ConsignmentStatus(self.status)
+
+    
+    def getStatus(self) -> ConsignmentStatus:
+        return ConsignmentStatus(self.status)
+
+    def getSourceBranch(self) -> int:
+        return self.srcBranchId
+
+    def getDestinationBranch(self) -> int:
+        return self.dstBranchId 
+
+    def getTruckIDs(self) -> list:
+        return [x.id for x in self.trucks]
+
+    def setStatus(self, status: ConsignmentStatus = ConsignmentStatus.PENDING):
+        self.status = status.value()
+
+    def setDestinationBranch(self, e):
+        self.destinationBranch = e
 
     def __repr__(self) -> str:
         return f'< ID: {self.id} Volume: {self.volume} Status: {self.status} Sender Address: {self.senderAddress}' \
             f'Receiver Address: {self.receiverAddress} Status: {ConsignmentStatus(self.status)} Source Branch: {self.srcBranchId}' \
             f'Destination Branch: {self.dstBranchId} Charge: {self.charge}>'
-
-    ###################################### TODO #######################################
-        # def getConsignmentID(self):
-        #     return self.id
-        # def getVolume(self):
-        #     return self.volume
-        # def getSenderAddress(self):
-        #     return self.senderAddress
-        # def getReceiverAddress(self):
-        #     return self.receiverAddress
-        # def getStatus(self):
-        #     return self.status
-        # def getSourceBranch(self):
-        #     return self.sourceBranch
-        # def getDestinationBranch(self):
-        #     return self.destinationBranch
-        # def getTruckID(self):
-        #     return self.truckID
-        # def getCharge(self):
-        #     return self.charge
-
-        # def setVolume(self, a):
-        #     self.volume = a
-        # def setSenderAddress(self, e):
-        #     self.senderAddress = e
-        # def setReceiverAddress(self, e):
-        #     self.senderAddress = e
-        # def setStatus(self, e):
-        #     self.status = e
-        # def setSourceBranch(self, e):
-        #     self.sourceBranch = e
-        # def setDestinationBranch(self, e):
-        #     self.destinationBranch = e

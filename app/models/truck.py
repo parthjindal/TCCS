@@ -12,6 +12,7 @@ class TruckStatus(Enum):
 class Truck(db.Model):
     __tablename__ = "truck"
     id = db.Column(db.Integer, primary_key=True)
+    plateNo = db.Column(db.String(16))
     branchId = db.Column(db.String(64), db.ForeignKey("office.id"), index=True)
     status = db.Column(db.Integer, index=True)
     volumeConsumed = db.Column(db.Integer, index=True)

@@ -27,9 +27,9 @@ class Office(db.Model):
         'polymorphic_identity': 'office',
         'polymorphic_on': type
     }
-
+    
     @abstractmethod
-    def isBranch() -> bool:
+    def isBranch(self) -> bool:
         pass
 
     def __repr__(self) -> str:

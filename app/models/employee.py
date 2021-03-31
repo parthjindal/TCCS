@@ -6,8 +6,7 @@ from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
-
-class Employee(db.Model, UserMixin):
+class Employee(db.Model,UserMixin):
     '''
         Base Class Employee
         @parameters:
@@ -21,7 +20,7 @@ class Employee(db.Model, UserMixin):
     name = db.Column(db.String(64), index=True)                 # name
     branchID = db.Column(db.Integer, db.ForeignKey(
         'office.id'))                                           # many-to-one Employee->Office
-    email = db.Column(db.String(120), index=True, unique=True)  # unique mail
+    email = db.Column(db.String(128), index=True, unique=True)  # unique mail
     password_hash = db.Column(
         db.String(128))  # hashed password
     role = db.Column(db.String(64))
