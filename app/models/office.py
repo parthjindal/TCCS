@@ -56,7 +56,7 @@ class BranchOffice(Office):
     
     def addTruck(self, truck):
         truck.branchId = self.id
-        truck.status = TruckStatus.Available
+        truck.status = TruckStatus.AVAILABLE
 
 
 class HeadOffice(Office):

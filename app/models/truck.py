@@ -4,7 +4,7 @@ from app import db
 
 
 class TruckStatus(Enum):
-    Available = 0
+    AVAILABLE = 0
     Assigned = 1
     Enroute = 2
 

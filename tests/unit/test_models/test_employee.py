@@ -1,5 +1,5 @@
-from app.models.address import Address, Bill
-from app.models.employee import Employee, Manager
+from app.models import Address, Bill
+from app.models import Employee, Manager
 from app.models import Consignment
 
 
