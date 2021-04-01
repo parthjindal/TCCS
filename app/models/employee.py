@@ -41,7 +41,6 @@ class Employee(db.Model,UserMixin):
 
 
 class Manager(Employee):
-    manager_name = db.Column(db.String(64), index=True)
     headOffice = db.Column(db.Integer, db.ForeignKey('head.id'))
 
     __mapper_args__ = {

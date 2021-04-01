@@ -1,4 +1,5 @@
-from app.models.consignment import Consignment
+from app.models.truck import TruckStatus
+from app.models.consignment import Consignment, ConsignmentStatus
 from app.models import employee
 from app import db
 from abc import ABC, abstractmethod
@@ -12,7 +13,7 @@ class Office(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
-    adress_id = db.Column(db.Integer, db.ForeignKey('address.id'),
+    address_id = db.Column(db.Integer, db.ForeignKey('address.id'),
                           nullable=False)
     address = db.relationship('Address', uselist=False, lazy=False)
     type = db.Column(db.String(50))
@@ -48,6 +49,14 @@ class BranchOffice(Office):
 
     def isBranch(self) -> bool:
         return True
+    
+    def addConsignment(self, consign):
+        consign.srcBranchId = self.id
+        consign.status = ConsignmentStatus.PENDING
+    
+    def addTruck(self, truck):
+        truck.branchId = self.id
+        truck.status = TruckStatus.Available
 
 
 class HeadOffice(Office):
