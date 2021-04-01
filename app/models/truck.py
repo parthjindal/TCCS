@@ -5,8 +5,8 @@ from app import db
 
 class TruckStatus(Enum):
     AVAILABLE = 0
-    Assigned = 1
-    Enroute = 2
+    ASSIGNED = 1
+    ENROUTE = 2
 
 
 class Truck(db.Model):
