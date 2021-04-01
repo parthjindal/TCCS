@@ -12,7 +12,7 @@ class Office(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
-    adress_id = db.Column(db.Integer, db.ForeignKey('address.id'),
+    addsress_id = db.Column(db.Integer, db.ForeignKey('address.id'),
                           nullable=False)
     address = db.relationship('Address', uselist=False, lazy=False)
     type = db.Column(db.String(50))
