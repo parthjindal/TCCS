@@ -22,7 +22,7 @@ class Office(db.Model):
     consignments = db.relationship("Consignment",
                                    foreign_keys=Consignment.srcBranchId,
                                    uselist=True, lazy=False)
-    trucks = db.relationship("Truck", uselist=True, lazy=False)
+    trucks = db.relationship("Truck", foreign_keys=Consignment.branchId, uselist=True, lazy=False)
 
     __mapper_args__ = {
         'polymorphic_identity': 'office',
@@ -53,11 +53,31 @@ class BranchOffice(Office):
     def addConsignment(self, consign):
         consign.srcBranchId = self.id
         consign.status = ConsignmentStatus.PENDING
+        for x in Office.trucks:
+            if x.status==TruckStatus.AVAILABLE or x.dstBranchId==consign.dstBranchId:
+                x.addConsignment(consign)
     
     def addTruck(self, truck):
         truck.branchId = self.id
+        truck.dstBranchId = None
         truck.status = TruckStatus.AVAILABLE
+        truck.volumeConsumed = 0
+        truck.consignments = []
+        self.trucks.append(truck)
+    
+    def addEmployee(self, emp):
+        emp.branchID = self.id
+        self.employees.append(emp)
 
+    def receiveTruck(self, truck):
+        if truck.status==TruckStatus.ENROUTE and truck.dstBranchId==self.id:
+            receivedConsignments = truck.emptyTruck()
+            self.addTruck(truck)
+            for i in receivedConsignments:
+                i.status = ConsignmentStatus.DELIVERED
+        for x in Office.consignments:
+            if x.status==ConsignmentStatus.PENDING:
+                truck.addConsignments(x)
 
 class HeadOffice(Office):
     __tablename__ = 'head'
