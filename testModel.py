@@ -8,15 +8,18 @@ db.session.rollback()
 db.create_all()
 
 # print(db.get_tables_for_bind())
-empl1 = Employee(name="Parth", email="something")
+empl1 = Employee(name="Parth", email="pmjindal@gmail.com")
 manager = Manager(name="Mayank", email="something2")
 empl2 = Employee(name="Shristi", email="something3")
+
+empl1.set_password("parth")
+empl2.set_password("s")
 
 addr1 = Address(city="Delhi")
 addr2 = Address(city="Mumbai")
 
-office1 = HeadOffice(name="Head Office", address=addr1)
-office2 = BranchOffice(name="Branch Office", address=addr2)
+office1 = HeadOffice(name="Delhi Office", address=addr1)
+office2 = BranchOffice(name="Mumbai Office", address=addr2)
 
 cons = Consignment(
     volume=100, senderAddress=addr1, receiverAddress=addr2,

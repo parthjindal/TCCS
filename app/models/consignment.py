@@ -86,4 +86,4 @@ class Consignment(db.Model):
     def __repr__(self) -> str:
         return f'< ID: {self.id} Volume: {self.volume} Status: {self.status} Sender Address: {self.senderAddress}' \
             f'Receiver Address: {self.receiverAddress} Status: {ConsignmentStatus(self.status)} Source Branch: {self.srcBranchId}' \
-            f'Destination Branch: {self.dstBranchId} Charge: {self.charge}>'
+            f'Destination Branch: {self.dstBranchId} >'
