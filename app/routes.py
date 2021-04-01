@@ -11,7 +11,6 @@ def index():
     return "IGHT Imma Head out"
 
 @main.route('/home')
-@login_required
 def home():
     return render_template('index.html', title='TL;DR', user= current_user)
 

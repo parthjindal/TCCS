@@ -1,14 +1,14 @@
-from .forms import LoginForm
+from .forms import LoginForm, RegistrationForm, ManagerRegistrationForm
 from flask.helpers import url_for
 from app.auth import auth
 from flask_login.utils import logout_user
 from flask import redirect, url_for, flash
-from flask_login import current_user
-from app.models import Employee
-from flask_login import login_user
+from flask_login import current_user, login_user, login_required
+from app.models import Employee, Manager
 from flask import request, render_template
 from werkzeug.urls import url_parse
 from app import login
+from app import db
 
 login.login_view = "auth.login"
 
@@ -20,7 +20,7 @@ def index():
 def login():
     # Redirect to HOME page if logged in
     if current_user.is_authenticated:
-        return redirect(url_for('main.home',role = current_user.role))
+        return redirect(url_for('main.home', role = current_user.role))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -44,9 +44,40 @@ def login():
     # render template
     return render_template('auth/login.html', title='Sign In', form=form)
 
-
 @auth.route('/logout')
 # logout user
 def logout():
     logout_user()
     return redirect(url_for('main.index'))  # Redirect to Index page
+
+@auth.route("/register", methods=['GET', 'POST'])
+@login_required
+def register():
+    if current_user.is_authenticated and current_user.role == "employee":
+        return redirect(url_for('main.home'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = Employee(name=form.name.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Account for this employee has been created!', 'success')
+        # return redirect(url_for('login'))
+    return render_template('auth/register.html', title='Register', form=form)
+
+@auth.route("/regMan", methods=['GET', 'POST'])
+def regMan():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home', role = current_user.role))
+    managers = Employee.query.filter_by(role='manager').first()
+    if managers is not None:
+        return render_template('auth/noMan.html')
+    form = ManagerRegistrationForm()
+    if form.validate_on_submit():
+        user = Manager(name=form.name.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Manager account has been created!', 'success')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/regMan.html', title='Register', form=form)

@@ -49,7 +49,6 @@ class Manager(Employee):
 
     def __repr__(self):
         return f'<Manager: {self.name} email: {self.email}>'
-    pass
 
 
 @login.user_loader

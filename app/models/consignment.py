@@ -32,6 +32,7 @@ class Consignment(db.Model):
     volume = db.Column(db.Integer, index=True)      # volume
     volumeLeft = db.Column(db.Integer,index = True) #volume-left-to-be-assigned
     status = db.Column(db.Integer, index=True)      # current-status
+    charge = db.Column(db.Integer, index=True)
     
     #### SENDER ADDRESS #####
     sId = db.Column(db.Integer, db.ForeignKey('address.id'), 
