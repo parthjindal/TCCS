@@ -58,16 +58,16 @@
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    {{ form.branchID.label(class="form-control-label") }}
-                    {% if form.branchID.errors %}
-                        {{ form.branchID(class="form-control form-control-lg is-invalid") }}
+                    {{ form.branch.label(class="form-control-label") }}
+                    {% if form.branch.errors %}
+                        {{ form.branch(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
-                            {% for error in form.branchID.errors %}
+                            {% for error in form.branch.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.branchID(class="form-control form-control-lg") }}
+                        {{ form.branch(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
             </fieldset>

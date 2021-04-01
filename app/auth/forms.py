@@ -1,10 +1,9 @@
-from app.models.office import BranchOffice
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
-from app.models import Employee, Manager
+from app.models import Employee, Manager, Office, BranchOffice
 
-# Login form
+
 class LoginForm(FlaskForm):
     '''
         Login Form for validation
@@ -20,7 +19,7 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
 
-# Employee Registration form
+
 class RegistrationForm(FlaskForm):
     '''
     '''
@@ -29,18 +28,20 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    branchID = StringField('Branch ID', validators=[DataRequired()])
+    # branchID = StringField('Branch ID', validators=[DataRequired()])
+    branch = SelectField("Branch", coerce=int, validate_choice=True)
     submit = SubmitField('Register')
-    
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.branch.choices = [(x.id, x.name)
+                               for x in Office.query.order_by("name")]
+
     def validate_email(self, email):
         user = Employee.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
-    
-    def validate_branchID(self, branchID):
-        branchIDs = BranchOffice.query.filter_by(id=branchID.data).first()
-        if branchIDs is None:
-            raise ValidationError('Please use correct Branch ID.')
+
 
 class ManagerRegistrationForm(FlaskForm):
     '''
@@ -51,7 +52,7 @@ class ManagerRegistrationForm(FlaskForm):
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
-    
+
     def validate_email(self, email):
         user = Employee.query.filter_by(email=email.data).first()
         if user is not None:
