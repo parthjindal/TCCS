@@ -7,6 +7,7 @@ class ConsignmentStatus(Enum):
     PENDING = 0
     ENROUTE = 1
     DELIVERED = 2
+    ALLOTED = 3
 
 
 join_table = db.Table(
@@ -30,8 +31,12 @@ class Consignment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)    # consignment-id
     volume = db.Column(db.Integer, index=True)      # volume
+<<<<<<< HEAD
     # volume-left-to-be-assigned
     volumeLeft = db.Column(db.Integer, index=True)
+=======
+    volumeLeft = db.Column(db.Integer,index = True) # volume-left-to-be-alloted
+>>>>>>> 8be66e0e1be6d975f48798f970b817d367f990b8
     status = db.Column(db.Integer, index=True)      # current-status
     charge = db.Column(db.Integer, index=True)
 
