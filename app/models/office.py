@@ -1,4 +1,4 @@
-from app.models.truck import TruckStatus
+from app.models.truck import TruckStatus, Truck
 from app.models.consignment import Consignment, ConsignmentStatus
 from app.models import employee
 from app import db
@@ -22,7 +22,7 @@ class Office(db.Model):
     consignments = db.relationship("Consignment",
                                    foreign_keys=Consignment.srcBranchId,
                                    uselist=True, lazy=False)
-    trucks = db.relationship("Truck", foreign_keys=Consignment.branchId, uselist=True, lazy=False)
+    trucks = db.relationship("Truck", foreign_keys=Truck.branchId, uselist=True, lazy=False)
 
     __mapper_args__ = {
         'polymorphic_identity': 'office',
@@ -51,16 +51,18 @@ class BranchOffice(Office):
         return True
     
     def addConsignment(self, consign):
+        consign.volumeLeft = consign.volume
         consign.srcBranchId = self.id
-        consign.status = ConsignmentStatus.PENDING
-        for x in Office.trucks:
-            if x.status==TruckStatus.AVAILABLE or x.dstBranchId==consign.dstBranchId:
-                x.addConsignment(consign)
+        self.consignments.append(consign)
+        consign.status = 0
+        # for x in Office.trucks:
+        #     if x.status==TruckStatus.AVAILABLE or x.dstBranchId==consign.dstBranchId:
+        #         x.addConsignment(consign)
     
     def addTruck(self, truck):
         truck.branchId = self.id
         truck.dstBranchId = None
-        truck.status = TruckStatus.AVAILABLE
+        truck.status = 0
         truck.volumeConsumed = 0
         truck.consignments = []
         self.trucks.append(truck)
@@ -74,7 +76,7 @@ class BranchOffice(Office):
             receivedConsignments = truck.emptyTruck()
             self.addTruck(truck)
             for i in receivedConsignments:
-                i.status = ConsignmentStatus.DELIVERED
+                i.status = 2
         for x in Office.consignments:
             if x.status==ConsignmentStatus.PENDING:
                 truck.addConsignments(x)
