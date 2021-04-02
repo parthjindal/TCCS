@@ -1,6 +1,6 @@
-from app.models.truck import TruckStatus, Truck
-from app.models.consignment import Consignment, ConsignmentStatus
-from app.models import employee
+from .truck import Truck,TruckStatus
+from .consignment import Consignment, ConsignmentStatus
+from .employee import Employee
 from app import db
 from abc import ABC, abstractmethod
 
@@ -22,7 +22,8 @@ class Office(db.Model):
     consignments = db.relationship("Consignment",
                                    foreign_keys=Consignment.srcBranchId,
                                    uselist=True, lazy=False)
-    trucks = db.relationship("Truck", foreign_keys=Truck.branchId, uselist=True, lazy=False)
+    truck_ids = db.Column(db.Integer,db.ForeignKey('truck.branchId'))
+    trucks = db.relationship("Truck", foreign_keys='Office.truck_ids', uselist=True, lazy=False)
 
     __mapper_args__ = {
         'polymorphic_identity': 'office',

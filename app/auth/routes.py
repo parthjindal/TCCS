@@ -1,14 +1,11 @@
-from .forms import LoginForm, RegistrationForm, ManagerRegistrationForm
-from flask.helpers import url_for
 from app.auth import auth
+from .forms import LoginForm, RegistrationForm, ManagerRegistrationForm
 from flask_login.utils import logout_user
-from flask import redirect, url_for, flash
+from flask import redirect, url_for, flash, request, render_template
 from flask_login import current_user, login_user, login_required
 from app.models import Employee, Manager
-from flask import request, render_template
 from werkzeug.urls import url_parse
-from app import login
-from app import db
+from app import login, db
 
 login.login_view = "auth.login"
 
@@ -30,9 +27,8 @@ def login():
         user = Employee.query.filter_by(email=form.email.data).first()
         # check user and password
         if user is None or not user.check_password(form.password.data):
-            flash(f"Login requested for user{form.email.data}")
-            return redirect(url_for('main.index'))  # redirect to INDEX page
-
+            flash(f"Invalid Email/Password{form.email.data}")
+            return redirect(url_for('auth.login'))  # redirect to INDEX page
         #Log in user
         login_user(user, remember=form.remember.data)
         # next page if coming from another page
@@ -65,7 +61,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Account for this employee has been created!', 'success')
-        # return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
     return render_template('auth/register.html', title='Register', form=form)
 
 
