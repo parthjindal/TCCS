@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField,SelectField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
-from app.models import Employee, Manager,Office
+from app.models import Employee, Manager, Office
 from flask_login import login_user
 
 
@@ -22,15 +22,15 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    '''
-    '''
+    """
+        Registration Form for registering Employees
+    """
+
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    # branchID = StringField('Branch ID', validators=[DataRequired()])
-    branch = SelectField("Branch", coerce=int, validate_choice=True)
+    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    branch = SelectField("Branch", coerce=int)
     submit = SubmitField('Register')
 
     def __init__(self, **kwargs):
@@ -41,11 +41,12 @@ class RegistrationForm(FlaskForm):
     def validate_email(self, email):
         user = Employee.query.filter_by(email=email.data).first()
         if user is not None:
-            raise ValidationError('Please use a different email address.')
+            raise ValidationError('Email already in use')
 
 
 class ManagerRegistrationForm(FlaskForm):
     '''
+        
     '''
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])

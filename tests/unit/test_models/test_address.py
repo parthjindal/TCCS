@@ -1,6 +1,4 @@
-from operator import add
 from app.models import Address
-
 
 def test_address():
     """
