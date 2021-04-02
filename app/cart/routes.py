@@ -27,7 +27,7 @@ def place(branch, id):
                                   city=form.receiverCity.data, zipCode=form.receiverZipCode.data)
         consign = Consignment(
             volume=form.volume.data, senderAddress=senderAddress, receiverAddress=receiverAddress,
-            dstBranchId=form.destinationBranch.data)
+            dstBranchId=form.destinationBranch.data, srcBranchId=current_user.branchID, status=0, volumeLeft=form.volume.data)
         db.session.add(consign)
         db.session.commit()
         flash("Consignment Placed for Delivery")
