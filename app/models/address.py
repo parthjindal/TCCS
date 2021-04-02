@@ -1,5 +1,6 @@
 from app import db
 
+
 class Address(db.Model):
     """
         A class to represent an address
@@ -21,12 +22,15 @@ class Address(db.Model):
     city = db.Column(db.String(64), index=True)
     zipCode = db.Column(db.String(6), index=True)
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, addrLine=None, city=None, zipCode=None, **kwargs) -> None:
         super().__init__(**kwargs)
-    
+        self.addrLine = addrLine
+        self.city = city
+        self.zipCode = zipCode
+
     def __repr__(self) -> str:
         return f'< Address: {self.addrLine}' \
-           f'City: {self.city} PIN: {self.zipCode}>'
+            f'City: {self.city} PIN: {self.zipCode}>'
 
 
 class Bill(db.Model):
@@ -43,12 +47,11 @@ class Bill(db.Model):
     """
     __tablename__ = "bill"
 
-    id = db.Column(db.Integer,primary_key = True)
-    amount = db.Column(db.Integer,index = True , nullable = False)
-    paymentID = db.Column(db.String(64),index = True,nullable = False)
+    id = db.Column(db.Integer, primary_key=True)
+    amount = db.Column(db.Integer, index=True, nullable=False)
+    paymentID = db.Column(db.String(64), index=True, nullable=False)
 
-
-    def __init__(self,**kwargs) -> None:
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
 
     def __repr__(self) -> str:
