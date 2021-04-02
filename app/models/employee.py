@@ -55,6 +55,4 @@ class Manager(Employee):
 def load_user(id):
     print("here")
     user = Employee.query.get(int(id))
-    if user is None:
-        user = Manager.query.get(int(id))
     return user

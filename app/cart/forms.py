@@ -1,36 +1,43 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, SelectField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length, NumberRange, Optional
+from wtforms.validators import DataRequired,Required,Email, EqualTo, ValidationError, Length, NumberRange, Optional
 from app.models import Address, Office
 
 
-class AddressForm(FlaskForm):
-    city = StringField("City", validators=[
-                       DataRequired()], filters=[lambda x:x.title()])
-    addrLine = StringField("Address Line", validators=[
-                           DataRequired(), Length(max=60)])
+# class AddressForm(FlaskForm):
+#     city = StringField("City", validators=[
+#                        DataRequired()])
+#     addrLine = StringField("Address Line", validators=[
+#                            DataRequired(), Length(max=60)])
 
-    def validate_zip(self, field):
-        try:
-            int(zipCode)
-        except:
-            raise ValidationError(message="Enter Numerical Digits only")
+#     def validate_zip(self, field):
+#         raise ValidationErroDataRequired(),Required(),NumberRange(min=1)r(message="Enter Numerical Digits only")
 
-    zipCode = StringField("Zip Code", validators=[
-                          DataRequired(), Length(min=6, max=6), validate_zip])
+#     zipCode = StringField("Zip Code", validators=[
+#                           DataRequired(), Length(min=6, max=6), validate_zip])
+#     submit = SubmitField("Submit")
 
 
 class ConsignmentForm(FlaskForm):
-    volume = IntegerField("Volume", validators=[DataRequired(), Length(min=1)])
+    volume = IntegerField("Volume")
     destinationBranch = SelectField("Branch", coerce=int)
+
+    senderCity = StringField("City", validators=[
+        DataRequired()])
+    senderAddrLine = StringField("Address Line", validators=[
+        DataRequired(), Length(max=60)])
+    senderZipCode = StringField("Zip Code", validators=[
+        DataRequired(), Length(min=6, max=6)])
+    receiverCity = StringField("City", validators=[DataRequired()])
+    receiverAddrLine = StringField("Address Line", validators=[
+        DataRequired(), Length(max=60)])
+    receiverZipCode = StringField("Zip Code", validators=[
+        DataRequired(), Length(min=6, max=6)])
+    submit = SubmitField("Create")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        # print("somewhers")
         self.destinationBranch.choices = [
             (x.id, x.name) for x in Office.query.order_by("name")]
-        self.senderAddress = AddressForm()
-        self.receiverAddress = AddressForm()
-
-    def validate_on_submit(self):
-        return (super().validate_on_submit())*(self.senderAddress.validate_on_submit()) *\
-            (self.receiverAddress.validate_on_submit())
+        print([x.id, x.name] for x in Office.query.order_by("name"))

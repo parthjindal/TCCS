@@ -1,120 +1,125 @@
 {% extends "cart/layout.html" %}
 {% block content %}
+<div class="content-section">
+    <form action="" method="POST">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Create Consignment</legend>
+            <div class="form-group">
+                {{ form.volume.label(class = "form-control-label") }}
+                {% if form.volume.errors %}
+                    {{ form.volume(class = "form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.volume.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                {{ form.volume(class = "form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <h4>Sender's Address</h4>
+                <div class="City">
+                    {{ form.senderCity.label(class = "form-control-label") }}
+                    {% if form.senderCity.errors %}
+                    {{ form.senderCity(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.senderCity.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.senderCity(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="AddressLine">
+                    {{ form.senderAddrLine.label(class = "form-control-label") }}
+                    {% if form.senderAddrLine.errors %}
+                    {{ form.senderAddrLine(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.senderAddrLine.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.senderAddrLine(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="ZipCode">
+                    {{ form.senderZipCode.label(class = "form-control-label") }}
+                    {% if form.senderZipCode.errors %}
+                    {{ form.senderZipCode(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.senderZipCode.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.senderZipCode(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
 
-<form action="" method="post">
-    {{form.hidden_tag()}}
-    <legend>Create Consignment</legend>
-    <div class="Volume ">
-        {{form.volume.label(class = "")}}
-        {% if form.volume.errors %}
-        {{ form.volume(class="") }}
-        <div class="invalid-feedback">
-            {% for error in form.volume.errors %}
-            <span>{{ error }}</span>
-            {% endfor %}
-        </div>
-        {% else %}
-        {{form.volume(class = "")}}
-        {% endif %}
-    </div>
-    <div class="SenderAddress">
-        <h4>Sender's Address</h4>
-        <div class="City">
-            {{form.senderAddress.city.label(class = "")}}
-            {% if form.senderAddress.city.errors %}
-            {{ form.senderAddress.city(class="") }}
-            <div class="invalid-feedback">
-                {% for error in form.senderAddress.city.errors %}
-                <span>{{ error }}</span>
-                {% endfor %}
             </div>
-            {% else %}
-            {{ form.senderAddress.city(class="") }}
-            {% endif %}
-        </div>
-        <div class="AddressLine">
-            {{form.senderAddress.addrLine.label(class = "")}}
-            {% if form.senderAddress.addrLine.errors %}
-            {{ form.senderAddress.addrLine(class="") }}
-            <div class="invalid-feedback">
-                {% for error in form.senderAddress.addrLine.errors %}
-                <span>{{ error }}</span>
-                {% endfor %}
+            <div class="ReceiverAddress">
+                <h4>Receiver's Address</h4>
+                <div class="City">
+                    {{ form.receiverCity.label(class = "form-control-label") }}
+                    {% if form.receiverCity.errors %}
+                    {{ form.receiverCity(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.receiverCity.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.receiverCity(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="AddressLine">
+                    {{ form.receiverAddrLine.label(class = "form-control-label") }}
+                    {% if form.receiverAddrLine.errors %}
+                    {{ form.receiverAddrLine(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.receiverAddrLine.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.receiverAddrLine(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="ZipCode">
+                    {{ form.receiverZipCode.label(class = "form-control-label") }}
+                    {% if form.receiverZipCode.errors %}
+                    {{ form.receiverZipCode(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.receiverZipCode.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.receiverZipCode(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
             </div>
-            {% else %}
-            {{ form.senderAddress.addrLine(class="") }}
-            {% endif %}
-        </div>
-        <div class="ZipCode">
-            {{form.senderAddress.zipCode.label(class = "")}}
-            {% if form.senderAddress.zipCode.errors %}
-            {{ form.senderAddress.zipCode(class="") }}
-            <div class="invalid-feedback">
-                {% for error in form.senderAddress.zipCode.errors %}
-                <span>{{ error }}</span>
-                {% endfor %}
+            <div>
+                {{ form.destinationBranch.label(class = "form-control-label") }}
+                {% if form.destinationBranch.errors %}
+                {{ form.destinationBranch(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.destinationBranch.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{form.destinationBranch(class = "form-control form-control-lg")}}
+                {% endif %}
             </div>
-            {% else %}
-            {{ form.senderAddress.zipCode(class="") }}
-            {% endif %}
-        </div>
-
-    </div>
-    <div class="ReceiverAddress">
-        <h4>Receiver's Address</h4>
-        <div class="City">
-            {{form.receiverAddress.city.label(class = "")}}
-            {% if form.receiverAddress.city.errors %}
-            {{ form.receiverAddress.city(class="") }}
-            <div class="invalid-feedback">
-                {% for error in form.receiverAddress.city.errors %}
-                <span>{{ error }}</span>
-                {% endfor %}
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
             </div>
-            {% else %}
-            {{ form.receiverAddress.city(class="") }}
-            {% endif %}
-        </div>
-        <div class="AddressLine">
-            {{form.receiverAddress.addrLine.label(class = "")}}
-            {% if form.receiverAddress.addrLine.errors %}
-            {{ form.receiverAddress.addrLine(class="") }}
-            <div class="invalid-feedback">
-                {% for error in form.receiverAddress.addrLine.errors %}
-                <span>{{ error }}</span>
-                {% endfor %}
-            </div>
-            {% else %}
-            {{ form.receiverAddress.addrLine(class="") }}
-            {% endif %}
-        </div>
-        <div class = "ZipCode">
-            {{form.receiverAddress.zipCode.label(class = "")}}
-            {% if form.receiverAddress.zipCode.errors %}
-            {{ form.receiverAddress.zipCode(class="") }}
-            <div class="invalid-feedback">
-                {% for error in form.receiverAddress.zipCode.errors %}
-                <span>{{ error }}</span>
-                {% endfor %}
-            </div>
-            {% else %}
-            {{ form.receiverAddress.zipCode(class="") }}
-            {% endif %}
-        </div>
-        
-    </div>
-    <div class="Branch">
-        {{form.destinationBranch.label(class = "")}}
-        {% if form.destinationBranch.errors %}
-        {{ form.destinationBranch(class="") }}
-        <div class="invalid-feedback">
-            {% for error in form.destinationBranch.errors %}
-            <span>{{ error }}</span>
-            {% endfor %}
-        </div>
-        {% else %}
-        {{form.destinationBranch(class = "")}}
-        {% endif %}
-    </div>
-</form>
+        </fieldset>
+    </form>
+</div>
 {% endblock content %}

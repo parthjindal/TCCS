@@ -30,9 +30,8 @@ def login():
         user = Employee.query.filter_by(email=form.email.data).first()
         # check user and password
         if user is None or not user.check_password(form.password.data):
-            flash(f"Login requested for user{form.email.data}")
-            return redirect(url_for('main.index'))  # redirect to INDEX page
-
+            flash(f"Invalid Email/Password{form.email.data}")
+            return redirect(url_for('auth.login'))  # redirect to INDEX page
         #Log in user
         login_user(user, remember=form.remember.data)
         # next page if coming from another page
@@ -65,7 +64,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Account for this employee has been created!', 'success')
-        # return redirect(url_for('login'))
+        return redirect(url_for('login'))
     return render_template('auth/register.html', title='Register', form=form)
 
 
