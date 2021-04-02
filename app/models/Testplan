@@ -1,0 +1,44 @@
+1. Unit Tests of all Model Classes
+2. Manager Functions:
+    a)queryConsignment
+    b) waiting
+    ..if -1 for idle time then truck never used..
+    ..
+    ..
+
+
+3. Employee Functionalities:
+    Making a consigment
+----------------------------------------------------
+1. Unit-test Bill -> getter setter
+2. Unit-test Address -> getter setter
+3. Unit-test consigment ->getter setter
+
+4. Unit-test Truck -> getter Setter,
+   Fake consigment objects added to truck -> if volume > 500 dont let push
+   empty Truck: check all consigments were received or not,volume must be zero
+   updateUsageTime(time t) ->
+   updateIdleTime(time t) - >
+
+5. Unit-test BranchOffice :
+    getter setter,
+    add Truck-> check if ID not already present
+    remove truck-> ! "
+    updateWaitingPeriod()->avg. of (consigment dispatch - placement)
+    getCurrentConsigments() -> 
+    isBranch()
+    ?????
+
+6. Unit-test Employee
+    getter-setter
+
+7. Unit-test Manager:
+    queryConsignment()->direct database :
+    view Waiting-> 
+    viewIdleTime()->
+    buyNewTruck database CREATE
+    changeRate()->call office setRate()
+
+-------------------------------------------------------------------
+8. Application Test
+   Allot Truck-> 

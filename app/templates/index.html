@@ -1,9 +1,9 @@
-{% extends "auth/layout.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 {% if current_user.is_authenticated %}
-    <h1>Hello, {{ user.name }}! You are a {{current_user.role}}.</h1>
+    <h1>Hello, {{ user.name }} {{current_user.role}}!</h1>
 {% else %}
-    <h1>Hello anonymous user</h1>
+    <h1>"Hello anonymous user</h1>
 {% endif %}
 {% endblock %}

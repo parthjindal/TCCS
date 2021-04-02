@@ -4,8 +4,7 @@ venv/
 __pycache__/
 
 instance/
-.vscode/
-*.db
+
 .pytest_cache/
 .coverage
 htmlcov/

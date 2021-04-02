@@ -6,20 +6,20 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_mail import Mail
 
+
+
 db = SQLAlchemy()
 login = LoginManager()
 mail = Mail()
 
 from app.routes import main
 from app.auth import auth
-from app.cart import cart
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     app.register_blueprint(auth)
     app.register_blueprint(main)
-    app.register_blueprint(cart)
     db.init_app(app)
     login.init_app(app)
     mail.init_app(app)
