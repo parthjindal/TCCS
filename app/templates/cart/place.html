@@ -1,0 +1,125 @@
+{% extends "cart/layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form action="" method="POST">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Create Consignment</legend>
+            <div class="form-group">
+                {{ form.volume.label(class = "form-control-label") }}
+                {% if form.volume.errors %}
+                    {{ form.volume(class = "form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.volume.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                {{ form.volume(class = "form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <h4>Sender's Address</h4>
+                <div class="form-group">
+                    {{ form.senderCity.label(class = "form-control-label") }}
+                    {% if form.senderCity.errors %}
+                    {{ form.senderCity(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.senderCity.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.senderCity(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.senderAddrLine.label(class = "form-control-label") }}
+                    {% if form.senderAddrLine.errors %}
+                    {{ form.senderAddrLine(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.senderAddrLine.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.senderAddrLine(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.senderZipCode.label(class = "form-control-label") }}
+                    {% if form.senderZipCode.errors %}
+                    {{ form.senderZipCode(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.senderZipCode.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.senderZipCode(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+            </div>
+            <div class="form-group">
+                <h4>Receiver's Address</h4>
+                <div class="City">
+                    {{ form.receiverCity.label(class = "form-control-label") }}
+                    {% if form.receiverCity.errors %}
+                    {{ form.receiverCity(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.receiverCity.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.receiverCity(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.receiverAddrLine.label(class = "form-control-label") }}
+                    {% if form.receiverAddrLine.errors %}
+                    {{ form.receiverAddrLine(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.receiverAddrLine.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.receiverAddrLine(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.receiverZipCode.label(class = "form-control-label") }}
+                    {% if form.receiverZipCode.errors %}
+                    {{ form.receiverZipCode(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.receiverZipCode.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.receiverZipCode(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div>
+                {{ form.destinationBranch.label(class = "form-control-label") }}
+                {% if form.destinationBranch.errors %}
+                {{ form.destinationBranch(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.destinationBranch.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{form.destinationBranch(class = "form-control form-control-lg")}}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock content %}
