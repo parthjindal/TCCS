@@ -20,7 +20,7 @@
             </div>
             <div class="form-group">
                 <h4>Sender's Address</h4>
-                <div class="City">
+                <div class="form-group">
                     {{ form.senderCity.label(class = "form-control-label") }}
                     {% if form.senderCity.errors %}
                     {{ form.senderCity(class="form-control form-control-lg is-invalid") }}
@@ -33,7 +33,7 @@
                     {{ form.senderCity(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-                <div class="AddressLine">
+                <div class="form-group">
                     {{ form.senderAddrLine.label(class = "form-control-label") }}
                     {% if form.senderAddrLine.errors %}
                     {{ form.senderAddrLine(class="form-control form-control-lg is-invalid") }}
@@ -46,7 +46,7 @@
                     {{ form.senderAddrLine(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-                <div class="ZipCode">
+                <div class="form-group">
                     {{ form.senderZipCode.label(class = "form-control-label") }}
                     {% if form.senderZipCode.errors %}
                     {{ form.senderZipCode(class="form-control form-control-lg is-invalid") }}
@@ -61,7 +61,7 @@
                 </div>
 
             </div>
-            <div class="ReceiverAddress">
+            <div class="form-group">
                 <h4>Receiver's Address</h4>
                 <div class="City">
                     {{ form.receiverCity.label(class = "form-control-label") }}
@@ -76,7 +76,7 @@
                     {{ form.receiverCity(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-                <div class="AddressLine">
+                <div class="form-group">
                     {{ form.receiverAddrLine.label(class = "form-control-label") }}
                     {% if form.receiverAddrLine.errors %}
                     {{ form.receiverAddrLine(class="form-control form-control-lg is-invalid") }}
@@ -89,7 +89,7 @@
                     {{ form.receiverAddrLine(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-                <div class="ZipCode">
+                <div class="form-group">
                     {{ form.receiverZipCode.label(class = "form-control-label") }}
                     {% if form.receiverZipCode.errors %}
                     {{ form.receiverZipCode(class="form-control form-control-lg is-invalid") }}

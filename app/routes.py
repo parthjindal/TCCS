@@ -15,12 +15,10 @@ def home():
     return render_template('index.html', title='TL;DR', user= current_user)
 
 @main.route('/consignments')
-# @login_required
+@login_required
 def consignments():
-    # if current_user.is_authenticated and current_user.role == "employee":
-        # return redirect(url_for('main.home'))
-        # consigns = Consignment.query.filter_by(srcBranchId=current_user.branchID).all()
-        # consigns = Consignment.query.all()
-        # return render_template('consignments.html', data=consigns)
-    consigns = Consignment.query.all()
+    if current_user.is_authenticated and current_user.role == "employee":
+        consigns = Consignment.query.filter_by(srcBranchId=current_user.branchID).all()
+    elif current_user.is_authenticated and current_user.role == "manager":
+        consigns = Consignment.query.all()
     return render_template('consignments.html', data=consigns)
