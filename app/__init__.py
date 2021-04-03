@@ -14,9 +14,9 @@ from app.routes import main
 from app.auth import auth
 from app.cart import cart
 
-def create_app():
+def create_app(config = Config):
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config)
     app.register_blueprint(auth)
     app.register_blueprint(main)
     app.register_blueprint(cart)
