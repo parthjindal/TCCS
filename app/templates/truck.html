@@ -1,0 +1,22 @@
+{% extends "auth/layout.html" %}
+{% block content %}
+<h1>Truck ID: {{ trck.id }}</h1>
+<h3>Plate No.: {{ trck.plateNo }}</h3>
+<h3>Branch ID: {{ trck.branchId }}</h3>
+<h3>Status: {{ trck.status }}</h3>
+<h2>Consignments in the truck are:</h2>
+<div class="container cont">
+    {% for data in consign %}
+    <div class="box">
+        <div class="img-box" title={{ data.id }}><img src="{{ url_for('static', filename='consign.jpg') }}" alt=""></div>
+        <div class="content">
+            <h2>Consignment ID: {{ data.id }}</h2>
+            <h3>Branch: {{ data.srcBranchId }}</h3>
+            <p>Status: {{ data.status }}</p>
+            <p>Volume: {{ data.volume }}</p>
+            <p>Volume Left: {{ data.volumeLeft }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

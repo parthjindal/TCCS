@@ -246,6 +246,33 @@ a.article-title:hover {
   margin-bottom: 0.5em;
 }
 
+button.ghost-btn {
+  position: absolute;
+  z-index: 10;
+  margin-top: 1em;
+  text-align: center;
+  border: 0;
+  border-radius: 24px;
+ padding: 8px 38px;
+ background: var(--btntext-background);
+  color: var(--accentcolor);
+  border: 1px solid var(--accentcolor);
+  font-weight: 100;
+  transition: 1s;
+  font-size: 0.8em;
+  bottom:5%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  
+}
+
+button.ghost-btn:hover {
+  cursor: pointer;
+    background: var(--accentcolor);
+  color: var(--btntext-color);
+ 
+}
+
 @media screen and (min-width:600px) {
   :root {
     --boxheight: 420px;
