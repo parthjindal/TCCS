@@ -6,16 +6,18 @@ from flask_login import current_user, login_required
 from flask import request, render_template
 from app.models import Office, Consignment, Address, Truck
 from app import db
-from flask import flash
+from flask import flash,jsonify
 
 
 @cart.route("/")
 @login_required
 def index():
-    if current_user.is_authenticated:
+    if current_user.role == "employee":
         branch = Office.query.get(current_user.branchID).name
-    return redirect(url_for("cart.place", branch=branch, id=current_user.id))
-
+        return redirect(url_for("cart.place", branch=branch, id=current_user.id))
+    else:
+        flash("Access Denied")
+        return redirect(url_for("main.home"))        
 
 @cart.route("/place/<branch>/<id>", methods=["GET", "POST"])
 @login_required
@@ -28,9 +30,10 @@ def place(branch, id):
                                   city=form.receiverCity.data, zipCode=form.receiverZipCode.data)
         consign = Consignment(
             volume=form.volume.data, senderAddress=senderAddress, receiverAddress=receiverAddress,
-            dstBranchId=form.destinationBranch.data, srcBranchId=current_user.branchID, status=0, volumeLeft=form.volume.data)
+            dstBranchId=form.destinationBranch.data, srcBranchId=current_user.branchID)
         db.session.add(consign)
         db.session.commit()
+        
         flash("Consignment Placed for Delivery")
         return redirect(url_for("main.home"))
     return render_template("cart/place.html", title="Place Consignment", form=form)
@@ -55,9 +58,14 @@ def addTruck():
     return redirect(url_for('main.home', role=current_user.role))
 
 
-@cart.route("/view/branch",methods = ["GET"])
+@cart.route("/view/branch", methods=["GET"])
 @login_required
 def view():
-    orderID = request.args.get("order")
-    consign = Consignment.query.get(orderID)
-    
+    consignments = Consignment.query.filter_by(srcBranchId = current_user.branchID)
+
+
+
+@cart.route("/receive/",methods = ["GET","POST"])
+@login_required
+def receive():
+    branchID = current_user.branchID

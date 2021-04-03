@@ -8,14 +8,15 @@ def main():
 
         addr1 = Address(addrLine="C-28", city="Delhi", zipCode="110009")
         addr2 = Address(addrLine="H-1/2", city="Chennai", zipCode="110004")
-        a = HeadOffice(name="Delhi Office", address=addr1)
-        b = BranchOffice(name="Chennai Office", address=addr2)
+        headOffice = HeadOffice(name="Delhi Office", address=addr1)
+        branchOffice = BranchOffice(name="Chennai Office", address=addr2)
         
+        manager = Manager(name = "Parth",email = "pmjindal@gmail.com",headOffice = headOffice.id)
+        manager.set_password("ParthJindal")
         db.create_all()
-        db.session.add(a)
-        db.session.add(b)
+        db.session.add(headOffice)
+        db.session.add(branchOffice)
+        db.session.add(manager)
         db.session.commit()
-
-
 
 main()
