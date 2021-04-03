@@ -6,4 +6,5 @@ from app.models import Office,BranchOffice,Address
 
 app = create_app()
 app.app_context().push()
+# db.session.rollback()
 db.create_all()

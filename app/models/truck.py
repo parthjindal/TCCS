@@ -67,7 +67,8 @@ class Truck(db.Model):
         self.consignments = []
 
         for consignment in consignments:
-            consignment.trucks.remove(self)
+            if self in consignment.trucks:
+                consignment.truck.remove(self)
 
         return consignments
 
