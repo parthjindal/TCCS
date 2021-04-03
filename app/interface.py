@@ -7,6 +7,18 @@ def compar(truck):
 def getCharge():
     pass
 
+# def compar(consignment: Consignment):
+
+def getCharge():
+    pass
+
+# def allotTruck(Branch: BranchOffice):
+#     pass
+#     for consignment in Branch.consignments:
+        
+
+
+
 
 def allotTruck(Branch):
     pass

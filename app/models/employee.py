@@ -29,7 +29,7 @@ class Employee(db.Model,UserMixin):
         'polymorphic_identity': 'employee',
         'polymorphic_on': role
     }
-    def __init__(**kw):
+    def __init__(self,**kw):
         super().__init__(**kw)
 
     def set_password(self, password: str = None):
