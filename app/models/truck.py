@@ -9,7 +9,6 @@ class TruckStatus(Enum):
     ASSIGNED = 1
     ENROUTE = 2
 
-
 class Truck(db.Model):
     """
 
@@ -60,8 +59,8 @@ class Truck(db.Model):
 
         self.volumeLeft = self.volume
         self.status = TruckStatus.AVAILABLE
-        self.BranchID = self.dstBranchID
-
+        # self.BranchID = self.dstBranchID
+        self.branchID = None
         ######################################### TODO ##############################
         # update usage time/idletime
         #############################################################################
