@@ -100,6 +100,9 @@ class Truck(db.Model):
 
         elif self.status == TruckStatus.ASSIGNED:
 
+            if self.dstBranchID != consignment.dstBranchID:
+                raise AttributeError("Destination mismatch")
+
             self.consignments.append(consignment)
             self.volumeLeft -= consignment.volume
 
