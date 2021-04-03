@@ -43,7 +43,7 @@ class Employee(db.Model,UserMixin):
 
 
 class Manager(Employee):
-    headOffice = db.Column(db.Integer, db.ForeignKey('headOffice.id'))
+    headOffice = db.Column(db.Integer, db.ForeignKey('head.id'))
 
     __mapper_args__ = {
         'polymorphic_identity': 'manager'

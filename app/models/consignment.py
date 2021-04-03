@@ -19,7 +19,6 @@ class ConsignmentStatus(Enum):
 class Consignment(db.Model):
     """
     """
-
     ####################################### ORM ##############################################
     __tablename__ = "consignment"
 

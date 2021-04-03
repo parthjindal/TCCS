@@ -1,5 +1,5 @@
 from enum import Enum
-from .consignment import ConsignmentStatus,join_table, Consignment
+from .consignment import ConsignmentStatus, join_table, Consignment
 from app import db
 from datetime import datetime
 
@@ -8,6 +8,7 @@ class TruckStatus(Enum):
     AVAILABLE = 0
     ASSIGNED = 1
     ENROUTE = 2
+
 
 class Truck(db.Model):
     """
@@ -70,8 +71,7 @@ class Truck(db.Model):
 
         return consignments
 
-    
-    def dispatch(self)->None:
+    def dispatch(self) -> None:
         """
 
         """
@@ -79,7 +79,6 @@ class Truck(db.Model):
         self.departureTime = datetime.now()
         for consignment in self.consignments:
             consignment.status = "ENROUTE"
-
 
     def addConsignment(self, consignment: Consignment) -> None:
         """
@@ -97,9 +96,9 @@ class Truck(db.Model):
             self.dstBranchID = consignment.dstBranchId
             self.consignments.append(consignment)
             self.volumeLeft -= consignment.volume
-            
+
         elif self.status == TruckStatus.ASSIGNED:
-            
+
             self.consignments.append(consignment)
             self.volumeLeft -= consignment.volume
 
