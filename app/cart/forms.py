@@ -27,7 +27,14 @@ class ConsignmentForm(FlaskForm):
             (x.id, x.name) for x in Office.query.order_by("name")]
         print([x.id, x.name] for x in Office.query.order_by("name"))
 
-
 class TruckForm(FlaskForm):
-    plateNo = StringField("Plate No.",validators=[DataRequired()])
-    
+    plateNo = StringField("Plate No.")
+    branch = SelectField("Branch", coerce=int)
+    submit = SubmitField("Create")
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # print("somewhers")
+        self.branch.choices = [
+            (x.id, x.name) for x in Office.query.order_by("name")]
+        print([x.id, x.name] for x in Office.query.order_by("name"))

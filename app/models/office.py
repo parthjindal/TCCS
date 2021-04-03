@@ -36,7 +36,7 @@ class Office(db.Model):
         pass
 
     def __repr__(self) -> str:
-        return f'<Office: {self.name}, Address: {self.address} ,Employees:{[x for x in self.employees]}>'
+        return f'<Office: {self.name}, Address: {self.address}, Employees:{[x for x in self.employees]}>'
 
 
 class BranchOffice(Office):
@@ -57,18 +57,21 @@ class BranchOffice(Office):
         consign.srcBranchId = self.id
         self.consignments.append(consign)
         consign.status = 0
+        db.session.commit()
         # for x in Office.trucks:
         #     if x.status==TruckStatus.AVAILABLE or x.dstBranchId==consign.dstBranchId:
         #         x.addConsignment(consign)
 
     def addTruck(self, truck):
+        # print("I was called")
         truck.branchId = self.id
         truck.dstBranchId = None
         truck.status = 0
         truck.volumeConsumed = 0
         truck.consignments = []
         self.trucks.append(truck)
-
+        db.session.commit()
+    
     def addEmployee(self, emp):
         emp.branchID = self.id
         self.employees.append(emp)

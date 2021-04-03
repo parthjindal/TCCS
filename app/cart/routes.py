@@ -1,9 +1,10 @@
+from app.models.office import BranchOffice
 from app.cart import cart
-from .forms import ConsignmentForm
+from .forms import ConsignmentForm, TruckForm
 from flask import redirect, url_for
 from flask_login import current_user, login_required
 from flask import request, render_template
-from app.models import Office, Consignment, Address
+from app.models import Office, Consignment, Address, Truck
 from app import db
 from flask import flash,jsonify
 
@@ -36,6 +37,25 @@ def place(branch, id):
         flash("Consignment Placed for Delivery")
         return redirect(url_for("main.home"))
     return render_template("cart/place.html", title="Place Consignment", form=form)
+
+@cart.route("/addTruck", methods=["GET", "POST"])
+@login_required
+def addTruck():
+    if current_user.is_authenticated and current_user.role == "manager":
+        form = TruckForm()
+        if form.validate_on_submit():
+            trck = Truck(
+                plateNo=form.plateNo.data, usageTime=0, idleTime=0)
+            brnch = BranchOffice.query.get(form.branch.data)
+            # print(brnch)
+            db.session.add(trck)
+            db.session.commit()
+            brnch.addTruck(trck)
+            flash("Truck has been added")
+            return redirect(url_for("main.home"))
+        return render_template("cart/addTruck.html", title="Buy new truck", form=form)
+    flash('You are not authorized to access this page', 'warning')
+    return redirect(url_for('main.home', role=current_user.role))
 
 
 @cart.route("/view/branch", methods=["GET"])
