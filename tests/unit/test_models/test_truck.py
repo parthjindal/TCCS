@@ -21,6 +21,12 @@ def test_truck(test_client, database):
     
     database.session.add(t1)
     database.session.commit()
+
+    consign = Consignment(volume = 200, senderAddress = addr3, receiverAddress = addr4)
+    try:
+        t1.addConsignment(consign)
+    except:
+        print ("No space available\n")
     t2 = Truck.query.filter_by(plateNo = "01TK0423").first()
 
     consign3 = Consignment.query.filter_by(senderAddress = addr1)[-1]
@@ -82,6 +88,18 @@ def test_truck(test_client, database):
     assert (f2 == True)
     assert (f3 == False)
     assert (f4 == False)
+
+    consign = Consignment(volume = 501, senderAddress = addr3, receiverAddress = addr4)
+    try:
+        t1.addConsignment(consign)
+    except:
+        print ("Volume of Consignment is too large\n")
+
+    
+
+        
+
+
     
 
     
