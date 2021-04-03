@@ -1,6 +1,9 @@
 from app.models.address import Address
 from enum import Enum
 from app import db
+import json
+from json import JSONEncoder
+from flask import jsonify
 
 
 class ConsignmentStatus(Enum):
@@ -66,6 +69,9 @@ class Consignment(db.Model):
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
+        self.status = ConsignmentStatus.PENDING
+        self.volumeLeft = self.volume
+        
 
     def getStatus(self) -> ConsignmentStatus:
         return ConsignmentStatus(self.status)
@@ -86,6 +92,13 @@ class Consignment(db.Model):
         self.destinationBranch = e
 
     def __repr__(self) -> str:
-        return f'< ID: {self.id} Volume: {self.volume} Status: {self.status} Sender Address: {self.senderAddress}' \
-            f'Receiver Address: {self.receiverAddress} Status: {ConsignmentStatus(self.status)} Source Branch: {self.srcBranchId}' \
-            f'Destination Branch: {self.dstBranchId} >'
+        dict_ = {
+            "id": self.id,
+            "volume": self.volume,
+            "status": ConsignmentStatus(self.status).name,
+            "senderAddress": str(self.senderAddress),
+            "receiverAddress": str(self.receiverAddress),
+            "sourceBranch": self.srcBranchId,
+            "destinationBranch": self.dstBranchId
+        }
+        return json.dumps(dict_)

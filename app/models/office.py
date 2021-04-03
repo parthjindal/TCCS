@@ -1,4 +1,4 @@
-from .truck import Truck,TruckStatus
+from .truck import Truck, TruckStatus
 from .consignment import Consignment, ConsignmentStatus
 from .employee import Employee
 from app import db
@@ -14,7 +14,7 @@ class Office(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'),
-                          nullable=False)
+                           nullable=False)
     address = db.relationship('Address', uselist=False, lazy=False)
     type = db.Column(db.String(50))
     employees = db.relationship("Employee", uselist=True, lazy=False)
@@ -22,14 +22,15 @@ class Office(db.Model):
     consignments = db.relationship("Consignment",
                                    foreign_keys=Consignment.srcBranchId,
                                    uselist=True, lazy=False)
-    truck_ids = db.Column(db.Integer,db.ForeignKey('truck.branchId'))
-    trucks = db.relationship("Truck", foreign_keys='Office.truck_ids', uselist=True, lazy=False)
+    truck_ids = db.Column(db.Integer, db.ForeignKey('truck.branchId'))
+    trucks = db.relationship(
+        "Truck", foreign_keys='Office.truck_ids', uselist=True, lazy=False)
 
     __mapper_args__ = {
         'polymorphic_identity': 'office',
         'polymorphic_on': type
     }
-    
+
     @abstractmethod
     def isBranch(self) -> bool:
         pass
@@ -50,7 +51,7 @@ class BranchOffice(Office):
 
     def isBranch(self) -> bool:
         return True
-    
+
     def addConsignment(self, consign):
         consign.volumeLeft = consign.volume
         consign.srcBranchId = self.id
@@ -59,7 +60,7 @@ class BranchOffice(Office):
         # for x in Office.trucks:
         #     if x.status==TruckStatus.AVAILABLE or x.dstBranchId==consign.dstBranchId:
         #         x.addConsignment(consign)
-    
+
     def addTruck(self, truck):
         truck.branchId = self.id
         truck.dstBranchId = None
@@ -67,20 +68,21 @@ class BranchOffice(Office):
         truck.volumeConsumed = 0
         truck.consignments = []
         self.trucks.append(truck)
-    
+
     def addEmployee(self, emp):
         emp.branchID = self.id
         self.employees.append(emp)
 
     def receiveTruck(self, truck):
-        if truck.status==TruckStatus.ENROUTE and truck.dstBranchId==self.id:
+        if truck.status == TruckStatus.ENROUTE and truck.dstBranchId == self.id:
             receivedConsignments = truck.emptyTruck()
             self.addTruck(truck)
             for i in receivedConsignments:
                 i.status = 2
         for x in Office.consignments:
-            if x.status==ConsignmentStatus.PENDING:
+            if x.status == ConsignmentStatus.PENDING:
                 truck.addConsignments(x)
+
 
 class HeadOffice(Office):
     __tablename__ = 'head'

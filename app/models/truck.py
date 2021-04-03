@@ -16,6 +16,7 @@ class Truck(db.Model):
     branchId = db.Column(db.String(64), db.ForeignKey("office.id"), index=True)
     dstBranchId = db.Column(db.String(64), db.ForeignKey("office.id"), index=True)
     status = db.Column(db.Integer, index=True)
+    volume = db.Column(db.Integer,index = True)
     volumeConsumed = db.Column(db.Integer, index=True)
     usageTime = db.Column(db.Integer, index=True)
     idleTime = db.Column(db.Integer, index=True)
@@ -25,41 +26,19 @@ class Truck(db.Model):
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
+        self.volumeConsumed = 0
+        self.usageTime = 0
+        self.idleTime = 0
 
     def __repr__(self) -> str:
         return f'< ID: {self.id} Current Branch: {self.branchId} Status: {TruckStatus(self.status)}' \
             f'Volume Consumed: {self.volumeConsumed} Usage Time: {self.usageTime} Idle Time: {self.idleTime}>'
 
-############################### TODO ########################################
-    # def getTruckID(self):
-    #     return self.id
-    # def getCurrentBranch(self):
-    #     return self.currentBranch
-    # def getStatus(self):
-    #     return self.status
-    # def getVolumeConsumed(self):
-    #     return self.volumeConsumed
-    # def getUsageTime(self):
-    #     return self.usageTime
-    # def getIdleTime(self):
-    #     return self.idleTime
-
-    # def viewConsignments(self):
-    #     return self.consignments
-
-    # def setCurrentBranch(self, e):
-    #     self.currentBranch = e
-    # def setStatus(self, e):
-    #     self.status = e
-
     def updateVolumeConsumed(self, a):
         self.volumeConsumed += a
-    # def updateUsageTime(self, t):
-    #     self.usageTime += t
-    # def getIdleTime(self, t):
-    #     self.idleTime += t
 
     def addConsignments(self, consign):
+        if 
         if not len(self.consignments):
             self.dstBranchId = consign.dstBranchId
             self.status = TruckStatus.ASSIGNED
