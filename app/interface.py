@@ -1,22 +1,16 @@
-from app.models import *
-
-
-def compar(truck: Truck):
+def compar(truck):
     return (truck.volume-truck.volumeConsumed)
 
 # def compar(consignment: Consignment):
 
+
 def getCharge():
     pass
 
-def allotTruck(Branch: BranchOffice):
+
+def allotTruck(Branch):
     pass
 #     for consignment in Branch.consignments:
-        
-
-
-
-
 
     # trucks = Branch.trucks
     # trucks.sort(key=compar, reverse=True)

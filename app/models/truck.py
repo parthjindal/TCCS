@@ -1,5 +1,5 @@
 from enum import Enum
-from .consignment import ConsignmentStatus, join_table, Consignment
+from .consignment import ConsignmentStatus,join_table, Consignment
 from app import db
 from datetime import datetime
 
@@ -59,7 +59,6 @@ class Truck(db.Model):
 
         self.volumeLeft = self.volume
         self.status = TruckStatus.AVAILABLE
-        # self.BranchID = self.dstBranchID
         self.branchID = None
         ######################################### TODO ##############################
         # update usage time/idletime

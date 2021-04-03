@@ -1,5 +1,3 @@
-from .truck import Truck, TruckStatus
-from .consignment import Consignment, ConsignmentStatus
 from .employee import Employee
 from app import db
 from abc import ABC, abstractmethod
@@ -15,15 +13,15 @@ class Office(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(16))
 
-    addressID = db.Column(db.Integer, db.ForeignKey('address.id'))
-    address = db.relationship('Address', foreign_keys=addressID, uselist=False)
+    address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
+    address = db.relationship('Address', uselist=False)
 
     employees = db.relationship("Employee", uselist=True, lazy=False)
 
     consignments = db.relationship(
-        "Consignment", foreign_keys='consignment.id', uselist=True, lazy=False)
+        "Consignment", foreign_keys='Consignment.srcBranchID', uselist=True, lazy=False)
     trucks = db.relationship(
-        "Truck", foreign_keys='truck.id', uselist=True, lazy=False)
+        "Truck", foreign_keys='Truck.branchID', uselist=True, lazy=False)
 
     __mapper_args__ = {
         'polymorphic_identity': 'office',
@@ -32,7 +30,7 @@ class Office(db.Model):
 
     ############################################################################
 
-    def __init__(**kwargs):
+    def __init__(self, **kwargs):
         """
 
         """
@@ -44,7 +42,7 @@ class Office(db.Model):
         """
         pass
 
-    def addTruck(self, truck: Truck) -> None:
+    def addTruck(self, truck) -> None:
         """
 
         """
@@ -63,7 +61,7 @@ class Office(db.Model):
 
 
 class BranchOffice(Office):
-    __tablename__ = 'branch'
+    __tablename__ = 'branchOffice'
     id = db.Column(db.Integer, db.ForeignKey('office.id'), primary_key=True)
 
     __mapper_args__ = {
@@ -78,7 +76,7 @@ class BranchOffice(Office):
 
 
 class HeadOffice(Office):
-    __tablename__ = 'head'
+    __tablename__ = 'headOffice'
     id = db.Column(db.Integer, db.ForeignKey('office.id'), primary_key=True)
     manager = db.relation("Manager", uselist=False, lazy=False)
 
