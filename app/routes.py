@@ -39,7 +39,7 @@ def trucks():
     if current_user.is_authenticated and current_user.role == "manager":
         trucks = Truck.query.all()
     elif current_user.is_authenticated and current_user.role == "employee":
-        trucks = Truck.query.filter_by(branchId=current_user.branchID)
+        trucks = Truck.query.filter_by(branchID=current_user.branchID)
     return render_template('trucks.html', data=trucks)
 
 @main.route('/manager')

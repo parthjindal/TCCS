@@ -35,16 +35,8 @@ class Address(db.Model):
 
 class Bill(db.Model):
     """
-        A class representing Bill entity
-        ....
-
-        Attributes
-        ----------
-        amount:  int
-
-        paymentID:  str
-            transaction code/IFSC code
     """
+    ################################# ORM #################################
     __tablename__ = "bill"
 
     id = db.Column(db.Integer, primary_key=True)

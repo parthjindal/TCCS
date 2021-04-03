@@ -15,22 +15,18 @@ def test_new_employee():
     assert employee.check_password("DoShallItMay") == True
     assert employee.role == "employee"
 
-def test_consignment():
+
+def test_manager():
     """
-
+        
     """
-    addr1 = Address(city = "Delhi", addrLine = "C-28,Model Town-3", zipCode = "110009")
-    addr2 = Address(city = "Mumbai", addrLine = "H-Block", zipCode = "100120")
-    consign = Consignment(volume = 500, senderAddress = addr1, receiverAddress = addr2, srcBranchId = "1", dstBranchId = "2")
+    manager = Manager(name = "Mayank",email = "mayankkumar1205@gmail.com")
+    manager.set_password("WhySoSerious")
+    manager.changeRate(10)
 
-    assert addr1 == consign.senderAddress
-    assert addr2 == consign.receiverAddress
-    assert 500 == consign.volume
-    assert "1" == consign.srcBranchId
-    assert "2" == consign.dstBranchId
+    assert manager.email == "mayankkumar1205@gmail.com"
+    assert manager.name == "Mayank"
+    assert manager.check_password("WhySoSerious") == True
+    assert manager.role == "manager"
+    assert rate == 10
 
-
-def test_bill():
-    b1 = Bill(amount = 10, paymentID = "10AY20")
-    assert b1.amount == 10
-    assert b1.paymentID == "10AY20"
