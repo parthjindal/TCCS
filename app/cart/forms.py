@@ -34,7 +34,6 @@ class TruckForm(FlaskForm):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # print("somewhers")
         self.branch.choices = [
             (x.id, x.name) for x in Office.query.order_by("name")]
-        print([x.id, x.name] for x in Office.query.order_by("name"))
+        # print([x.id, x.name] for x in Office.query.order_by("name"))

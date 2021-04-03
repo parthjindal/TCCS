@@ -1,4 +1,4 @@
-from app.models import Address
+from app.models import Address, Bill
 from app.models import Consignment
 
 def test_consignment():
@@ -13,3 +13,5 @@ def test_consignment():
     assert addr2 == consign.receiverAddress
     assert 500 == consign.volume
 
+    # assert "1" == consign.srcBranchId
+    # assert "2" == consign.dstBranchId

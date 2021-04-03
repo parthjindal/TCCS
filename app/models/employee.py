@@ -29,6 +29,8 @@ class Employee(db.Model,UserMixin):
         'polymorphic_identity': 'employee',
         'polymorphic_on': role
     }
+    def __init__(**kw):
+        super().__init__(**kw)
 
     def set_password(self, password: str = None):
         self.password_hash = generate_password_hash(password)
@@ -41,7 +43,7 @@ class Employee(db.Model,UserMixin):
 
 
 class Manager(Employee):
-    headOffice = db.Column(db.Integer, db.ForeignKey('head.id'))
+    headOffice = db.Column(db.Integer, db.ForeignKey('headOffice.id'))
 
     __mapper_args__ = {
         'polymorphic_identity': 'manager'

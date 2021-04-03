@@ -3,7 +3,7 @@ from enum import Enum
 from app import db
 from app.interface import getCharge
 
-JoinTable = db.Table(
+join_table = db.Table(
     'join_table', db.Model.metadata, db.Column(
         'consignmentID', db.Integer, db.ForeignKey('consignment.id')),
     db.Column('truckID', db.Integer, db.ForeignKey('truck.id')))
@@ -46,7 +46,7 @@ class Consignment(db.Model):
     dstBranchID = db.Column(db.Integer, db.ForeignKey("office.id"), index=True)
 
     trucks = db.relationship(
-        "Truck", secondary=JoinTable, back_populates="consignments")
+        "Truck", secondary=join_table, back_populates="consignments")
 
     ############################################################################################
     def __init__(self, **kwargs) -> None:

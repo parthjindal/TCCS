@@ -6,7 +6,8 @@ from flask_login import current_user, login_required
 from flask import request, render_template
 from app.models import Office, Consignment, Address, Truck
 from app import db
-from flask import flash,jsonify
+from flask import flash, jsonify
+from app.interface import allotTruck
 
 
 @cart.route("/")
@@ -17,7 +18,8 @@ def index():
         return redirect(url_for("cart.place", branch=branch, id=current_user.id))
     else:
         flash("Access Denied")
-        return redirect(url_for("main.home"))        
+        return redirect(url_for("main.home"))
+
 
 @cart.route("/place/<branch>/<id>", methods=["GET", "POST"])
 @login_required
@@ -33,10 +35,11 @@ def place(branch, id):
             dstBranchId=form.destinationBranch.data, srcBranchId=current_user.branchID)
         db.session.add(consign)
         db.session.commit()
-        
+        allotTruck(consign, BranchOffice.query.get(current_user.branchID))
         flash("Consignment Placed for Delivery")
         return redirect(url_for("main.home"))
     return render_template("cart/place.html", title="Place Consignment", form=form)
+
 
 @cart.route("/addTruck", methods=["GET", "POST"])
 @login_required
@@ -61,11 +64,11 @@ def addTruck():
 @cart.route("/view/branch", methods=["GET"])
 @login_required
 def view():
-    consignments = Consignment.query.filter_by(srcBranchId = current_user.branchID)
+    consignments = Consignment.query.filter_by(
+        srcBranchId=current_user.branchID)
 
 
-
-@cart.route("/receive/",methods = ["GET","POST"])
+@cart.route("/receive/", methods=["GET", "POST"])
 @login_required
 def receive():
     branchID = current_user.branchID
