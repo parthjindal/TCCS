@@ -15,7 +15,7 @@
 }
 
 body {
-  background: #fafafa;
+  background: #f1f1f1;
   color: #333333;
   margin-top: 5rem;
 }
@@ -246,9 +246,55 @@ a.article-title:hover {
   margin-bottom: 0.5em;
 }
 
-
 @media screen and (min-width:600px) {
   :root {
     --boxheight: 420px;
+  }
+}
+
+.mngrcf {
+  padding: 2% 25%;
+}
+
+.mngrbtn {
+  display: block;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  background-color: var(--light);
+  width: 400px;
+  height: 70px;
+  border-radius: 30px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  background-size: 100% 100%;
+  box-shadow: 0 0 0 7px var(--light) inset;
+  margin-top: 35px;
+}
+
+.mngrbtn:hover {
+  background-image: linear-gradient(
+    145deg,
+    transparent 10%,
+    var(--dark) 10% 20%,
+    transparent 20% 30%,
+    var(--dark) 30% 40%,
+    transparent 40% 50%,
+    var(--dark) 50% 60%,
+    transparent 60% 70%,
+    var(--dark) 70% 80%,
+    transparent 80% 90%,
+    var(--dark) 90% 100%
+  );
+  animation: background 3s linear infinite;
+}
+
+@keyframes background {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 400px 0;
   }
 }

@@ -13,6 +13,10 @@ def index():
 
 @main.route('/home')
 def home():
+    if current_user.is_authenticated and current_user.role=="manager":
+        return render_template('manager.html', title='TL;DR')
+    elif current_user.is_authenticated and current_user.role=="employee":
+        return render_template('employee.html', title='TL;DR')
     return render_template('index.html', title='TL;DR', user= current_user)
 
 @main.route('/consignments')
@@ -42,10 +46,18 @@ def trucks():
         trucks = Truck.query.filter_by(branchId=current_user.branchID)
     return render_template('trucks.html', data=trucks)
 
-@main.route('/manager')
-@login_required
-def manager():
-    if current_user.is_authenticated and current_user.role == "manager":
-        return render_template('manager.html')
-    flash('You are not authorized to access this page', 'warning')
-    return redirect(url_for('main.home', role=current_user.role))
+# @main.route('/manager')
+# @login_required
+# def manager():
+#     if current_user.is_authenticated and current_user.role == "manager":
+#         return render_template('manager.html')
+#     flash('You are not authorized to access this page', 'warning')
+#     return redirect(url_for('main.home', role=current_user.role))
+
+# @main.route('/employee')
+# @login_required
+# def employee():
+#     if current_user.is_authenticated and current_user.role == "employee":
+#         return render_template('employee.html')
+#     flash('You are not authorized to access this page', 'warning')
+#     return redirect(url_for('main.home', role=current_user.role))
