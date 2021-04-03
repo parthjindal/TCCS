@@ -1,11 +1,11 @@
 from app import create_app, db
 import pytest
-from testConfig import Config
+from testConfig import TestConfig
 
 
 @pytest.fixture()
 def test_client():
-    app = create_app(Config)
+    app = create_app(TestConfig)
     testing_client = app.test_client()
     ctx = app.app_context()
     ctx.push()

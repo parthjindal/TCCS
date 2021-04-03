@@ -67,7 +67,8 @@ class Truck(db.Model):
         self.consignments = []
 
         for consignment in consignments:
-            consignment.trucks.remove(self)
+            if self in consignment.trucks:
+                consignment.truck.remove(self)
 
         return consignments
 
@@ -93,7 +94,7 @@ class Truck(db.Model):
         if self.status == TruckStatus.AVAILABLE:
 
             self.status == TruckStatus.ASSIGNED
-            self.dstBranchID = consignment.dstBranchId
+            self.dstBranchID = consignment.dstBranchID
             self.consignments.append(consignment)
             self.volumeLeft -= consignment.volume
 
