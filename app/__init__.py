@@ -23,5 +23,10 @@ def create_app(config = Config):
     db.init_app(app)
     login.init_app(app)
     mail.init_app(app)
+    # app.config['MAIL_USERNAME'] = 'egret.tccs@gmail.com'
+    # app.config['MAIL_PASSWORD'] = 'Egret1234'
+    # app.config['MAIL_USE_TLS'] = False
+    # app.config['MAIL_USE_SSL'] = True
+    # mail = Mail(app)
 
     return app
