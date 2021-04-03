@@ -93,7 +93,7 @@ class Truck(db.Model):
         if self.status == TruckStatus.AVAILABLE:
 
             self.status == TruckStatus.ASSIGNED
-            self.dstBranchID = consignment.dstBranchId
+            self.dstBranchID = consignment.dstBranchID
             self.consignments.append(consignment)
             self.volumeLeft -= consignment.volume
 
