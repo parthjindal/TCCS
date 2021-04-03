@@ -4,9 +4,11 @@ from .forms import ConsignmentForm, TruckForm
 from flask import redirect, url_for
 from flask_login import current_user, login_required
 from flask import request, render_template
-from app.models import Office, Consignment, Address, Truck
-from app import db
+from app.models import Office, Consignment, Address, Truck, Manager
+from app import db, mail
 from flask import flash
+from flask_mail import Message
+from flask import current_app
 
 
 @cart.route("/")
@@ -34,6 +36,33 @@ def place(branch, id):
         flash("Consignment Placed for Delivery")
         return redirect(url_for("main.home"))
     return render_template("cart/place.html", title="Place Consignment", form=form)
+
+@cart.route("/request_truck", methods=['GET', 'POST'])
+@login_required
+def request_truck():
+    if current_user.is_authenticated and current_user.role == "manager":
+        flash('You are not authorized to access this page', 'success')
+        return redirect(url_for('main.home', role=current_user.role))
+    user = Manager.query.filter_by(role="manager").first()
+    brnch = Office.query.filter_by(id=current_user.branchID).first()
+    msg = Message('Buy New Truck Request',
+                  sender=current_app.config['MAIL_USERNAME'],
+                  recipients=[user.email])
+    msg.body = f'''Hi {user.name}
+    
+An employee at Egret {current_user.name} requested for adding truck to the branch {brnch.name}.
+
+To buy a new truck for the branch, please go to the following web address:
+{url_for('cart.addTruck', _external=True)}
+
+To check the statistics of the branches, please visit:
+{url_for('main.branches', _external=True)}
+
+Team Egret
+'''
+    mail.send(msg)
+    flash('The request has been sent to the manager', 'success')
+    return redirect(url_for('main.home', role=current_user.role))
 
 @cart.route("/addTruck", methods=["GET", "POST"])
 @login_required

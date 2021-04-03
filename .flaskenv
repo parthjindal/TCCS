@@ -1,2 +1,4 @@
 FLASK_APP=app
 FLASK_DEBUG=1
+EMAIL_USER=egret.tccs@gmail.com
+EMAIL_PASS=Egret1234
