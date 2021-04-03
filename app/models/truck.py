@@ -30,10 +30,8 @@ class Truck(db.Model):
 
     departureTime = db.Column(db.DateTime)  # departure time
 
-    ############################################# TODO #################################################
     usageTime = db.Column(db.Float)
     idleTime = db.Column(db.Float)
-    ####################################################################################################
 
     consignments = db.relationship(
         "Consignment", secondary=join_table, back_populates="trucks")
@@ -59,12 +57,7 @@ class Truck(db.Model):
 
         self.volumeLeft = self.volume
         self.status = TruckStatus.AVAILABLE
-        # self.BranchID = self.dstBranchID
-        self.branchID = None
-        ######################################### TODO ##############################
-        # update usage time/idletime
-        #############################################################################
-
+        self.BranchID = self.dstBranchID
         self.dstBranchID = None
         self.consignments = []
 
@@ -73,36 +66,26 @@ class Truck(db.Model):
 
         return consignments
 
-    def dispatch(self) -> None:
+    
+    def dispatch(self)->None:
         """
 
         """
         self.status = TruckStatus.ENROUTE
         self.departureTime = datetime.now()
-
         for consignment in self.consignments:
             consignment.status = "ENROUTE"
 
-    def printInvoice(self) -> str:
-        """
-
-        """
-        ###################### TODO ###########################
-
-        pass
 
     def addConsignment(self, consignment: Consignment) -> None:
         """
 
         """
-        if self.branchID != consignment.srcBranchID:
-            raise AttributeError("Branch ID mismatch")
-
         if self.volumeLeft - consignment.volume < 0:
             raise ValueError("Consignment too large")
 
         if self.status == TruckStatus.ENROUTE:
-            raise AttributeError("Status mismatch,Truck Enroute")
+            raise TypeError("Status mismatch,Truck Enroute")
 
         if self.status == TruckStatus.AVAILABLE:
 
@@ -110,9 +93,9 @@ class Truck(db.Model):
             self.dstBranchID = consignment.dstBranchId
             self.consignments.append(consignment)
             self.volumeLeft -= consignment.volume
-
+            
         elif self.status == TruckStatus.ASSIGNED:
-
+            
             self.consignments.append(consignment)
             self.volumeLeft -= consignment.volume
 
@@ -120,5 +103,4 @@ class Truck(db.Model):
         """
 
         """
-        ############################ TODO #################################
-        return f'<Truck:{self.plateNo} >'
+        return f'Truck:{self.plateNo}'

@@ -44,19 +44,39 @@ class Office(db.Model):
         """
         pass
 
-    def addTruck(self, truck: Truck) -> None:
-        """
-
-        """
-
-        if truck.branchID != None:
-            raise AttributeError("Truck Already assigned")
-
-        if truck in self.trucks:
-            raise ValueError("Office already contains truck")
-
+    def addConsignment(self, consign):
+        consign.volumeLeft = consign.volume
+        consign.srcBranchId = self.id
+        self.consignments.append(consign)
+        consign.status = 0
+        #db.session.commit()
+        # for x in Office.trucks:
+        #     if x.status==TruckStatus.AVAILABLE or x.dstBranchId==consign.dstBranchId:
+        #         x.addConsignment(consign)
+    
+    def addTruck(self, truck):
+        # print("I was called")
+        truck.branchId = self.id
+        truck.dstBranchId = None
+        truck.status = 0
+        truck.volumeConsumed = 0
+        truck.consignments = []
         self.trucks.append(truck)
-        truck.branchID = self.id
+        #db.session.commit()
+    
+    def addEmployee(self, emp):
+        emp.branchID = self.id
+        self.employees.append(emp)
+
+    def receiveTruck(self, truck):
+        if truck.status==TruckStatus.ENROUTE and truck.dstBranchId==self.id:
+            receivedConsignments = truck.emptyTruck()
+            self.addTruck(truck)
+            for i in receivedConsignments:
+                i.status = 2
+        for x in Office.consignments:
+            if x.status==ConsignmentStatus.PENDING:
+                truck.addConsignments(x)
 
     def __repr__(self) -> str:
         return f'<Office: {self.name}, Address: {self.address}, Employees:{[x for x in self.employees]}>'
@@ -66,16 +86,16 @@ class BranchOffice(Office):
     __tablename__ = 'branch'
     id = db.Column(db.Integer, db.ForeignKey('office.id'), primary_key=True)
 
+    ## TODO ##
+
     __mapper_args__ = {
         'polymorphic_identity': 'branch',
     }
 
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
-
     def isBranch(self) -> bool:
         return True
-
+    
+    
 
 class HeadOffice(Office):
     __tablename__ = 'head'
