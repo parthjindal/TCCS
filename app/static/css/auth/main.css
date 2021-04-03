@@ -2,18 +2,16 @@
   box-sizing: border-box;
 }
 :root {
-  /* background color */
-  --bodycolor: #efefef;
-  /* columns width */
   --boxwidth: 340px;
-  /* rows height */
   --boxheight: 420px;
-  /* bubble width */
   --icon-box-dimensions: 250px;
   --icon-box-dimensions-half: calc(var(--icon-box-dimensions) /2);
   --icon-offset: -10%;
   --content-fontsize: 1.1em;
   --accentcolor: maroon;
+  --light: #428bca;
+  --dark: #5f788a;
+  --text: #e3e3e3;
 }
 
 body {
@@ -247,6 +245,7 @@ a.article-title:hover {
   font-weight: 100;
   margin-bottom: 0.5em;
 }
+
 
 @media screen and (min-width:600px) {
   :root {
