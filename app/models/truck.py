@@ -31,8 +31,10 @@ class Truck(db.Model):
 
     departureTime = db.Column(db.DateTime)  # departure time
 
+    ############################################# TODO #################################################
     usageTime = db.Column(db.Float)
     idleTime = db.Column(db.Float)
+    ####################################################################################################
 
     consignments = db.relationship(
         "Consignment", secondary=join_table, back_populates="trucks")
@@ -59,6 +61,11 @@ class Truck(db.Model):
         self.volumeLeft = self.volume
         self.status = TruckStatus.AVAILABLE
         self.BranchID = self.dstBranchID
+
+        ######################################### TODO ##############################
+        # update usage time/idletime
+        #############################################################################
+
         self.dstBranchID = None
         self.consignments = []
 
@@ -89,11 +96,14 @@ class Truck(db.Model):
         """
 
         """
+        if self.branchID != consignment.srcBranchID:
+            raise AttributeError("Branch ID mismatch")
+
         if self.volumeLeft - consignment.volume < 0:
             raise ValueError("Consignment too large")
 
         if self.status == TruckStatus.ENROUTE:
-            raise TypeError("Status mismatch,Truck Enroute")
+            raise AttributeError("Status mismatch,Truck Enroute")
 
         if self.status == TruckStatus.AVAILABLE:
 
@@ -111,4 +121,5 @@ class Truck(db.Model):
         """
 
         """
-        return f'Truck:{self.plateNo}'
+        ############################ TODO #################################
+        return f'<Truck:{self.plateNo} >'
