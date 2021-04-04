@@ -41,7 +41,7 @@ def place():
     form = ConsignmentForm()
     if form.validate_on_submit():
 
-        senderAddress = Address(addrLine=form.senderAddrLine.data,
+        senderAddress = Address(addrLine=form.sAddrLine.data,
                                 city=form.sCity.data, zipCode=form.sZipCode.data)
         receiverAddress = Address(addrLine=form.rAddrLine.data,
                                   city=form.rCity.data, zipCode=form.rZipCode.data)
@@ -51,7 +51,7 @@ def place():
 
         db.session.add(consign)
         db.session.commit()
- 
+
         flash("Consignment Placed for Delivery", 'info')
         return redirect(url_for("main.home"))
 
@@ -72,8 +72,10 @@ def view_all():
 @consign.route("/view/<id>")
 @login_required
 def view(id):
-    consign = Consignment.query.get(id)
-    if consign is None:
+    consign_ = Consignment.query.get(id)
+    if consign_ is None:
         flash("Bad request,consignment not found", "warning")
         return redirect(url_for("main.home", role=current_user.role))
-    return f'{consign}'
+    ###################### TODO ############################################
+
+    return f'{consign_}'

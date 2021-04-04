@@ -29,12 +29,22 @@ def view(id):
     return redirect(url_for("main.home"))
 
 
-@truck.route("/dispatch", methods=["GET"])
+@truck.route("/dispatch/view", methods=["GET"])
 @login_required
 def dispatch():
     trucks = Truck.query.filter_by(branchID=current_user.branchID)
     trucks = [x for x in trucks if x.volumeLeft < 5]
+    ############################ TODO #####################
     return render_template("dispatch.html", data=trucks)
+
+
+@truck.route("/dispatch/<id>")
+@login_required
+def dispatch_truck(id):
+    truck_ = Truck.query.get(id)
+    truck_.dispatch()
+    flash("Truck Logged as dispatched", "info")
+    return redirect(url_for("main.home"))
 
 
 @truck.route("/request/", methods=['GET', 'POST'])
