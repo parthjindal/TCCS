@@ -21,42 +21,42 @@
             <div class="form-group">
                 <h4>Sender's Address</h4>
                 <div class="form-group">
-                    {{ form.senderCity.label(class = "form-control-label") }}
-                    {% if form.senderCity.errors %}
-                    {{ form.senderCity(class="form-control form-control-lg is-invalid") }}
+                    {{ form.sCity.label(class = "form-control-label") }}
+                    {% if form.sCity.errors %}
+                    {{ form.sCity(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
-                        {% for error in form.senderCity.errors %}
+                        {% for error in form.sCity.errors %}
                         <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                     {% else %}
-                    {{ form.senderCity(class="form-control form-control-lg") }}
+                    {{ form.sCity(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    {{ form.senderAddrLine.label(class = "form-control-label") }}
-                    {% if form.senderAddrLine.errors %}
-                    {{ form.senderAddrLine(class="form-control form-control-lg is-invalid") }}
+                    {{ form.sAddrLine.label(class = "form-control-label") }}
+                    {% if form.sAddrLine.errors %}
+                    {{ form.sAddrLine(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
-                        {% for error in form.senderAddrLine.errors %}
+                        {% for error in form.sAddrLine.errors %}
                         <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                     {% else %}
-                    {{ form.senderAddrLine(class="form-control form-control-lg") }}
+                    {{ form.sAddrLine(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    {{ form.senderZipCode.label(class = "form-control-label") }}
-                    {% if form.senderZipCode.errors %}
-                    {{ form.senderZipCode(class="form-control form-control-lg is-invalid") }}
+                    {{ form.sZipCode.label(class = "form-control-label") }}
+                    {% if form.sZipCode.errors %}
+                    {{ form.sZipCode(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
-                        {% for error in form.senderZipCode.errors %}
+                        {% for error in form.sZipCode.errors %}
                         <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                     {% else %}
-                    {{ form.senderZipCode(class="form-control form-control-lg") }}
+                    {{ form.sZipCode(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
 
@@ -64,56 +64,56 @@
             <div class="form-group">
                 <h4>Receiver's Address</h4>
                 <div class="City">
-                    {{ form.receiverCity.label(class = "form-control-label") }}
-                    {% if form.receiverCity.errors %}
-                    {{ form.receiverCity(class="form-control form-control-lg is-invalid") }}
+                    {{ form.rCity.label(class = "form-control-label") }}
+                    {% if form.rCity.errors %}
+                    {{ form.rCity(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
-                        {% for error in form.receiverCity.errors %}
+                        {% for error in form.rCity.errors %}
                         <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                     {% else %}
-                    {{ form.receiverCity(class="form-control form-control-lg") }}
+                    {{ form.rCity(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    {{ form.receiverAddrLine.label(class = "form-control-label") }}
-                    {% if form.receiverAddrLine.errors %}
-                    {{ form.receiverAddrLine(class="form-control form-control-lg is-invalid") }}
+                    {{ form.rAddrLine.label(class = "form-control-label") }}
+                    {% if form.rAddrLine.errors %}
+                    {{ form.rAddrLine(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
-                        {% for error in form.receiverAddrLine.errors %}
+                        {% for error in form.rAddrLine.errors %}
                         <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                     {% else %}
-                    {{ form.receiverAddrLine(class="form-control form-control-lg") }}
+                    {{ form.rAddrLine(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    {{ form.receiverZipCode.label(class = "form-control-label") }}
-                    {% if form.receiverZipCode.errors %}
-                    {{ form.receiverZipCode(class="form-control form-control-lg is-invalid") }}
+                    {{ form.rZipCode.label(class = "form-control-label") }}
+                    {% if form.rZipCode.errors %}
+                    {{ form.rZipCode(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
-                        {% for error in form.receiverZipCode.errors %}
+                        {% for error in form.rZipCode.errors %}
                         <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                     {% else %}
-                    {{ form.receiverZipCode(class="form-control form-control-lg") }}
+                    {{ form.rZipCode(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
             </div>
             <div>
-                {{ form.destinationBranch.label(class = "form-control-label") }}
-                {% if form.destinationBranch.errors %}
-                {{ form.destinationBranch(class="form-control form-control-lg is-invalid") }}
+                {{ form.branch.label(class = "form-control-label") }}
+                {% if form.branch.errors %}
+                {{ form.branch(class="form-control form-control-lg is-invalid") }}
                 <div class="invalid-feedback">
-                    {% for error in form.destinationBranch.errors %}
+                    {% for error in form.branch.errors %}
                     <span>{{ error }}</span>
                     {% endfor %}
                 </div>
                 {% else %}
-                {{form.destinationBranch(class = "form-control form-control-lg")}}
+                {{form.branch(class = "form-control form-control-lg")}}
                 {% endif %}
             </div>
             <div class="form-group">
