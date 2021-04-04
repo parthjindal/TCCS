@@ -10,18 +10,28 @@ main = Blueprint("main", import_name=__name__, template_folder="templates")
 
 @main.route('/')
 def about():
+    '''
+        The function displays the About page of the website to the user
+    '''
     return render_template("about.html", title="TL;DR"), 200
 
 
 @main.route('/home')
 @login_required
 def home():
+    '''
+        The function displays the Home page of the website to the user
+    '''
     return render_template(f"{current_user.role}.html", title='TL;DR'), 200
 
 
 @main.route('/branches')
 @login_required
 def branches():
+    '''
+        If the user is the manager, this function allows him to view the records of all the branches
+        Else the access is forbidden and error 403 is displayed
+    '''
     if current_user.role == "manager":
         branches = Office.query.all()
         return render_template('branches.html', data=branches), 200
@@ -32,6 +42,17 @@ def branches():
 @main.route('/branches/<token>')
 @login_required
 def branch(token):
+    '''
+        If the user is an employee, access is denied to him and error 403 is displayed
+        Else the user is redirected to a page where all the records of the office, 
+                with the given token as id, are displayed
+        ....
+
+        Parameters:
+            token: int
+                stores the id of the branch which is enquired
+
+    '''
     if current_user.role == "manager":
         branch = Office.query.filter_by(id=token).first()
         return render_template('branch.html', name=branch.name, trck=branch.trucks, consign=branch.consignments) ,200

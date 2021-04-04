@@ -11,6 +11,10 @@ from flask_mail import Message
 @login_required
 def index():
     '''
+        The user needs to be logged in to use this function
+        If the current user is an employee, he is redirected to the 
+                    place consignment page of the office of the employee
+        Else an error occurs because access is denied
 
     '''
     if current_user.role == "employee":
@@ -30,7 +34,14 @@ def index():
 @login_required
 def place():
     '''
+        The function used by the user to place a consignment in his office
+        The employee needs to be logged in to use this
 
+        If the office id of the employee is valid, the an object of the Consignment class is created
+                with srcBranchID equal to the branchID of the user's office and
+                        other credentials as specified and is added to the database 
+                                after this the employee is redirected to the home page
+        Else a warning is displayed and the user is redirected to the home page
     '''
     office = request.args.get("office")
     id = request.args.get("id")
@@ -62,6 +73,13 @@ def place():
 @consign.route("/view/all", methods=["GET"])
 @login_required
 def view_all():
+    '''
+        If the user is an Employee, this function allows him to view all the consignments
+                that are placed in his office
+        
+        If the user is the Manager, he can view all the consignments 
+                irrepective of their source office
+    '''
     if current_user.role == "employee":
         consigns = Consignment.query.filter_by(
             srcBranchID=current_user.branchID).all()
@@ -73,6 +91,15 @@ def view_all():
 @consign.route("/view/<id>")
 @login_required
 def view(id):
+    '''
+        This function allows the user to view the details of any consignment provided 
+                the id of the required consignment given by the user is correct
+        ....
+
+        Parameters:
+            id: int
+                the id of the consignment, the user wants to query about
+    '''
     consign = Consignment.query.get(id)
     if consign is None:
         flash("Bad request, consignment not found", "warning")
