@@ -7,6 +7,22 @@ from .consignment import ConsignmentStatus
 
 class Office(db.Model):
     """
+        A class to represent an office
+        ....
+
+        Attributes
+        ----------
+        address: Address
+            addresss of the office
+        addressID: int
+            unique id of the adress
+        employees: list of Employee class objects
+            list of the employees working in the office
+        consignments: list of Consignment class objects
+            list of the consignments placed in the office
+        trucks: list of Truck class objects
+            list of the trucks assigned to the office
+        
 
     """
     ####################################### ORM ################################
@@ -35,18 +51,36 @@ class Office(db.Model):
 
     def __init__(self, **kwargs):
         """
+            The constructor of the Office class
+            ....
+            
+            Pararmeters:
+                address: Address
+                    address of the office
 
         """
         super().__init__(**kwargs)
 
     def isBranch(self) -> bool:
         """
+            The function to check if an office is a branch office or head office
+            ....
+
+            Returns:
+                bool:
+                    returns true if the office is a branch office and false in case of a head office
 
         """
         pass
 
     def addTruck(self, truck) -> None:
         """
+            The function to add a truck to the office in case it hasn't been assigned to any other office or is not already present in the office and is available
+            ....
+
+            Parameters:
+                truck: Truck
+                    the truck to be added to the office
 
         """
         if truck.branchID != None:
@@ -62,6 +96,17 @@ class Office(db.Model):
 
     def receiveTruck(self, truck) -> list:
         """
+            The function to receive a truck and its consignments
+            ....
+
+            Parameters:
+                truck: Truck
+                    the truck to be received in case the office is its destination branch
+            
+            Returns:
+                consignments: list of Consignment class objects
+                    the consignments which were assigned to the truck
+                
 
         """
         if truck.dstBranchID != self.id:
@@ -81,10 +126,26 @@ class Office(db.Model):
         return consignments
 
     def __repr__(self) -> str:
+        """
+            The function to get the string representation of the office
+            ....
+
+            Returns:
+                str: A string which stores the representation of the office
+        """
         return f'<Office, Address: {self.address}>'
 
 
 class BranchOffice(Office):
+    '''
+        A class inherited from Office class to represent a branch office
+        ....
+        
+        Attributes
+        ----------
+        Same as that of the Office class
+
+    '''
     __tablename__ = 'branch'
     id = db.Column(db.Integer, db.ForeignKey('office.id'), primary_key=True)
 
@@ -93,16 +154,49 @@ class BranchOffice(Office):
     }
 
     def __init__(self, **kwargs) -> None:
+        """
+            The constructor of the BranchOffice class
+            ....
+            
+            Pararmeters:
+                address: Address
+                    address of the branch office
+
+        """
         super().__init__(**kwargs)
 
     def isBranch(self) -> bool:
+        '''
+            The function to check if the office is a branch office
+            ....
+
+            Returns:
+                True: bool
+                    bool value True is always returned because the object is of the type BranchOffice
+        '''
         return True
 
     def __repr__(self):
+        """
+            The function to get the string representation of the branch office
+            ....
+
+            Returns:
+                str: A string which stores the representation of the branch office
+        """
         return f'<Branch Office, {self.name}, Address: {self.address}>'
 
 
 class HeadOffice(Office):
+    '''
+        A class inherited from Office class to represent the head office
+        ....
+        
+        Attributes
+        ----------
+        Same as that of the Office class
+
+    '''
     __tablename__ = 'head'
     id = db.Column(db.Integer, db.ForeignKey('office.id'), primary_key=True)
 
@@ -111,10 +205,34 @@ class HeadOffice(Office):
     }
 
     def __init__(self, **kwargs) -> None:
+        """
+            The constructor of the HeadOffice class
+            ....
+            
+            Pararmeters:
+                address: Address
+                    address of the head office
+
+        """
         super().__init__(**kwargs)
 
     def isBranch(self) -> bool:
+        '''
+            The function to check if the office is a branch office
+            ....
+
+            Returns:
+                False: bool
+                    bool value False is always returned because the object is of the type HeadOffice and not BranchOffice
+        '''
         return False
 
     def __repr__(self):
+        """
+            The function to get the string representation of the head office
+            ....
+
+            Returns:
+                str: A string which stores the representation of the head office
+        """
         return f'<Head Office, {self.name}, Address: {self.address}>'
