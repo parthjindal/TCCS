@@ -62,7 +62,7 @@ class Office(db.Model):
         "Truck", foreign_keys='Truck.branchID', uselist=True, lazy=False)
 
     transactions = db.relationship(
-        "Bill", foreign_keys='[Consignment.srcBranchID,Consignment.billID]', secondary='consignment', uselist=True, lazy=False,viewonly = True)
+        "Bill", foreign_keys='Bill.branchID', uselist=True, lazy=False, viewonly=True)
 
     __mapper_args__ = {
         'polymorphic_identity': 'office',

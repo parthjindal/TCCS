@@ -8,7 +8,6 @@ def test_truck(test_client, database):
     """
 
     """
-
     t1 = Truck(plateNo="01TK0423")
 
     addr1 = Address(city="Delhi", addrLine="C-28,Model Town-3", zipCode="110009")
