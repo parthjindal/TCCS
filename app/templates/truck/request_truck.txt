@@ -3,7 +3,7 @@ Hi {{ user.name }}
 An employee at Egret {{ current_user.name }} requested urgently for adding truck to the branch {{ branch.name }}.
 
 To buy a new truck for the branch, please go to the following web address:
-{{ url_for('cart.addTruck', _external=True) }}
+{{ url_for('consign.addTruck', _external=True) }}
 
 To check the statistics of the branches, please visit:
 {{ url_for('main.branches', _external=True) }}

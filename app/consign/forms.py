@@ -47,19 +47,3 @@ class ConsignmentForm(FlaskForm):
             int(field.data)
         except ValueError:
             raise ValidationError("All field-chars must be between 0-9")
-
-
-class TruckForm(FlaskForm):
-    '''
-
-    '''
-    plateNo = StringField("Plate No.", validators=[DataRequired()])
-    branch = SelectField("Branch", coerce=int)
-    submit = SubmitField("Create")
-
-    def __init__(self, **kwargs):
-        '''
-        '''
-        super().__init__(**kwargs)
-        self.branch.choices = [(x.id, f'{x.address.city} Office')
-                               for x in Office.query.order_by("id")]

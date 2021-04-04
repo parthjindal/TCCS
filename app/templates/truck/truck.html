@@ -1,9 +1,9 @@
 {% extends "auth/layout.html" %}
 {% block content %}
-<h1>Truck ID: {{ trck.id }}</h1>
-<h3>Plate No.: {{ trck.plateNo }}</h3>
-<h3>Branch ID: {{ trck.branchId }}</h3>
-<h3>Status: {{ trck.status }}</h3>
+<h1>Truck ID: {{ truck.id }}</h1>
+<h3>Plate No.: {{ truck.plateNo }}</h3>
+<h3>Branch ID: {{ truck.branchId }}</h3>
+<h3>Status: {{ truck.status }}</h3>
 <h2>Consignments in the truck are:</h2>
 <div class="container cont">
     {% for data in consign %}

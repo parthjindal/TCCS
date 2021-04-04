@@ -105,7 +105,7 @@ def registerManager():
         db.session.add(manager)
         db.session.commit()
 
-        flash('Manager Accounted Initiated!', 'success')
+        flash('Manager account created!', 'success')
         return redirect(url_for('auth.login'))
 
     return render_template('regMan.html', title='Register', form=form)
