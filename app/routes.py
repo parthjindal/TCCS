@@ -10,13 +10,13 @@ main = Blueprint("main", import_name=__name__, template_folder="templates")
 
 @main.route('/')
 def about():
-    return render_template("about.html", title="TL;DR")
+    return render_template("about.html", title="TL;DR", code=200)
 
 
 @main.route('/home')
 @login_required
 def home():
-    return render_template(f"{current_user.role}.html", title='TL;DR')
+    return render_template(f"{current_user.role}.html", title='TL;DR', code=200)
 
 
 # @main.route('/consignments')
@@ -27,9 +27,9 @@ def home():
 def branches():
     if current_user.role == "manager":
         branches = Office.query.all()
-        return render_template('branches.html', data=branches)
+        return render_template('branches.html', data=branches, code=200)
     flash('You are not authorized to access this page', 'warning')
-    return redirect(url_for('main.home', role=current_user.role))
+    return redirect(url_for('main.home', role=current_user.role), code=302)
 
 
 @main.route('/branches/<token>')
@@ -37,6 +37,6 @@ def branches():
 def branch(token):
     if current_user.role == "manager":
         branch = Office.query.filter_by(id=token).first()
-        return render_template('branch.html', name=branch.name, trck=branch.trucks, consign=branch.consignments)
+        return render_template('branch.html', name=branch.name, trck=branch.trucks, consign=branch.consignments, code=200)
     flash('You are not authorized to access this page', 'warning')
-    return redirect(url_for('main.home', role=current_user.role))
+    return redirect(url_for('main.home', role=current_user.role), code=302)
