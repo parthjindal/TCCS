@@ -22,7 +22,7 @@ class Office(db.Model):
             list of the consignments placed in the office
         trucks: list of Truck class objects
             list of the trucks assigned to the office
-        
+
 
     """
     ####################################### ORM ################################
@@ -53,7 +53,7 @@ class Office(db.Model):
         """
             The constructor of the Office class
             ....
-            
+
             Pararmeters:
                 address: Address
                     address of the office
@@ -68,14 +68,16 @@ class Office(db.Model):
 
             Returns:
                 bool:
-                    returns true if the office is a branch office and false in case of a head office
+                    returns true if the office is a branch office 
+                    and false in case of a head office
 
         """
         pass
 
     def addTruck(self, truck) -> None:
         """
-            The function to add a truck to the office in case it hasn't been assigned to any other office or is not already present in the office and is available
+            The function to add a truck to the office in case it hasn't been assigned to any other 
+            office or is not already present in the office and is available
             ....
 
             Parameters:
@@ -102,11 +104,11 @@ class Office(db.Model):
             Parameters:
                 truck: Truck
                     the truck to be received in case the office is its destination branch
-            
+
             Returns:
                 consignments: list of Consignment class objects
                     the consignments which were assigned to the truck
-                
+
 
         """
         if truck.dstBranchID != self.id:
@@ -140,7 +142,7 @@ class BranchOffice(Office):
     '''
         A class inherited from Office class to represent a branch office
         ....
-        
+
         Attributes
         ----------
         Same as that of the Office class
@@ -157,7 +159,7 @@ class BranchOffice(Office):
         """
             The constructor of the BranchOffice class
             ....
-            
+
             Pararmeters:
                 address: Address
                     address of the branch office
@@ -191,7 +193,7 @@ class HeadOffice(Office):
     '''
         A class inherited from Office class to represent the head office
         ....
-        
+
         Attributes
         ----------
         Same as that of the Office class
@@ -208,7 +210,7 @@ class HeadOffice(Office):
         """
             The constructor of the HeadOffice class
             ....
-            
+
             Pararmeters:
                 address: Address
                     address of the head office
