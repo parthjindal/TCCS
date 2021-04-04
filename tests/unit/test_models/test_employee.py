@@ -21,6 +21,14 @@ def test_new_employee(test_client, database):
     assert e1.check_password("DoShallItMay") == True
     assert e1.role == "employee"
 
+    try:
+        employee1 = Employee(name = "Partha", branchID = 2, email = "pmjindal@gmail.com")
+        database.session.add(employee1)
+        database.session.commit()
+    except:
+        print ("The given email-id has already been registered")
+
+
 
 def test_manager(test_client, database):
     """
@@ -38,4 +46,11 @@ def test_manager(test_client, database):
     assert m1.check_password("WhySoSerious") == True
     assert m1.role == "manager"
     #assert rate == 10
+
+    try:
+        manager_ = Manager(name = "Mayankk",email = "mayankkumar1205@gmail.com")
+        database.session.add(manager_)
+        database.session.commit()
+    except:
+        print ("The given email-id has already been registered")
 
