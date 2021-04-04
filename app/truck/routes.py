@@ -14,7 +14,7 @@ def view_all():
         trucks = Truck.query.all()
     elif current_user.role == "employee":
         trucks = Truck.query.filter_by(branchID=current_user.branchID)
-    return render_template("view_all.html", data=trucks)
+    return render_template("view_all.html", data=trucks), 200
 
 
 @truck.route("/view/<id>", methods=["GET"])
@@ -24,9 +24,9 @@ def view(id):
 
     if truck_ is not None:
         consigns = truck_.consigns
-        render_template("truck.html", truck=truck_, data=consigns)
+        render_template("truck.html", truck=truck_, data=consigns), 200
     flash("Truck not registered", "warning")
-    return redirect(url_for("main.home"))
+    return redirect(url_for("main.home"), code=302)
 
 
 @truck.route("/dispatch/view", methods=["GET"])
@@ -34,8 +34,7 @@ def view(id):
 def dispatch():
     trucks = Truck.query.filter_by(branchID=current_user.branchID)
     trucks = [x for x in trucks if x.volumeLeft < 5]
-    ############################ TODO #####################
-    return render_template("dispatch.html", data=trucks)
+    return render_template("dispatch.html", data=trucks), 200
 
 
 @truck.route("/dispatch/<id>")
@@ -54,8 +53,9 @@ def request_truck():
 
     '''
     if current_user.role == "manager":
-        flash('Access Denied', 'warning')
-        return redirect(url_for('main.home', role=current_user.role))
+        # flash('Access Denied', 'warning')
+        # return redirect(url_for('main.home', role=current_user.role), code=302)
+        return render_template('errors/403.html'), 403
 
     manager = Manager.query.filter_by(role="manager").first()
     office = Office.query.filter_by(id=current_user.branchID).first()
@@ -67,7 +67,7 @@ def request_truck():
     mail.send(msg)
 
     flash('Request mail sent!', 'success')
-    return redirect(url_for('main.home', role=current_user.role))
+    return redirect(url_for('main.home', role=current_user.role), code=302)
 
 
 @truck.route("/add", methods=["GET", "POST"])
@@ -77,9 +77,7 @@ def add():
 
     '''
     if current_user.role == "employee":
-
-        flash("Access Denied", "warning")
-        return redirect(url_for("main.home", role=current_user.role))
+        return render_template('errors/403.html'), 403
 
     if current_user.role == "manager":
 
@@ -91,9 +89,9 @@ def add():
             db.session.commit()
 
             flash("Truck Added", 'success')
-            return redirect(url_for("main.home"))
+            return redirect(url_for("main.home"), code=302)
 
-        return render_template("add.html", title="Buy new truck", form=form)
+        return render_template("add.html", title="Buy new truck", form=form), 200
 
 
 @truck.route("/receive", methods=["GET", "POST"])

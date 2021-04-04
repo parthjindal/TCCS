@@ -78,7 +78,7 @@ class Truck(db.Model):
                     id of the office to which the truck has been assigned
                 dstBranchID: int
                     id of the destination office of the truck
-                    
+
         """
         super().__init__(**kwargs)
         self.volume = volume
@@ -117,7 +117,8 @@ class Truck(db.Model):
 
     def dispatch(self) -> None:
         """
-            The function to dispatch the truck and make neccessary changes to the truck and its consignments
+            The function to dispatch the truck and make neccessary
+            changes to the truck and its consignments
 
         """
         self.status = TruckStatus.ENROUTE
@@ -135,6 +136,9 @@ class Truck(db.Model):
                     consignment to be added to the truck
 
         """
+        if self.branchID != consignment.srcBranchID:
+            raise AttributeError("Source Branch not same")
+
         if self.volumeLeft - consignment.volume < 0:
             raise ValueError("Consignment too large")
 
@@ -159,7 +163,6 @@ class Truck(db.Model):
             consignment.trucks.append(self)
             self.volumeLeft -= consignment.volume
             consignment.volume = 0
-
 
     def __repr__(self) -> str:
         """

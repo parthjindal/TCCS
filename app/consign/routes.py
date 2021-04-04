@@ -17,12 +17,13 @@ def index():
 
         office = Office.query.get(current_user.branchID)
         office_addr = f'{office.address.city}-office'
-        return redirect(url_for("consign.place", office=office_addr, id=office.id))
+        return redirect(url_for("consign.place", office=office_addr, id=office.id), code=302)
 
     else:
 
-        flash("Access Denied", 'warning')
-        return redirect(url_for("main.home"))
+        # flash("Access Denied", 'warning')
+        # return redirect(url_for("main.home"), code=302)
+        return render_template('errors/403.html'), 403
 
 
 @consign.route("/place", methods=["GET", "POST"])
@@ -36,7 +37,7 @@ def place():
 
     if Office.query.get(id) is None:
         flash("Bad request", "warning")
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home"), code=302)
 
     form = ConsignmentForm()
     if form.validate_on_submit():
@@ -53,9 +54,9 @@ def place():
         db.session.commit()
 
         flash("Consignment Placed for Delivery", 'info')
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.home"), code=302)
 
-    return render_template("consign/place.html", title="Place Consignment", form=form)
+    return render_template("consign/place.html", title="Place Consignment", form=form), 200
 
 
 @consign.route("/view/all", methods=["GET"])
@@ -66,16 +67,14 @@ def view_all():
             srcBranchID=current_user.branchID).all()
     elif current_user.role == "manager":
         consigns = Consignment.query.all()
-    return render_template('consign/view_all.html', data=consigns)
+    return render_template('consign/view_all.html', data=consigns), 200
 
 
 @consign.route("/view/<id>")
 @login_required
 def view(id):
-    consign_ = Consignment.query.get(id)
-    if consign_ is None:
-        flash("Bad request,consignment not found", "warning")
-        return redirect(url_for("main.home", role=current_user.role))
-    ###################### TODO ############################################
-
-    return f'{consign_}'
+    consign = Consignment.query.get(id)
+    if consign is None:
+        flash("Bad request, consignment not found", "warning")
+        return redirect(url_for("main.home", role=current_user.role), code=302)
+    return f'{consign}'

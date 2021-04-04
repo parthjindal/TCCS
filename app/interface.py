@@ -1,5 +1,4 @@
-from app.models import Office
-from app.models import ConsignmentStatus, TruckStatus
+from app.models import Office, ConsignmentStatus, TruckStatus, Bill
 
 
 class Interface():
@@ -13,7 +12,7 @@ class Interface():
         return truck.volumeLeft
 
     @staticmethod
-    def allotTruck(branch: Office):
+    def allotTruck(branch):
         consigns = []
         for consign in branch.consignments:
             if consign.status == ConsignmentStatus.PENDING:
@@ -34,3 +33,13 @@ class Interface():
                     break
                 except:
                     continue
+
+    @staticmethod
+    def computeBill(consign,rate):
+        if consign.status == ConsignmentStatus.PENDING or consign.status == ConsignmentStatus.ALLOTED \
+           or consign.status == ConsignmentStatus.DELIVERED:
+            raise ValueError("Consignment status not correct")
+        if consign.volumeLeft != 0:
+            return ValueError("Consignment volume still left")
+        charge = consign.volume * rate
+        return charge

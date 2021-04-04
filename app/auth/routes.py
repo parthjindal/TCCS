@@ -17,7 +17,7 @@ def index():
     '''
 
     '''
-    return redirect(url_for("auth.login"))
+    return redirect(url_for("auth.login"), code=302)
 
 
 @auth.route("/login", methods=['GET', 'POST'])
@@ -26,7 +26,7 @@ def login():
 
     '''
     if current_user.is_authenticated:
-        return redirect(url_for('main.home', role=current_user.role))
+        return redirect(url_for('main.home', role=current_user.role), code=302)
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -35,16 +35,16 @@ def login():
 
         if user is None or not user.check_password(form.password.data):
             flash(f"Invalid Email/Password", category='warning')
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('auth.login'), code=302)
 
         login_user(user, remember=form.remember.data)
 
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('main.home', role=user.role)
-        return redirect(next_page)
+        return redirect(next_page, code=302)
 
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template('login.html', title='Sign In', form=form), 200
 
 
 @auth.route('/logout')
@@ -54,7 +54,7 @@ def logout():
 
     '''
     logout_user()
-    return redirect(url_for('main.about'))
+    return redirect(url_for('main.about'), code=302)
 
 
 @auth.route("/register", methods=['GET', 'POST'])
@@ -64,8 +64,9 @@ def register():
 
     '''
     if current_user.role == "employee":
-        flash("Access Denied")
-        return redirect(url_for('main.home'), code=302)
+        # flash("Access Denied")
+        # return redirect(url_for('main.home'), code=302)
+        return render_template('errors/403.html'), 403
 
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -77,9 +78,9 @@ def register():
         db.session.commit()
 
         flash('Employee added')
-        return redirect(url_for('main.home'))
+        return redirect(url_for('main.home'), code=302)
 
-    return render_template('register.html', title='Register', form=form)
+    return render_template('register.html', title='Register', form=form), 200
 
 
 @auth.route("/register/manager", methods=['GET', 'POST'])
@@ -88,12 +89,13 @@ def registerManager():
 
     '''
     if current_user.is_authenticated:
-        flash("Access Denied")
-        return redirect(url_for('main.home', role=current_user.role))
+        # flash("Access Denied")
+        # return redirect(url_for('main.home', role=current_user.role), code=302)
+        return render_template('errors/403.html'), 403
 
     manager = Employee.query.filter_by(role='manager').first()
     if manager is not None:
-        return render_template('noMan.html')
+        return render_template('noMan.html'), 200
 
     form = ManagerRegistrationForm()
     if form.validate_on_submit():
@@ -106,9 +108,9 @@ def registerManager():
         db.session.commit()
 
         flash('Manager account created!', 'success')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('auth.login'), code=302)
 
-    return render_template('regMan.html', title='Register', form=form)
+    return render_template('regMan.html', title='Register', form=form), 200
 
 
 def send_reset_email(user: Employee):
@@ -132,7 +134,7 @@ def reset_request():
     '''
     if current_user.is_authenticated:
         flash("Already Logged in, Logout to reset password", category='info')
-        return redirect(url_for('main.home'))
+        return redirect(url_for('main.home'), code=302)
 
     form = RequestResetForm()
     if form.validate_on_submit():
@@ -143,7 +145,7 @@ def reset_request():
         flash('An email has been sent with instructions to reset your password.', 'info')
         return redirect(url_for('auth.login'), code=302)
 
-    return render_template('reset_request.html', title='Reset Password', form=form)
+    return render_template('reset_request.html', title='Reset Password', form=form), 200
 
 
 @auth.route("/reset-password/<token>", methods=['GET', 'POST'])
@@ -152,7 +154,7 @@ def reset_token(token):
 
     '''
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        return redirect(url_for('main.home'), code=302)
 
     employee = Employee.verify_reset_token(token)
 
@@ -169,4 +171,4 @@ def reset_token(token):
         flash('Password Updated!', 'success')
         return redirect(url_for('auth.login'), code=302)
 
-    return render_template('reset_token.html', title='Reset Password', form=form)
+    return render_template('reset_token.html', title='Reset Password', form=form), 200

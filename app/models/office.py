@@ -3,6 +3,8 @@ from app import db
 from abc import ABC, abstractmethod
 from .truck import Truck, TruckStatus
 from .consignment import ConsignmentStatus
+from app.interface import Interface
+from .bill import Bill
 
 
 class Office(db.Model):
@@ -22,7 +24,7 @@ class Office(db.Model):
             list of the consignments placed in the office
         trucks: list of Truck class objects
             list of the trucks assigned to the office
-        
+
 
     """
     ####################################### ORM ################################
@@ -42,6 +44,9 @@ class Office(db.Model):
     trucks = db.relationship(
         "Truck", foreign_keys='Truck.branchID', uselist=True, lazy=False)
 
+    transactions = db.relationship(
+        "Bill", foreign_keys='Bill.branchID', uselist=True, lazy=False)
+
     __mapper_args__ = {
         'polymorphic_identity': 'office',
         'polymorphic_on': type
@@ -49,11 +54,13 @@ class Office(db.Model):
 
     ############################################################################
 
+    rate = 5  # per volume per km
+
     def __init__(self, **kwargs):
         """
             The constructor of the Office class
             ....
-            
+
             Pararmeters:
                 address: Address
                     address of the office
@@ -68,14 +75,16 @@ class Office(db.Model):
 
             Returns:
                 bool:
-                    returns true if the office is a branch office and false in case of a head office
+                    returns true if the office is a branch office 
+                    and false in case of a head office
 
         """
         pass
 
     def addTruck(self, truck) -> None:
         """
-            The function to add a truck to the office in case it hasn't been assigned to any other office or is not already present in the office and is available
+            The function to add a truck to the office in case it hasn't been assigned to any other 
+            office or is not already present in the office and is available
             ....
 
             Parameters:
@@ -94,6 +103,17 @@ class Office(db.Model):
 
         self.trucks.append(truck)
 
+    def dispatchTruck(self, truck: Truck) -> None:
+        '''
+        '''
+        truck.dispatch()
+        for consign in truck.consignments:
+
+            consign.fare = Interface.computeBill(consign, rate=self.rate)
+            bill = Bill(amount=consign.fare, invoice=consign.getInvoice())
+
+            self.transactions.add(bill)
+
     def receiveTruck(self, truck) -> list:
         """
             The function to receive a truck and its consignments
@@ -102,12 +122,10 @@ class Office(db.Model):
             Parameters:
                 truck: Truck
                     the truck to be received in case the office is its destination branch
-            
+
             Returns:
                 consignments: list of Consignment class objects
                     the consignments which were assigned to the truck
-                
-
         """
         if truck.dstBranchID != self.id:
             return ValueError("Truck id mismatch")
@@ -140,7 +158,7 @@ class BranchOffice(Office):
     '''
         A class inherited from Office class to represent a branch office
         ....
-        
+
         Attributes
         ----------
         Same as that of the Office class
@@ -157,7 +175,7 @@ class BranchOffice(Office):
         """
             The constructor of the BranchOffice class
             ....
-            
+
             Pararmeters:
                 address: Address
                     address of the branch office
@@ -172,31 +190,36 @@ class BranchOffice(Office):
 
             Returns:
                 True: bool
-                    bool value True is always returned because the object is of the type BranchOffice
+                    bool value True is always returned because 
+                    the object is of the type BranchOffice
         '''
         return True
 
     def __repr__(self):
         """
-            The function to get the string representation of the branch office
+            The function to get the string representation of 
+            the branch office
             ....
 
             Returns:
-                str: A string which stores the representation of the branch office
+                str: A string which stores the representation of the 
+                branch office
         """
         return f'<Branch Office, {self.name}, Address: {self.address}>'
 
 
 class HeadOffice(Office):
     '''
-        A class inherited from Office class to represent the head office
+        A class inherited from Office class to represent 
+        the head office
         ....
-        
+
         Attributes
         ----------
         Same as that of the Office class
 
     '''
+
     __tablename__ = 'head'
     id = db.Column(db.Integer, db.ForeignKey('office.id'), primary_key=True)
 
@@ -208,7 +231,7 @@ class HeadOffice(Office):
         """
             The constructor of the HeadOffice class
             ....
-            
+
             Pararmeters:
                 address: Address
                     address of the head office
@@ -223,7 +246,8 @@ class HeadOffice(Office):
 
             Returns:
                 False: bool
-                    bool value False is always returned because the object is of the type HeadOffice and not BranchOffice
+                    bool value False is always returned because the 
+                    object is of the type HeadOffice and not BranchOffice
         '''
         return False
 
