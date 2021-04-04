@@ -42,6 +42,14 @@ def branches():
     flash('You are not authorized to access this page', 'warning')
     return redirect(url_for('main.home', role=current_user.role))
 
+@main.route('/branches/<token>')
+@login_required
+def branch(token):
+    if current_user.is_authenticated and current_user.role == "manager":
+        brnch = BranchOffice.query.filter_by(id=token).first()
+        return render_template('branch.html', name=brnch.name, trck=brnch.trucks, consign=brnch.consignments)
+    flash('You are not authorized to access this page', 'warning')
+    return redirect(url_for('main.home', role=current_user.role))
 
 @main.route('/trucks')
 @login_required
@@ -51,6 +59,15 @@ def trucks():
     elif current_user.is_authenticated and current_user.role == "employee":
         trucks = Truck.query.filter_by(branchID=current_user.branchID)
     return render_template('trucks.html', data=trucks)
+
+@main.route('/trucks/<token>')
+@login_required
+def truck(token):
+    if current_user.is_authenticated and current_user.role == "manager":
+        truck = Truck.query.filter_by(id=token).first()
+        return render_template('truck.html', trck=truck, consign=truck.consignments)
+    flash('You are not authorized to access this page', 'warning')
+    return redirect(url_for('main.home', role=current_user.role))
 
 # @main.route('/manager')
 # @login_required

@@ -1,21 +1,37 @@
 {% extends "auth/layout.html" %}
 {% block content %}
+<h1>Branch {{ name }}</h1>
+<h2>Trucks in the branch are:</h2>
 <div class="container cont">
-    {% for data in data %}
+    {% for data in trck %}
     <div class="box">
         <div class="img-box" title={{ data.id }}><img src="{{ url_for('static', filename='truck.jpg') }}" alt=""></div>
         <div class="content">
             <h2>Truck ID: {{ data.id }}</h2>
             <h3>Plate No.: {{ data.plateNo }}</h3>
-            <h3>Branch: {{ data.branchID }}</h3>
+            <h3>Branch: {{ data.branchId }}</h3>
             <p>Status: {{ data.status }}</p>
             <p>Consignment IDs:
                 {% for cids in data.consignments %}
                 {{ cids.id }}  
                 {% endfor %}
             </p>
-            <!-- <p>Revenue: {{ data.revenue }}</p> -->
             <button class="ghost-btn" onclick="location.href='/trucks/{{ data.id }}';">Go to this truck page</button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<h2>Consignments in the branch are:</h2>
+<div class="container cont">
+    {% for data in consign %}
+    <div class="box">
+        <div class="img-box" title={{ data.id }}><img src="{{ url_for('static', filename='consign.jpg') }}" alt=""></div>
+        <div class="content">
+            <h2>Consignment ID: {{ data.id }}</h2>
+            <h3>Branch: {{ data.srcBranchId }}</h3>
+            <p>Status: {{ data.status }}</p>
+            <p>Volume: {{ data.volume }}</p>
+            <p>Volume Left: {{ data.volumeLeft }}</p>
         </div>
     </div>
     {% endfor %}
