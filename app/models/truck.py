@@ -29,10 +29,10 @@ class Truck(db.Model):
 
         volumeLeft: float
             volume left in the truck
-        
+
         consignments: list of Consignment class objects
             list of the consignments that have been assigned to the truck
-        
+
         Member Functions
         ----------------
         empty(): list
@@ -47,7 +47,7 @@ class Truck(db.Model):
         __repr__(): str
             returns the string representation of an object of the class
 
-        
+
 
     """
     ############################## ORM ########################################
@@ -133,12 +133,12 @@ class Truck(db.Model):
         self.status = TruckStatus.ENROUTE
         self.departureTime = datetime.now()
         for consignment in self.consignments:
-            consignment.status = "ENROUTE"
+            consignment.status = ConsignmentStatus.ENROUTE
 
     def addConsignment(self, consignment: Consignment) -> None:
         """
             The function to assign a consignment to the truck if all the following conditions are satisfied
-                a. The source branches and the destination branches(in case of a truck with ASSIGNED status) 
+                a. The source branches and the destination branches(in case of a truck with ASSIGNED status)
                             of the consignment and the truck are equal
                 b. There is enough volume left in the truck
                 c. Truck status is not ENROUTE
@@ -150,31 +150,29 @@ class Truck(db.Model):
                     consignment to be added to the truck
 
         """
+        if self.volumeLeft < consignment.volume:
+            raise ValueError("Too big of Consignment")
+
         if consignment.status != ConsignmentStatus.PENDING:
             return
 
         if self.branchID != consignment.srcBranchID:
             raise AttributeError("Source Branch not same")
 
-        if self.status == TruckStatus.READY:
-            raise ValueError("Truck already full")
-
-        if self.status == TruckStatus.ENROUTE:
-            raise AttributeError("Status mismatch,Truck Enroute")
+        if self.status == TruckStatus.READY or self.status == TruckStatus.ENROUTE:
+            raise ValueError("Truck full/enroute ")
 
         if self.status == TruckStatus.AVAILABLE:
 
             self.status = TruckStatus.ASSIGNED
             self.dstBranchID = consignment.dstBranchID
             self.consignments.append(consignment)
+
             consignment.trucks.append(self)
 
-            _volume_ = min(self.volumeLeft, consignment.volume)
-            self.volumeLeft -= _volume_
-            consignment.volumeLeft -= _volume_
-
-            if consignment.volumeLeft == 0:
-                consignment.status = ConsignmentStatus.ALLOTED
+            self.volumeLeft -= consignment.volume
+            consignment.volumeLeft = 0
+            consignment.status = ConsignmentStatus.ALLOTED
 
             if self.volumeLeft == 0:
                 self.status = TruckStatus.READY
@@ -187,12 +185,9 @@ class Truck(db.Model):
             self.consignments.append(consignment)
             consignment.trucks.append(self)
 
-            _volume_ = min(self.volumeLeft, consignment.volume)
-            self.volumeLeft -= _volume_
-            consignment.volumeLeft -= _volume_
-
-            if consignment.volumeLeft == 0:
-                consignment.status = ConsignmentStatus.ALLOTED
+            self.volumeLeft -= consignment.volume
+            consignment.volumeLeft = 0
+            consignment.status = ConsignmentStatus.ALLOTED
 
             if self.volumeLeft == 0:
                 self.status = TruckStatus.READY

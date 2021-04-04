@@ -33,7 +33,7 @@ def test_allotment(test_client, database):
 
     c1 = Consignment(volume=400, senderAddress=a1, receiverAddress=a2, dstBranchID=o2.id)
     c2 = Consignment(volume=300, senderAddress=a1, receiverAddress=a2, dstBranchID=o2.id)
-    c3 = Consignment(volume=400, senderAddress=a1, receiverAddress=a2, dstBranchID=o2.id)
+    c3 = Consignment(volume=300, senderAddress=a1, receiverAddress=a2, dstBranchID=o2.id)
 
     o1.addTruck(t1)
     o1.addTruck(t2)
@@ -55,12 +55,22 @@ def test_allotment(test_client, database):
 
     database.session.commit()
 
+    assert c1 in t3.consignments
+
+    o1.dispatchTruck(t3)
+    o1.dispatchTruck(t2)
+    o2.receiveTruck(t3)
+
+
     for i in o1.consignments:
         print(i)
-    for t in o1.trucks:
-        print(t)
-    assert c1 in t3.consignments
+
+    database.session.commit()
+
+    for i  in o1.transactions:
+        print(i.invoice)
     
+
 
 # def test_branch_office(test_client, database):
 #     """

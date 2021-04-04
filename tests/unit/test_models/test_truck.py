@@ -1,27 +1,40 @@
 from app.models import Address
 from app.models import Consignment
 from app.models import Truck
+from app.models import BranchOffice
 
 
 def test_truck(test_client, database):
     """
 
     """
+
     t1 = Truck(plateNo="01TK0423")
+
     addr1 = Address(city="Delhi", addrLine="C-28,Model Town-3", zipCode="110009")
     addr2 = Address(city="Mumbai", addrLine="H-Block", zipCode="100120")
     addr3 = Address(city="Delhi", addrLine="D-Block", zipCode="110009")
     addr4 = Address(city="Mumbai", addrLine="A-Block", zipCode="100120")
+
+    o1 = BranchOffice(address=addr1)
+
     consign1 = Consignment(volume=300, senderAddress=addr1, receiverAddress=addr2)
     consign2 = Consignment(volume=200, senderAddress=addr3, receiverAddress=addr4)
 
-    t1.addConsignment(consign1)
-    t1.addConsignment(consign2)
-
-    database.session.add(t1)
+    database.session.add(o1)
     database.session.commit()
 
+    o1.addTruck(t1)
+    o1.addConsignment(consign1)
+    o1.addConsignment(consign2)
+
+    t1.addConsignment(consign1)
+    t1.addConsignment(consign2)
+    
+    database.session.commit()
+    
     consign = Consignment(volume=200, senderAddress=addr3, receiverAddress=addr4)
+    o1.addConsignment(consign)
     try:
         t1.addConsignment(consign)
     except:
@@ -30,6 +43,7 @@ def test_truck(test_client, database):
 
     consign3 = Consignment.query.filter_by(senderAddress=addr1)[-1]
     consign4 = Consignment.query.filter_by(senderAddress=addr3)[-1]
+
     f1 = False
     f2 = False
     f3 = False

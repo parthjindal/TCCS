@@ -12,8 +12,8 @@ join_table = db.Table(
 class ConsignmentStatus(Enum):
     PENDING = 0
     ENROUTE = 1
-    DELIVERED = 2
-    ALLOTED = 3
+    ALLOTED = 2
+    DELIVERED = 3
 
 
 class Consignment(db.Model):
@@ -80,6 +80,10 @@ class Consignment(db.Model):
     srcBranchID = db.Column(db.Integer, db.ForeignKey("office.id"), index=True)
     dstBranchID = db.Column(db.Integer, db.ForeignKey("office.id"), index=True)
 
+    billID = db.Column(db.Integer, db.ForeignKey('bill.id'))
+    bill = db.relationship(
+        'Bill', uselist=False, foreign_keys=billID)
+
     trucks = db.relationship(
         "Truck", secondary=join_table, back_populates="consignments")
 
@@ -110,7 +114,23 @@ class Consignment(db.Model):
         self.placetime = datetime.now()
 
     def getInvoice(self) -> dict:
-        pass
+        res = {
+            "volume": self.volume,
+            "placetime": self.placetime,
+            "charge": self.charge,
+            "sender": {
+                "city": self.senderAddress.city,
+                "address": self.senderAddress.addrLine,
+                "zipCode": self.senderAddress.zipCode
+            },
+            "receiver": {
+                "city": self.receiverAddress.city,
+                "address": self.receiverAddress.addrLine,
+                "zipCode": self.receiverAddress.zipCode
+            }
+        }
+
+        return res
 
     def __repr__(self) -> str:
         """
@@ -120,4 +140,4 @@ class Consignment(db.Model):
             Returns:
                 str
         """
-        return f'<Consignment: {self.id}, Volume:{self.volumeLeft}, status: {self.status}>'
+        return f'<Consignment: {self.id}, Volume:{self.volume}, status: {self.status}>'

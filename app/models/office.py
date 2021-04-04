@@ -5,6 +5,7 @@ from .truck import Truck, TruckStatus
 from .consignment import ConsignmentStatus, Consignment
 from app.interface import Interface
 from .bill import Bill
+from datetime import datetime
 
 
 class Office(db.Model):
@@ -61,7 +62,7 @@ class Office(db.Model):
         "Truck", foreign_keys='Truck.branchID', uselist=True, lazy=False)
 
     transactions = db.relationship(
-        "Bill", foreign_keys='Bill.branchID', uselist=True, lazy=False)
+        "Bill", foreign_keys='[Consignment.srcBranchID,Consignment.billID]', secondary='consignment', uselist=True, lazy=False,viewonly = True)
 
     __mapper_args__ = {
         'polymorphic_identity': 'office',
@@ -84,6 +85,7 @@ class Office(db.Model):
 
         """
         super().__init__(**kwargs)
+        self.transactions = []
 
     def isBranch(self):
         """
@@ -124,12 +126,6 @@ class Office(db.Model):
         '''
         '''
         truck.dispatch()
-        for consign in truck.consignments:
-
-            consign.fare = Interface.computeBill(consign, rate=self.rate)
-            bill = Bill(amount=consign.fare, invoice=consign.getInvoice())
-
-            self.transactions.add(bill)
 
     def addConsignment(self, consign) -> None:
         """
@@ -140,7 +136,26 @@ class Office(db.Model):
         if consign in self.consignments:
             raise Exception("Consignment already added")
 
+        consign.charge = Interface.computeBill(consign, rate=Office.rate)
+
+        invoice = Office.prettyInvoice(consign.getInvoice())
+        bill = Bill(amount=consign.charge, invoice=invoice)
+        consign.bill = bill
         self.consignments.append(consign)
+        self.transactions.append(bill)
+
+    @staticmethod
+    def prettyInvoice(invoice):
+
+        res = f"""
+        Sender's Address: {invoice["sender"]["address"]}, {invoice["sender"]["city"]}
+        Receiver's Address: {invoice["receiver"]["address"]}, {invoice["receiver"]["city"]}
+        Volume: {invoice["volume"]}
+        Order Placement Time: {invoice["placetime"].strftime('%d-%b-%Y, %H:%M')}
+
+        Amount: \u20B9 {invoice["charge"]}
+        """
+        return res
 
     @staticmethod
     def allotTruck(branch):
@@ -154,10 +169,11 @@ class Office(db.Model):
             else:
                 raise TypeError("Unknown Type")
 
-        consigns = [x for x in branch.consignments if x.status.name == "PENDING"]
-        consigns.sort(reverse=True, key=compare)
+        consigns = [x for x in branch.consignments if x.status == ConsignmentStatus.PENDING]
+        consigns.sort(key=compare)
 
-        trucks_ = [x for x in branch.trucks if x.status.name == "AVAILABLE"]
+        trucks_ = [x for x in branch.trucks if (
+            x.status == TruckStatus.AVAILABLE or x.status == TruckStatus.ASSIGNED)]
         trucks_.sort(reverse=True, key=compare)
 
         for consign in consigns:
@@ -166,7 +182,7 @@ class Office(db.Model):
                     truck.addConsignment(consign)
                 except:
                     pass
-                if consign.status.name == "ALLOTED":
+                if consign.status == ConsignmentStatus.ALLOTED:
                     break
         return
 
@@ -200,6 +216,7 @@ class Office(db.Model):
 
         for consignment in consignments:
             consignment.status = ConsignmentStatus.DELIVERED
+            consignment.arrivaltime = datetime.now()
 
         return consignments
 

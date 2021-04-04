@@ -1,5 +1,6 @@
 from app import db
 
+
 class Bill(db.Model):
     """
         A class to represent a bill
@@ -24,8 +25,7 @@ class Bill(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     amount = db.Column(db.Integer, index=True, nullable=False)
-    branchID = db.Column(db.Integer, db.ForeignKey('office.id'))
-    invoice = db.Column(db.String(128))
+    invoice = db.Column(db.String(256))
 
     def __init__(self, **kwargs) -> None:
         """
@@ -49,4 +49,4 @@ class Bill(db.Model):
             Returns:
                 str
         """
-        return f'<Bill: {self.amount}, Transaction Code: {self.paymentID}>'
+        return f'<Bill: {self.amount}, Invoice: {self.invoice}>'
