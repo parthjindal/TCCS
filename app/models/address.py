@@ -18,7 +18,8 @@ class Address(db.Model):
             zip-code of address
 
         Member Functions:
-        ---------------- 
+        ----------------
+         
         __repr__(): str
             returns the string representation of an object of the class
     """
@@ -32,7 +33,8 @@ class Address(db.Model):
 
     def __init__(self, addrLine=None, city=None, zipCode=None, **kwargs) -> None:
         """
-            The constructor for Address class
+            The constructor for Address class called automatically whenever an object
+                    of the Address class is created
             ....
 
             Pararmeters:
