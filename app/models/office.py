@@ -35,7 +35,7 @@ class Office(db.Model):
     address = db.relationship('Address', uselist=False)
 
     employees = db.relationship("Employee", uselist=True, lazy=False)
-
+    
     consignments = db.relationship(
         "Consignment", foreign_keys='Consignment.srcBranchID', uselist=True, lazy=False)
 
@@ -201,6 +201,7 @@ class HeadOffice(Office):
         Same as that of the Office class
 
     '''
+
     __tablename__ = 'head'
     id = db.Column(db.Integer, db.ForeignKey('office.id'), primary_key=True)
 
