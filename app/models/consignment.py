@@ -102,7 +102,7 @@ class Consignment(db.Model):
                     id of the destination office of the consignment
 
         '''
-        
+
         super().__init__(**kwargs)
         self.status = ConsignmentStatus.PENDING
         self.volumeLeft = self.volume
@@ -120,4 +120,4 @@ class Consignment(db.Model):
             Returns:
                 str
         """
-        return f'<Consignment: {self.id}, Volume:{self.volume}, status: {self.status}>'
+        return f'<Consignment: {self.id}, Volume:{self.volumeLeft}, status: {self.status}>'

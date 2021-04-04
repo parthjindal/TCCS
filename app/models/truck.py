@@ -7,7 +7,8 @@ from datetime import datetime
 class TruckStatus(Enum):
     AVAILABLE = 0
     ASSIGNED = 1
-    ENROUTE = 2
+    READY = 2
+    ENROUTE = 3
 
 
 class Truck(db.Model):
@@ -61,8 +62,8 @@ class Truck(db.Model):
 
     status = db.Column(db.Enum(TruckStatus), index=True)    # truck-status
 
-    volume = db.Column(db.Float)        # volume-init
-    volumeLeft = db.Column(db.Float)    # volume-left
+    volume = db.Column(db.Integer)        # volume-init
+    volumeLeft = db.Column(db.Integer)    # volume-left
 
     departureTime = db.Column(db.DateTime)  # departure time
 
@@ -149,23 +150,34 @@ class Truck(db.Model):
                     consignment to be added to the truck
 
         """
+        if consignment.status != ConsignmentStatus.PENDING:
+            return
+
         if self.branchID != consignment.srcBranchID:
             raise AttributeError("Source Branch not same")
 
-        if self.volumeLeft - consignment.volume < 0:
-            raise ValueError("Consignment too large")
+        if self.status == TruckStatus.READY:
+            raise ValueError("Truck already full")
 
         if self.status == TruckStatus.ENROUTE:
             raise AttributeError("Status mismatch,Truck Enroute")
 
         if self.status == TruckStatus.AVAILABLE:
 
-            self.status == TruckStatus.ASSIGNED
+            self.status = TruckStatus.ASSIGNED
             self.dstBranchID = consignment.dstBranchID
             self.consignments.append(consignment)
             consignment.trucks.append(self)
-            self.volumeLeft -= consignment.volume
-            consignment.volume = 0
+
+            _volume_ = min(self.volumeLeft, consignment.volume)
+            self.volumeLeft -= _volume_
+            consignment.volumeLeft -= _volume_
+
+            if consignment.volumeLeft == 0:
+                consignment.status = ConsignmentStatus.ALLOTED
+
+            if self.volumeLeft == 0:
+                self.status = TruckStatus.READY
 
         elif self.status == TruckStatus.ASSIGNED:
 
@@ -174,8 +186,16 @@ class Truck(db.Model):
 
             self.consignments.append(consignment)
             consignment.trucks.append(self)
-            self.volumeLeft -= consignment.volume
-            consignment.volume = 0
+
+            _volume_ = min(self.volumeLeft, consignment.volume)
+            self.volumeLeft -= _volume_
+            consignment.volumeLeft -= _volume_
+
+            if consignment.volumeLeft == 0:
+                consignment.status = ConsignmentStatus.ALLOTED
+
+            if self.volumeLeft == 0:
+                self.status = TruckStatus.READY
 
     def __repr__(self) -> str:
         """
@@ -185,4 +205,4 @@ class Truck(db.Model):
             Returns:
                 str
         """
-        return f'<Truck:{self.plateNo},id {self.id},Volume:{self.volume}, Status:{self.status.name}>'
+        return f'<Truck: {self.plateNo}, Id: {self.id}, Volume Left: {self.volumeLeft}, Status: {self.status.name}>'
