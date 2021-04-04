@@ -19,24 +19,34 @@ class Truck(db.Model):
         ----------
         plateNo: string
             plate number of the truck
+
         branchID: int
             id of the office to which the truck has been assigned
+
         dstBranchID: int
             id of the destination office of the truck
-        status: enum(TruckStatus)
-            current status of the truck i.e. whether available, assigned or enroute
-        volume: float
-            initial volume of the truck
+
         volumeLeft: float
             volume left in the truck
-        departureTime: datetime
-            time at which the truck departured
-        usageTime: float
-            total time for which the truck has been used
-        idleTime: float
-            duration for which the truck was not used
+        
         consignments: list of Consignment class objects
             list of the consignments that have been assigned to the truck
+        
+        Member Functions
+        ----------------
+        empty(): list
+            the function to empty the truck and return the list of consignments that were assigned to it
+
+        dispatchTruck():
+            the function to dispatch the truck
+
+        addConsignment(consignment: Consignment):
+            the function to add a new consignment to the truck
+
+        __repr__(): str
+            returns the string representation of an object of the class
+
+        
 
     """
     ############################## ORM ########################################
@@ -89,12 +99,11 @@ class Truck(db.Model):
 
     def empty(self) -> list:
         """
-            The function to empty the truck 
+            The function to empty the truck and return the list of consignments assigned to it
             ....
 
             Returns:
                 consignments: list of Consignment class objects
-                    list of the consignments that were assigned to the truck
 
         """
         consignments = self.consignments
@@ -117,8 +126,7 @@ class Truck(db.Model):
 
     def dispatch(self) -> None:
         """
-            The function to dispatch the truck and make neccessary
-            changes to the truck and its consignments
+            The function to dispatch the truck and make neccessary changes to the truck and its consignments
 
         """
         self.status = TruckStatus.ENROUTE
@@ -128,7 +136,12 @@ class Truck(db.Model):
 
     def addConsignment(self, consignment: Consignment) -> None:
         """
-            The function to assign a consignment to the truck
+            The function to assign a consignment to the truck if all the following conditions are satisfied
+                a. The source branches and the destination branches(in case of a truck with ASSIGNED status) 
+                            of the consignment and the truck are equal
+                b. There is enough volume left in the truck
+                c. Truck status is not ENROUTE
+            Else raise a suitable error
             ....
 
             Parameters:
@@ -170,6 +183,6 @@ class Truck(db.Model):
             ....
 
             Returns:
-                str: A string which stores the representation of the truck
+                str
         """
         return f'<Truck:{self.plateNo},id {self.id},Volume:{self.volume}, Status:{self.status.name}>'
