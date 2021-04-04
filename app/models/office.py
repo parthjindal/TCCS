@@ -2,7 +2,9 @@ from .employee import Employee
 from app import db
 from abc import ABC, abstractmethod
 from .truck import Truck, TruckStatus
-from .consignment import ConsignmentStatus
+from .consignment import ConsignmentStatus, Consignment
+from app.interface import Interface
+from .bill import Bill
 
 
 class Office(db.Model):
@@ -32,11 +34,11 @@ class Office(db.Model):
 
         addTruck(truck: Truck):
             the function to assign a truck to the office
-        
+
         recieveTruck(truck: Truck): list
-            the function to recieve a truck and its consignment if the office is the 
+            the function to recieve a truck and its consignment if the office is the
                     destination branch of the truck
-        
+
         __repr__(): str
             returns the string representation of an object of the class
 
@@ -58,19 +60,24 @@ class Office(db.Model):
     trucks = db.relationship(
         "Truck", foreign_keys='Truck.branchID', uselist=True, lazy=False)
 
+    transactions = db.relationship(
+        "Bill", foreign_keys='Bill.branchID', uselist=True, lazy=False)
+
     __mapper_args__ = {
         'polymorphic_identity': 'office',
         'polymorphic_on': type
     }
 
-    ############################################################################
+  ############################################################################
+
+    rate = 5
 
     def __init__(self, **kwargs):
         """
-            The constructor of the Office class called automatically whenever an object of the 
+            The constructor of the Office class called automatically whenever an object of the
                     Office class is created
             ....
-            
+
             Pararmeters:
                 address: Address
                     address of the office
@@ -78,7 +85,7 @@ class Office(db.Model):
         """
         super().__init__(**kwargs)
 
-    def isBranch(self) :
+    def isBranch(self):
         """
             The function to check if an office is a branch office or head office
             ....
@@ -92,7 +99,7 @@ class Office(db.Model):
         """
             The function to add a truck to the office if it satisfies the following conditions:
                 a. it hasn't been assigned to any other office
-                b. is not already present in the office 
+                b. is not already present in the office
                 c. its current status is AVAILABLE
             else the function raises a suitable error whenever any of the given conditions are not satisfied
             ....
@@ -113,6 +120,56 @@ class Office(db.Model):
 
         self.trucks.append(truck)
 
+    def dispatchTruck(self, truck: Truck) -> None:
+        '''
+        '''
+        truck.dispatch()
+        for consign in truck.consignments:
+
+            consign.fare = Interface.computeBill(consign, rate=self.rate)
+            bill = Bill(amount=consign.fare, invoice=consign.getInvoice())
+
+            self.transactions.add(bill)
+
+    def addConsignment(self, consign) -> None:
+        """
+        """
+        if consign.srcBranchID is not None:
+            raise AttributeError("Consignment already added to some Branch")
+
+        if consign in self.consignments:
+            raise Exception("Consignment already added")
+
+        self.consignments.append(consign)
+
+    @staticmethod
+    def allotTruck(branch):
+        """
+        """
+        def compare(obj):
+            if isinstance(obj, Truck):
+                return obj.volumeLeft
+            if isinstance(obj, Consignment):
+                return obj.placetime
+            else:
+                raise TypeError("Unknown Type")
+
+        consigns = [x for x in branch.consignments if x.status.name == "PENDING"]
+        consigns.sort(reverse=True, key=compare)
+
+        trucks_ = [x for x in branch.trucks if x.status.name == "AVAILABLE"]
+        trucks_.sort(reverse=True, key=compare)
+
+        for consign in consigns:
+            for truck in trucks_:
+                try:
+                    truck.addConsignment(consign)
+                except:
+                    pass
+                if consign.status.name == "ALLOTED":
+                    break
+        return
+
     def receiveTruck(self, truck) -> list:
         """
             The function to receive a truck and its consignments if all the following conditions are satisfed:
@@ -126,10 +183,10 @@ class Office(db.Model):
             Parameters:
                 truck: Truck
                     the truck to be received
-            
+
             Returns:
                 consignments: list of Consignment class objects
-                
+
 
         """
         if truck.dstBranchID != self.id:
@@ -142,8 +199,6 @@ class Office(db.Model):
         self.addTruck(truck)
 
         for consignment in consignments:
-            if self in consignment.trucks:
-                consignment.trucks.remove(self)
             consignment.status = ConsignmentStatus.DELIVERED
 
         return consignments
@@ -163,7 +218,7 @@ class BranchOffice(Office):
     '''
         A class inherited from Office class to represent a branch office
         ....
-        
+
         Attributes
         ----------
         All the atrributes of this class are same as Office class
@@ -185,7 +240,7 @@ class BranchOffice(Office):
             The constructor of the BranchOffice class called automatically whenever an object of the 
                         BranchOffice class is created
             ....
-            
+
             Pararmeters:
                 address: Address
                     address of the branch office
@@ -218,7 +273,7 @@ class HeadOffice(Office):
     '''
         A class inherited from Office class to represent the head office
         ....
-        
+
         Attributes
         ----------
         All the atrributes of this class are same as Office class
@@ -240,7 +295,7 @@ class HeadOffice(Office):
             The constructor of the HeadOffice class called automatically whenever an object of the 
                         HeadOffice class is created
             ....
-            
+
             Pararmeters:
                 address: Address
                     address of the head office
