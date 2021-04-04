@@ -108,8 +108,6 @@ class Office(db.Model):
             Returns:
                 consignments: list of Consignment class objects
                     the consignments which were assigned to the truck
-
-
         """
         if truck.dstBranchID != self.id:
             return ValueError("Truck id mismatch")
@@ -174,24 +172,28 @@ class BranchOffice(Office):
 
             Returns:
                 True: bool
-                    bool value True is always returned because the object is of the type BranchOffice
+                    bool value True is always returned because 
+                    the object is of the type BranchOffice
         '''
         return True
 
     def __repr__(self):
         """
-            The function to get the string representation of the branch office
+            The function to get the string representation of 
+            the branch office
             ....
 
             Returns:
-                str: A string which stores the representation of the branch office
+                str: A string which stores the representation of the 
+                branch office
         """
         return f'<Branch Office, {self.name}, Address: {self.address}>'
 
 
 class HeadOffice(Office):
     '''
-        A class inherited from Office class to represent the head office
+        A class inherited from Office class to represent 
+        the head office
         ....
 
         Attributes
@@ -225,7 +227,8 @@ class HeadOffice(Office):
 
             Returns:
                 False: bool
-                    bool value False is always returned because the object is of the type HeadOffice and not BranchOffice
+                    bool value False is always returned because the 
+                    object is of the type HeadOffice and not BranchOffice
         '''
         return False
 

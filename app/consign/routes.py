@@ -23,7 +23,7 @@ def index():
 
         # flash("Access Denied", 'warning')
         # return redirect(url_for("main.home"), code=302)
-        return render_template('errors/403.html', code=200)
+        return render_template('errors/403.html'), 403
 
 
 @consign.route("/place", methods=["GET", "POST"])
@@ -56,7 +56,7 @@ def place():
         flash("Consignment Placed for Delivery", 'info')
         return redirect(url_for("main.home"), code=302)
 
-    return render_template("consign/place.html", title="Place Consignment", form=form, code=200)
+    return render_template("consign/place.html", title="Place Consignment", form=form), 200
 
 
 @consign.route("/view/all", methods=["GET"])
@@ -67,7 +67,7 @@ def view_all():
             srcBranchID=current_user.branchID).all()
     elif current_user.role == "manager":
         consigns = Consignment.query.all()
-    return render_template('consign/view_all.html', data=consigns, code=200)
+    return render_template('consign/view_all.html', data=consigns), 200
 
 
 @consign.route("/view/<id>")

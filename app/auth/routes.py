@@ -44,7 +44,7 @@ def login():
             next_page = url_for('main.home', role=user.role)
         return redirect(next_page, code=302)
 
-    return render_template('login.html', title='Sign In', form=form, code=200)
+    return render_template('login.html', title='Sign In', form=form), 200
 
 
 @auth.route('/logout')
@@ -66,7 +66,7 @@ def register():
     if current_user.role == "employee":
         # flash("Access Denied")
         # return redirect(url_for('main.home'), code=302)
-        return render_template('errors/403.html', code=200)
+        return render_template('errors/403.html'), 403
 
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -80,7 +80,7 @@ def register():
         flash('Employee added')
         return redirect(url_for('main.home'), code=302)
 
-    return render_template('register.html', title='Register', form=form, code=200)
+    return render_template('register.html', title='Register', form=form), 200
 
 
 @auth.route("/register/manager", methods=['GET', 'POST'])
@@ -91,11 +91,11 @@ def registerManager():
     if current_user.is_authenticated:
         # flash("Access Denied")
         # return redirect(url_for('main.home', role=current_user.role), code=302)
-        return render_template('errors/403.html', code=200)
+        return render_template('errors/403.html'), 403
 
     manager = Employee.query.filter_by(role='manager').first()
     if manager is not None:
-        return render_template('noMan.html', code=200)
+        return render_template('noMan.html'), 200
 
     form = ManagerRegistrationForm()
     if form.validate_on_submit():
@@ -110,7 +110,7 @@ def registerManager():
         flash('Manager account created!', 'success')
         return redirect(url_for('auth.login'), code=302)
 
-    return render_template('regMan.html', title='Register', form=form, code=200)
+    return render_template('regMan.html', title='Register', form=form), 200
 
 
 def send_reset_email(user: Employee):
@@ -122,7 +122,7 @@ def send_reset_email(user: Employee):
     msg = Message('Password Reset Request',
                   sender=current_app.config['MAIL_USERNAME'],
                   recipients=[user.email],
-                  body=render_template("resetPassword.txt", user=user, token=token, code=200))
+                  body=render_template("resetPassword.txt", user=user, token=token))
 
     mail.send(msg)
 
@@ -145,7 +145,7 @@ def reset_request():
         flash('An email has been sent with instructions to reset your password.', 'info')
         return redirect(url_for('auth.login'), code=302)
 
-    return render_template('reset_request.html', title='Reset Password', form=form, code=200)
+    return render_template('reset_request.html', title='Reset Password', form=form), 200
 
 
 @auth.route("/reset-password/<token>", methods=['GET', 'POST'])
@@ -171,4 +171,4 @@ def reset_token(token):
         flash('Password Updated!', 'success')
         return redirect(url_for('auth.login'), code=302)
 
-    return render_template('reset_token.html', title='Reset Password', form=form, code=200)
+    return render_template('reset_token.html', title='Reset Password', form=form), 200

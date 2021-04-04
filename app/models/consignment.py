@@ -28,7 +28,8 @@ class Consignment(db.Model):
         volumeLeft: int
             volume of the consignment that has yet not been assigned to a truck
         status: Enum(ConsignmentStatus)
-            represents the current status of the consignment i.e. whether pending, enroute, delivered or alloted
+            represents the current status of the consignment i.e. 
+            whether pending, enroute, delivered or alloted
         placetime: datetime
             the time at which the consignment was placed
         arrivaltime: datetime
