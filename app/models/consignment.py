@@ -25,31 +25,32 @@ class Consignment(db.Model):
         ----------
         volume: int
             volume of the consignment
+
         volumeLeft: int
             volume of the consignment that has yet not been assigned to a truck
-        status: Enum(ConsignmentStatus)
-            represents the current status of the consignment i.e. 
-            whether pending, enroute, delivered or alloted
-        placetime: datetime
-            the time at which the consignment was placed
-        arrivaltime: datetime
-            the time at which the consignment arrived
-        charge: int
-            the charge of transporting the consignment
+
         senderAddress: Address
             address of the sender of the consignment
+
         receiverAddress: Address
             address of the receiver of the consignment
-        senderID: int
-            unique id of the sender address
-        receiverID: int
-            unique id of the receiver address
+
         srcBranchID: int
             id of the office where the consignment was placed
+
         dstBranchID: int
             id of the destination office of the consignment
+
         trucks: Truck
             list of the trucks on which the consignment was loaded
+
+        Member Functions
+        ----------------
+        getInvoice(): dict
+
+        __repr__(): str
+            returns the string representation of an object of the class
+
     """
     ####################################### ORM ##############################################
     __tablename__ = "consignment"
@@ -117,6 +118,6 @@ class Consignment(db.Model):
             ....
 
             Returns:
-                str: A string which stores the representation of the consignment
+                str
         """
         return f'<Consignment: {self.id}, Volume:{self.volume}, status: {self.status}>'

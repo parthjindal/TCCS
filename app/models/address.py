@@ -10,11 +10,19 @@ class Address(db.Model):
         ----------
         addressLine: string
             house/block of address
+
         city: string
             city name
+
         zipCode: string
             zip-code of address
+
+        Member Functions:
+        ---------------- 
+        __repr__(): str
+            returns the string representation of an object of the class
     """
+
     __tablename__ = "address"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -47,7 +55,7 @@ class Address(db.Model):
             ....
 
             Returns:
-                str: A string which stores the representation of the address
+                str
         """
         return f'< Address: {self.addrLine}' \
             f'City: {self.city} PIN: {self.zipCode}>'

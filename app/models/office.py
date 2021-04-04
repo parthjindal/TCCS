@@ -3,8 +3,6 @@ from app import db
 from abc import ABC, abstractmethod
 from .truck import Truck, TruckStatus
 from .consignment import ConsignmentStatus
-from app.interface import Interface
-from .bill import Bill
 
 
 class Office(db.Model):
@@ -14,17 +12,33 @@ class Office(db.Model):
 
         Attributes
         ----------
+
         address: Address
             addresss of the office
-        addressID: int
-            unique id of the adress
+
         employees: list of Employee class objects
             list of the employees working in the office
+
         consignments: list of Consignment class objects
             list of the consignments placed in the office
+
         trucks: list of Truck class objects
             list of the trucks assigned to the office
 
+        Member Functions
+        ----------------
+        isBranch(): bool
+            the function to check if the office is a branch office or not
+
+        addTruck(truck: Truck):
+            the function to assign a truck to the office
+        
+        recieveTruck(truck: Truck): list
+            the function to recieve a truck and its consignment if the office is the 
+                    destination branch of the truck
+        
+        __repr__(): str
+            returns the string representation of an object of the class
 
     """
     ####################################### ORM ################################
@@ -44,9 +58,6 @@ class Office(db.Model):
     trucks = db.relationship(
         "Truck", foreign_keys='Truck.branchID', uselist=True, lazy=False)
 
-    transactions = db.relationship(
-        "Bill", foreign_keys='Bill.branchID', uselist=True, lazy=False)
-
     __mapper_args__ = {
         'polymorphic_identity': 'office',
         'polymorphic_on': type
@@ -54,13 +65,12 @@ class Office(db.Model):
 
     ############################################################################
 
-    rate = 5  # per volume per km
-
     def __init__(self, **kwargs):
         """
-            The constructor of the Office class
+            The constructor of the Office class called automatically whenever an object of the 
+                    Office class is created
             ....
-
+            
             Pararmeters:
                 address: Address
                     address of the office
@@ -68,23 +78,23 @@ class Office(db.Model):
         """
         super().__init__(**kwargs)
 
-    def isBranch(self) -> bool:
+    def isBranch(self) :
         """
             The function to check if an office is a branch office or head office
             ....
 
             Returns:
-                bool:
-                    returns true if the office is a branch office 
-                    and false in case of a head office
-
+                bool
         """
         pass
 
     def addTruck(self, truck) -> None:
         """
-            The function to add a truck to the office in case it hasn't been assigned to any other 
-            office or is not already present in the office and is available
+            The function to add a truck to the office if it satisfies the following conditions:
+                a. it hasn't been assigned to any other office
+                b. is not already present in the office 
+                c. its current status is AVAILABLE
+            else the function raises a suitable error whenever any of the given conditions are not satisfied
             ....
 
             Parameters:
@@ -103,29 +113,24 @@ class Office(db.Model):
 
         self.trucks.append(truck)
 
-    def dispatchTruck(self, truck: Truck) -> None:
-        '''
-        '''
-        truck.dispatch()
-        for consign in truck.consignments:
-
-            consign.fare = Interface.computeBill(consign, rate=self.rate)
-            bill = Bill(amount=consign.fare, invoice=consign.getInvoice())
-
-            self.transactions.add(bill)
-
     def receiveTruck(self, truck) -> list:
         """
-            The function to receive a truck and its consignments
+            The function to receive a truck and its consignments if all the following conditions are satisfed:
+                a. the destination branchID of the truck matches with the id of the office
+                b. current status of the truck is ENROUTE
+                The function changes empties the truck and changes the status of all the consignments 
+                            that were alloted to the truck to DELIVERED
+            If the above conditions are not satisfied, the function raises a suitable error
             ....
 
             Parameters:
                 truck: Truck
-                    the truck to be received in case the office is its destination branch
-
+                    the truck to be received
+            
             Returns:
                 consignments: list of Consignment class objects
-                    the consignments which were assigned to the truck
+                
+
         """
         if truck.dstBranchID != self.id:
             return ValueError("Truck id mismatch")
@@ -145,11 +150,11 @@ class Office(db.Model):
 
     def __repr__(self) -> str:
         """
-            The function to get the string representation of the office
+            The function to get the string representation of the Office class object
             ....
 
             Returns:
-                str: A string which stores the representation of the office
+                str
         """
         return f'<Office, Address: {self.address}>'
 
@@ -158,10 +163,14 @@ class BranchOffice(Office):
     '''
         A class inherited from Office class to represent a branch office
         ....
-
+        
         Attributes
         ----------
-        Same as that of the Office class
+        All the atrributes of this class are same as Office class
+
+        Member Functions
+        ----------------
+        All the member functions of this class are same as Office class
 
     '''
     __tablename__ = 'branch'
@@ -173,9 +182,10 @@ class BranchOffice(Office):
 
     def __init__(self, **kwargs) -> None:
         """
-            The constructor of the BranchOffice class
+            The constructor of the BranchOffice class called automatically whenever an object of the 
+                        BranchOffice class is created
             ....
-
+            
             Pararmeters:
                 address: Address
                     address of the branch office
@@ -185,41 +195,39 @@ class BranchOffice(Office):
 
     def isBranch(self) -> bool:
         '''
-            The function to check if the office is a branch office
+            The function to check if the office is a branch office, thus always returns True
             ....
 
             Returns:
-                True: bool
-                    bool value True is always returned because 
-                    the object is of the type BranchOffice
+                True
         '''
         return True
 
     def __repr__(self):
         """
-            The function to get the string representation of 
-            the branch office
+            The function to get the string representation of the branch office
             ....
 
             Returns:
-                str: A string which stores the representation of the 
-                branch office
+                str
         """
         return f'<Branch Office, {self.name}, Address: {self.address}>'
 
 
 class HeadOffice(Office):
     '''
-        A class inherited from Office class to represent 
-        the head office
+        A class inherited from Office class to represent the head office
         ....
-
+        
         Attributes
         ----------
-        Same as that of the Office class
+        All the atrributes of this class are same as Office class
+
+        Member Functions
+        ----------------
+        All the member functions of this class are same as Office class
 
     '''
-
     __tablename__ = 'head'
     id = db.Column(db.Integer, db.ForeignKey('office.id'), primary_key=True)
 
@@ -229,9 +237,10 @@ class HeadOffice(Office):
 
     def __init__(self, **kwargs) -> None:
         """
-            The constructor of the HeadOffice class
+            The constructor of the HeadOffice class called automatically whenever an object of the 
+                        HeadOffice class is created
             ....
-
+            
             Pararmeters:
                 address: Address
                     address of the head office
@@ -245,9 +254,7 @@ class HeadOffice(Office):
             ....
 
             Returns:
-                False: bool
-                    bool value False is always returned because the 
-                    object is of the type HeadOffice and not BranchOffice
+                False
         '''
         return False
 
@@ -257,6 +264,6 @@ class HeadOffice(Office):
             ....
 
             Returns:
-                str: A string which stores the representation of the head office
+                str
         """
         return f'<Head Office, {self.name}, Address: {self.address}>'

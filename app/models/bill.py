@@ -9,8 +9,15 @@ class Bill(db.Model):
         ----------
         amount: int
             amount to be paid
+
         paymentID: string
             paymentID of the payment made by the customer
+
+        Member Functions:
+        ----------------
+        __repr__(): str
+            returns the string representation of an object of the class
+
     """
     ################################# ORM #################################
     __tablename__ = "bill"
@@ -40,6 +47,6 @@ class Bill(db.Model):
             ....
 
             Returns:
-                str: A string which stores the representation of the bill
+                str
         """
         return f'<Bill: {self.amount}, Transaction Code: {self.paymentID}>'
