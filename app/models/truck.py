@@ -89,7 +89,7 @@ class Truck(db.Model):
             raise ValueError("Consignment too large")
 
         if self.status == TruckStatus.ENROUTE:
-            raise TypeError("Status mismatch,Truck Enroute")
+            raise AttributeError("Status mismatch,Truck Enroute")
 
         if self.status == TruckStatus.AVAILABLE:
 
@@ -110,4 +110,4 @@ class Truck(db.Model):
         """
 
         """
-        return f'Truck:{self.plateNo}'
+        return f'Truck:{self.plateNo}, Volume:{self.volume}, Status:{self.status.name}'

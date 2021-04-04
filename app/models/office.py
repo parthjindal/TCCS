@@ -1,7 +1,8 @@
 from .employee import Employee
 from app import db
 from abc import ABC, abstractmethod
-from .truck import Truck
+from .truck import Truck, TruckStatus
+from .consignment import ConsignmentStatus
 
 
 class Office(db.Model):
@@ -54,24 +55,33 @@ class Office(db.Model):
         if truck in self.trucks:
             raise ValueError("Office already contains truck")
 
+        if truck.status != TruckStatus.AVAILABLE:
+            raise AttributeError("Truck not available")
+
         self.trucks.append(truck)
 
-    def receiveTruck(self, truck: Truck) -> list:
+    def receiveTruck(self, truck) -> list:
         """
 
         """
         if truck.dstBranchID != self.id:
             return ValueError("Truck id mismatch")
+
+        if truck.status != TruckStatus.ENROUTE:
+            return AttributeError("Truck not enroute")
+
         consignments = truck.empty()
         self.addTruck(truck)
 
         for consignment in consignments:
-            consignment.status = "DELIVERED"
+            if self in consignment.trucks:
+                consignment.trucks.remove(self)
+            consignment.status = ConsignmentStatus.DELIVERED
 
         return consignments
 
     def __repr__(self) -> str:
-        return f'<Office: {self.name}, Address: {self.address}, Employees:{[x for x in self.employees]}>'
+        return f'<Office, Address: {self.address}>'
 
 
 class BranchOffice(Office):
@@ -88,11 +98,13 @@ class BranchOffice(Office):
     def isBranch(self) -> bool:
         return True
 
+    def __repr__(self):
+        return f'<Branch Office, {self.name}, Address: {self.address}>'
+
 
 class HeadOffice(Office):
     __tablename__ = 'head'
     id = db.Column(db.Integer, db.ForeignKey('office.id'), primary_key=True)
-    manager = db.relation("Manager", uselist=False, lazy=False)
 
     __mapper_args__ = {
         'polymorphic_identity': 'head',
@@ -103,3 +115,6 @@ class HeadOffice(Office):
 
     def isBranch(self) -> bool:
         return False
+
+    def __repr__(self):
+        return f'<Head Office, {self.name}, Address: {self.address}>'
