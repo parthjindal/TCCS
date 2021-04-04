@@ -64,8 +64,9 @@ def register():
 
     '''
     if current_user.role == "employee":
-        flash("Access Denied")
-        return redirect(url_for('main.home'), code=302)
+        # flash("Access Denied")
+        # return redirect(url_for('main.home'), code=302)
+        return render_template('errors/403.html', code=200)
 
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -88,8 +89,9 @@ def registerManager():
 
     '''
     if current_user.is_authenticated:
-        flash("Access Denied")
-        return redirect(url_for('main.home', role=current_user.role), code=302)
+        # flash("Access Denied")
+        # return redirect(url_for('main.home', role=current_user.role), code=302)
+        return render_template('errors/403.html', code=200)
 
     manager = Employee.query.filter_by(role='manager').first()
     if manager is not None:

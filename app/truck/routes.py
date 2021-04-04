@@ -44,8 +44,9 @@ def request_truck():
 
     '''
     if current_user.role == "manager":
-        flash('Access Denied', 'warning')
-        return redirect(url_for('main.home', role=current_user.role), code=302)
+        # flash('Access Denied', 'warning')
+        # return redirect(url_for('main.home', role=current_user.role), code=302)
+        return render_template('errors/403.html', code=200)
 
     manager = Manager.query.filter_by(role="manager").first()
     office = Office.query.filter_by(id=current_user.branchID).first()
@@ -68,8 +69,9 @@ def add():
     '''
     if current_user.role == "employee":
 
-        flash("Access Denied", "warning")
-        return redirect(url_for("main.home", role=current_user.role), code=302)
+        # flash("Access Denied", "warning")
+        # return redirect(url_for("main.home", role=current_user.role), code=302)
+        return render_template('errors/403.html', code=200)
 
     if current_user.role == "manager":
 

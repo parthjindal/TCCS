@@ -28,8 +28,9 @@ def branches():
     if current_user.role == "manager":
         branches = Office.query.all()
         return render_template('branches.html', data=branches, code=200)
-    flash('You are not authorized to access this page', 'warning')
-    return redirect(url_for('main.home', role=current_user.role), code=302)
+    # flash('You are not authorized to access this page', 'warning')
+    # return redirect(url_for('main.home', role=current_user.role), code=302)
+    return render_template('errors/403.html', code=200)
 
 
 @main.route('/branches/<token>')
@@ -38,5 +39,6 @@ def branch(token):
     if current_user.role == "manager":
         branch = Office.query.filter_by(id=token).first()
         return render_template('branch.html', name=branch.name, trck=branch.trucks, consign=branch.consignments, code=200)
-    flash('You are not authorized to access this page', 'warning')
-    return redirect(url_for('main.home', role=current_user.role), code=302)
+    # flash('You are not authorized to access this page', 'warning')
+    # return redirect(url_for('main.home', role=current_user.role), code=302)
+    return render_template('errors/403.html', code=200)

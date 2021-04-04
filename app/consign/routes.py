@@ -21,8 +21,9 @@ def index():
 
     else:
 
-        flash("Access Denied", 'warning')
-        return redirect(url_for("main.home"), code=302)
+        # flash("Access Denied", 'warning')
+        # return redirect(url_for("main.home"), code=302)
+        return render_template('errors/403.html', code=200)
 
 
 @consign.route("/place", methods=["GET", "POST"])
@@ -74,6 +75,6 @@ def view_all():
 def view(id):
     consign = Consignment.query.get(id)
     if consign is None:
-        flash("Bad request,consignment not found", "warning")
+        flash("Bad request, consignment not found", "warning")
         return redirect(url_for("main.home", role=current_user.role), code=302)
     return f'{consign}'
