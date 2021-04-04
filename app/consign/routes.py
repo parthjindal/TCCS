@@ -51,7 +51,7 @@ def place():
 
         db.session.add(consign)
         db.session.commit()
-
+ 
         flash("Consignment Placed for Delivery", 'info')
         return redirect(url_for("main.home"))
 

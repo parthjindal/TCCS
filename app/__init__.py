@@ -14,6 +14,7 @@ from app.routes import main
 from app.auth import auth
 from app.consign import consign
 from app.truck import truck
+from app.errors import errors
 
 def create_app(config = Config):
     app = Flask(__name__)
@@ -23,7 +24,7 @@ def create_app(config = Config):
     app.register_blueprint(consign)
     app.register_blueprint(truck)
     app.register_blueprint(main)
-    
+    app.register_blueprint(errors)
     db.init_app(app)
     login.init_app(app)
     mail.init_app(app)
