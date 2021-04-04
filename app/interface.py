@@ -1,5 +1,4 @@
-from app.models import Office
-from app.models import ConsignmentStatus, TruckStatus
+from app.models import Office, ConsignmentStatus, TruckStatus, Bill
 
 
 class Interface():
@@ -34,4 +33,13 @@ class Interface():
                     break
                 except:
                     continue
-                    
+
+    @staticmethod
+    def computeBill(consign):
+        if consign.status == ConsignmentStatus.PENDING or consign.status == ConsignmentStatus.ALLOTED \
+           or consign.status == ConsignmentStatus.DELIVERED:
+            return None
+        if consign.volumeLeft != 0:
+            return None
+        charge = consign.volume * Office.rate
+        return charge
