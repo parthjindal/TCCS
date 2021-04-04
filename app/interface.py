@@ -12,7 +12,7 @@ class Interface():
         return truck.volumeLeft
 
     @staticmethod
-    def allotTruck(branch: Office):
+    def allotTruck(branch):
         consigns = []
         for consign in branch.consignments:
             if consign.status == ConsignmentStatus.PENDING:
@@ -35,11 +35,11 @@ class Interface():
                     continue
 
     @staticmethod
-    def computeBill(consign):
+    def computeBill(consign,rate):
         if consign.status == ConsignmentStatus.PENDING or consign.status == ConsignmentStatus.ALLOTED \
            or consign.status == ConsignmentStatus.DELIVERED:
-            return None
+            raise ValueError("Consignment status not correct")
         if consign.volumeLeft != 0:
-            return None
-        charge = consign.volume * Office.rate
+            return ValueError("Consignment volume still left")
+        charge = consign.volume * rate
         return charge

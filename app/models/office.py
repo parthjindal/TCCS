@@ -3,6 +3,8 @@ from app import db
 from abc import ABC, abstractmethod
 from .truck import Truck, TruckStatus
 from .consignment import ConsignmentStatus
+from app.interface import Interface
+from .bill import Bill
 
 
 class Office(db.Model):
@@ -35,13 +37,13 @@ class Office(db.Model):
     address = db.relationship('Address', uselist=False)
 
     employees = db.relationship("Employee", uselist=True, lazy=False)
-    
+
     consignments = db.relationship(
         "Consignment", foreign_keys='Consignment.srcBranchID', uselist=True, lazy=False)
 
     trucks = db.relationship(
         "Truck", foreign_keys='Truck.branchID', uselist=True, lazy=False)
-    
+
     transactions = db.relationship(
         "Bill", foreign_keys='Bill.branchID', uselist=True, lazy=False)
 
@@ -51,6 +53,8 @@ class Office(db.Model):
     }
 
     ############################################################################
+
+    rate = 5  # per volume per km
 
     def __init__(self, **kwargs):
         """
@@ -98,6 +102,17 @@ class Office(db.Model):
             raise AttributeError("Truck not available")
 
         self.trucks.append(truck)
+
+    def dispatchTruck(self, truck: Truck) -> None:
+        '''
+        '''
+        truck.dispatch()
+        for consign in truck.consignments:
+
+            consign.fare = Interface.computeBill(consign, rate=self.rate)
+            bill = Bill(amount=consign.fare, invoice=consign.getInvoice())
+
+            self.transactions.add(bill)
 
     def receiveTruck(self, truck) -> list:
         """
