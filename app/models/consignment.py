@@ -1,7 +1,7 @@
 from .address import Address
 from enum import Enum
 from app import db
-from app.interface import getCharge
+from datetime import datetime
 
 join_table = db.Table(
     'join_table', db.Model.metadata, db.Column(
@@ -27,6 +27,9 @@ class Consignment(db.Model):
     volume = db.Column(db.Integer, index=True)
     volumeLeft = db.Column(db.Integer, index=True)
     status = db.Column(db.Enum(ConsignmentStatus), index=True)
+
+    placetime = db.Column(db.DateTime)
+    arrivaltime = db.Column(db.DateTime)
 
     charge = db.Column(db.Integer, index=True)
 
@@ -56,6 +59,7 @@ class Consignment(db.Model):
         self.status = ConsignmentStatus.PENDING
         self.volumeLeft = self.volume
         self.charge = 0  # FIXME
+        self.placetime = datetime.now()
 
     def getInvoice(self) -> dict:
         pass

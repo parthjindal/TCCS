@@ -5,28 +5,33 @@ from werkzeug.utils import redirect
 from werkzeug.urls import url_parse
 from app.models import Consignment, BranchOffice, Truck
 
-main = Blueprint("main", import_name = __name__,template_folder="templates")
+main = Blueprint("main", import_name=__name__, template_folder="templates")
+
 
 @main.route('/')
-def index():
-    return render_template("about.html",title = "TL;DR")
+def about():
+    return render_template("about.html", title="TL;DR")
+
 
 @main.route('/home')
 def home():
-    if current_user.is_authenticated and current_user.role=="manager":
+    if current_user.is_authenticated and current_user.role == "manager":
         return render_template('manager.html', title='TL;DR')
-    elif current_user.is_authenticated and current_user.role=="employee":
+    elif current_user.is_authenticated and current_user.role == "employee":
         return render_template('employee.html', title='TL;DR')
-    return render_template('index.html', title='TL;DR', user= current_user)
+    return render_template('index.html', title='TL;DR', user=current_user)
+
 
 @main.route('/consignments')
 @login_required
 def consignments():
     if current_user.is_authenticated and current_user.role == "employee":
-        consigns = Consignment.query.filter_by(srcBranchId=current_user.branchID).all()
+        consigns = Consignment.query.filter_by(
+            srcBranchID=current_user.branchID).all()
     elif current_user.is_authenticated and current_user.role == "manager":
         consigns = Consignment.query.all()
     return render_template('consignments.html', data=consigns)
+
 
 @main.route('/branches')
 @login_required
@@ -36,6 +41,7 @@ def branches():
         return render_template('branches.html', data=branches)
     flash('You are not authorized to access this page', 'warning')
     return redirect(url_for('main.home', role=current_user.role))
+
 
 @main.route('/trucks')
 @login_required

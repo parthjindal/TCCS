@@ -1,34 +1,36 @@
-def compar(truck):
-    return (truck.volume-truck.volumeConsumed)
-
-# def compar(consignment: Consignment):
+from app.models import Office
+from app.models import ConsignmentStatus, TruckStatus
 
 
-def getCharge():
-    pass
+class Interface():
 
-# def compar(consignment: Consignment):
+    @staticmethod
+    def compareDate(consign):
+        return consign.placetime
 
-def getCharge():
-    pass
+    @staticmethod
+    def compareVol(truck):
+        return truck.volumeLeft
 
-# def allotTruck(Branch: BranchOffice):
-#     pass
-#     for consignment in Branch.consignments:
-        
+    @staticmethod
+    def allotTruck(branch: Office):
+        consigns = []
+        for consign in branch.consignments:
+            if consign.status == ConsignmentStatus.PENDING:
+                consigns.append(consign)
 
+        consigns.sort(reverse=True, key=Interface.compareDate)
 
+        trucks = []
+        for truck in branch.trucks:
+            if truck.status != TruckStatus.ENROUTE:
+                trucks.append(truck)
+        trucks.sort(reverse=True, key=Interface.compareVol)
 
-
-def allotTruck(Branch):
-    pass
-#     for consignment in Branch.consignments:
-
-    # trucks = Branch.trucks
-    # trucks.sort(key=compar, reverse=True)
-    # for truck in trucks:
-    #     if truck.status == TruckStatus.ENROUTE:
-    #         continue
-    #     if truck.status == TruckStatus.ASSIGNED and truck.dstBranchId != consign.dstBranchId:
-    #         continue
-    #     truck.addConsignment()
+        for consign in consigns:
+            for truck in trucks:
+                try:
+                    truck.addConsignment(consign)
+                    break
+                except:
+                    continue

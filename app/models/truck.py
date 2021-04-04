@@ -96,7 +96,9 @@ class Truck(db.Model):
             self.status == TruckStatus.ASSIGNED
             self.dstBranchID = consignment.dstBranchID
             self.consignments.append(consignment)
+            consignment.trucks.append(self)
             self.volumeLeft -= consignment.volume
+            consignment.volume = 0
 
         elif self.status == TruckStatus.ASSIGNED:
 
@@ -104,10 +106,13 @@ class Truck(db.Model):
                 raise AttributeError("Destination mismatch")
 
             self.consignments.append(consignment)
+            consignment.trucks.append(self)
             self.volumeLeft -= consignment.volume
+            consignment.volume = 0
+
 
     def __repr__(self) -> str:
         """
 
         """
-        return f'Truck:{self.plateNo}, Volume:{self.volume}, Status:{self.status.name}'
+        return f'<Truck:{self.plateNo},id {self.id},Volume:{self.volume}, Status:{self.status.name}>'
