@@ -112,4 +112,4 @@ def view(id):
         return redirect(url_for("main.home", role=current_user.role), code=302)
 
     ############################ TODO #####################################################
-    return consign.bill.invoice
+    return render_template('consign/view2.html', data=consign), 200

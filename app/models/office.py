@@ -62,7 +62,7 @@ class Office(db.Model):
         "Truck", foreign_keys='Truck.branchID', uselist=True, lazy=False)
 
     transactions = db.relationship(
-        "Bill", foreign_keys='Bill.branchID', uselist=True, lazy=False)
+        "Bill", foreign_keys='Bill.branchID', uselist=True, lazy=False, viewonly=True)
 
     __mapper_args__ = {
         'polymorphic_identity': 'office',
@@ -139,12 +139,11 @@ class Office(db.Model):
         consign.charge = Interface.computeBill(consign, rate=Office.rate)
 
         invoice = Office.prettyInvoice(consign.getInvoice())
-
+        
         bill = Bill(amount=consign.charge, invoice=invoice)
         consign.bill = bill
         self.consignments.append(consign)
-        billcopy = Bill(amount=consign.charge, invoice=invoice, branchID=self.id)
-        self.transactions.append(billcopy)
+        self.transactions.append(bill)
 
     @staticmethod
     def prettyInvoice(invoice):

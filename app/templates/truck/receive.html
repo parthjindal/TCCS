@@ -4,7 +4,7 @@
     <form action="" method="POST">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Buy New Truck</legend>
+            <legend class="border-bottom mb-4">Receive Truck</legend>
             <div class="form-group">
                 {{ form.plateNo.label(class = "form-control-label") }}
                 {% if form.plateNo.errors %}
@@ -16,19 +16,6 @@
                     </div>
                 {% else %}
                 {{ form.plateNo(class = "form-control form-control-lg") }}
-                {% endif %}
-            </div>
-            <div>
-                {{ form.branch.label(class = "form-control-label") }}
-                {% if form.branch.errors %}
-                {{ form.branch(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for error in form.branch.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                {{form.branch(class = "form-control form-control-lg")}}
                 {% endif %}
             </div><br>
             <div class="form-group">

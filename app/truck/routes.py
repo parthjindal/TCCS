@@ -2,20 +2,23 @@ from app.truck import truck
 from flask import redirect, url_for, flash, current_app, request, render_template
 from flask_login import current_user, login_required
 from app import db, mail
-from app.models import Office, Consignment, Address, Truck, Manager
-from .forms import TruckForm
+from app.models import Office, Consignment, Address, Truck, Manager, TruckStatus
+from .forms import TruckForm, ReceiveTruckForm
 from flask_mail import Message
+from datetime import datetime
 
 
 @truck.route("/view/all", methods=["GET"])
 @login_required
 def view_all():
+    x = 1
     if current_user.role == "manager":
         trucks = Truck.query.all()
     elif current_user.role == "employee":
         trucks = Truck.query.filter_by(branchID=current_user.branchID)
-    ############################ SHOW GRAPH ##################################
-    return render_template("view_all.html", data=trucks), 200
+    if trucks is None:
+        x = 0
+    return render_template("view_all.html", data=trucks, len=x), 200
 
 
 @truck.route("/view/<id>", methods=["GET"])
@@ -24,9 +27,19 @@ def view(id):
     truck_ = Truck.query.get(id)
 
     if truck_ is not None:
-        consigns = truck_.consigns
-        ############################ SHOW STATISTICS GRAPH ##################################
-        render_template("truck.html", truck=truck_, data=consigns), 200
+        consigns = truck_.consignments
+        x = len(consigns)
+        value = []
+        ts = []
+        for i in truck_.usage:
+            value.append(i.value)
+            ts.append(datetime.timestamp(i.time))
+        value2 = []
+        ts2 = []
+        for i in truck_.idle:
+            value2.append(i.value)
+            ts2.append(datetime.timestamp(i.time))
+        return render_template("truck.html", role=current_user.role, truck=truck_, data=consigns, len=x, values=value, labels=ts, values2=value2, labels2=ts2), 200
     flash("Truck not registered", "warning")
     return redirect(url_for("main.home"), code=302)
 
@@ -35,7 +48,13 @@ def view(id):
 @login_required
 def dispatch():
     trucks = Truck.query.filter_by(branchID=current_user.branchID)
-    return render_template("dispatch.html", data=trucks), 200
+    readyTrucks = []
+    for i in trucks:
+        if i.status == TruckStatus.READY:
+            readyTrucks.append(i)
+            print(i.status)
+    x = len(readyTrucks)
+    return render_template("dispatch.html", data=readyTrucks, len=x), 200
 
 
 @truck.route("/dispatch/<id>")
@@ -45,7 +64,7 @@ def dispatch_truck(id):
     truck_ = Truck.query.get(id)
     branch = Office.query.get(current_user.branchID)
 
-    branch.dispatch(truck_)
+    branch.dispatchTruck(truck_)
     db.session.commit()
 
     ################### SHOW DETAILS OF ALL CONSIGNMENTS IN SIDE IT BEFORE DISPATCH ###################
@@ -112,12 +131,14 @@ def add():
 @truck.route("/receive", methods=["GET", "POST"])
 @login_required
 def receive():
-    form = TruckForm()
+    if current_user.role == "manager":
+        return render_template('errors/403.html'), 403
+    form = ReceiveTruckForm()
     if form.validate_on_submit():
-        truck_ = Truck.query.filter_by(plateNo=form.plateNo.data)
+        truck_ = Truck.query.filter_by(plateNo=form.plateNo.data).first()
         if truck_ is None:
             return redirect(url_for("main.home"), code=302)
-        branch = Office.query.get(id=current_user.branchID)
+        branch = Office.query.filter_by(id=current_user.branchID).first()
 
         branch.receiveTruck(truck_)
         db.session.commit()
@@ -128,4 +149,4 @@ def receive():
         flash("Truck logged as received", 'info')
         return redirect(url_for("main.home"), code=302)
         ################################### TODO #################################################
-    # render_template()
+    return render_template('receive.html', form=form, title="Receive Truck"), 200

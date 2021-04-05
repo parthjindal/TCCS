@@ -1,6 +1,7 @@
 {% extends "auth/layout.html" %}
 {% block content %}
 <h1>Branch {{ name }}</h1>
+{% if trck %}
 <h2>Trucks in the branch are:</h2>
 <div class="container cont">
     {% for data in trck %}
@@ -10,7 +11,7 @@
             <h2>Truck ID: {{ data.id }}</h2>
             <h3>Plate No.: {{ data.plateNo }}</h3>
             <h3>Branch: {{ data.branchId }}</h3>
-            <p>Status: {{ data.status }}</p>
+            <p>Status: {{ data.status.name }}</p>
             <p>Consignment IDs:
                 {% for cids in data.consignments %}
                 {{ cids.id }}  
@@ -21,6 +22,11 @@
     </div>
     {% endfor %}
 </div>
+{% else %}
+    <p>No trucks in the branch</p>
+    {% endif %}
+<br>
+{% if consign %}
 <h2>Consignments in the branch are:</h2>
 <div class="container cont">
     {% for data in consign %}
@@ -29,11 +35,15 @@
         <div class="content">
             <h2>Consignment ID: {{ data.id }}</h2>
             <h3>Branch: {{ data.srcBranchId }}</h3>
-            <p>Status: {{ data.status }}</p>
+            <p>Status: {{ data.status.name }}</p>
             <p>Volume: {{ data.volume }}</p>
             <p>Volume Left: {{ data.volumeLeft }}</p>
         </div>
     </div>
     {% endfor %}
 </div>
+{% else %}
+    <p>No trucks in the branch</p>
+    {% endif %}
+    <br>
 {% endblock %}

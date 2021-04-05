@@ -18,3 +18,15 @@ class TruckForm(FlaskForm):
         super().__init__(**kwargs)
         self.branch.choices = [(x.id, f'{x.address.city} Office')
                                for x in Office.query.order_by("id")]
+
+class ReceiveTruckForm(FlaskForm):
+    '''
+
+    '''
+    plateNo = StringField("Plate No.", validators=[DataRequired()])
+    submit = SubmitField("Create")
+
+    def __init__(self, **kwargs):
+        '''
+        '''
+        super().__init__(**kwargs)

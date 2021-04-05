@@ -1,5 +1,6 @@
 {% extends "auth/layout.html" %}
 {% block content %}
+<br>
 <div class="container cont">
     {% if data %}
     {% for data in data %}
@@ -12,13 +13,13 @@
             <p>Status: {{ data.status.name }}</p>
             <p>Volume: {{ data.volume }}</p>
             <p>Volume Left: {{ data.volumeLeft }}</p>
-            <!-- <a href="{{ url_for('consign.view',id = data.id) }}">View </a> -->
             <button class="ghost-btn" onclick="location.href='/consign/view/{{ data.id }}';">View</button>
         </div>
     </div>
     {% endfor %}
     {% else %}
-    <p>No consignments found</p>
+    <h2>No consignments found</h2>
     {% endif %}
 </div>
+<br>
 {% endblock %}

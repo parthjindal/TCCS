@@ -1,5 +1,9 @@
 {% extends "auth/layout.html" %}
 {% block content %}
+<br>
+{% if len==0 %}
+<h2>There are no trucks to display.</h2>
+{% else %}
 <div class="container cont">
     {% for data in data %}
     <div class="box">
@@ -8,16 +12,11 @@
             <h2>Truck ID: {{ data.id }}</h2>
             <h3>Plate No.: {{ data.plateNo }}</h3>
             <h3>Branch: {{ data.branchID }}</h3>
-            <p>Status: {{ data.status }}</p>
-            <p>Consignment IDs:
-                {% for cids in data.consignments %}
-                {{ cids.id }}  
-                {% endfor %}
-            </p>
-            <!-- <p>Revenue: {{ data.revenue }}</p> -->
-            <button class="ghost-btn" onclick="location.href='/trucks/{{ data.id }}';">Go to this truck page</button>
+            <p>Status: {{ data.status.name }}</p>
+            <button class="ghost-btn" onclick="location.href='/truck/view/{{ data.id }}';">Go to this truck page</button>
         </div>
     </div>
     {% endfor %}
 </div>
+{% endif %}
 {% endblock %}
