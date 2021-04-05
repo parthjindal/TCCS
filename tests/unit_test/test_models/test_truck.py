@@ -16,23 +16,29 @@ def test_truck(test_client, database):
     addr4 = Address(city="Mumbai", addrLine="A-Block", zipCode="100120")
 
     o1 = BranchOffice(address=addr1)
+    o2 = BranchOffice(address=addr2)
+    database.session.add(o1)
+    database.session.add(o2)
+    database.session.commit()
+
 
     consign1 = Consignment(volume=300, senderAddress=addr1, receiverAddress=addr2)
     consign2 = Consignment(volume=200, senderAddress=addr3, receiverAddress=addr4)
-
-    database.session.add(o1)
-    database.session.commit()
-
+    
+    database.session.add(consign1)
+    database.session.add(consign2)
+    
     o1.addTruck(t1)
     o1.addConsignment(consign1)
     o1.addConsignment(consign2)
 
     t1.addConsignment(consign1)
     t1.addConsignment(consign2)
-
+    
     database.session.commit()
 
     consign = Consignment(volume=200, senderAddress=addr3, receiverAddress=addr4)
+    
     o1.addConsignment(consign)
     try:
         t1.addConsignment(consign)
@@ -52,10 +58,10 @@ def test_truck(test_client, database):
     assert 0 == t2.volumeLeft
 
     for i in t2.consignments:
-        if (i == consign3):
+        if (i == consign1):
             f1 = True
 
-        if (i == consign4):
+        if (i == consign2):
             f2 = True
 
     assert (f1 == True)
@@ -106,5 +112,14 @@ def test_truck(test_client, database):
         t1.addConsignment(consign)
     except ValueError:
         print("Volume of Consignment is too large\n")
+
+    consign5 = Consignment(volume=250, senderAddress=addr2, receiverAddress=addr3)
+    o2.addConsignment(consign5)
+
+    try:
+        t1.addConsignment(consign5)
+    except:
+        print ("Source branches of consignment and the truck are different")
+
     t1.dispatch()
     database.session.commit()

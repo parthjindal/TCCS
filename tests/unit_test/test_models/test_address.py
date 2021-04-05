@@ -11,7 +11,7 @@ def test_address(test_client, database):
     addr = Address(city = "Delhi",addrLine = "C-28,Model Town-3",zipCode = "110009")
     database.session.add(addr)
     database.session.commit()
-    addr1 = Address.query.filter_by(city = "Delhi").last()
+    addr1 = Address.query.filter_by(city = "Delhi")[-1]
     
     assert "Delhi" == addr1.city
     assert "C-28,Model Town-3" == addr1.addrLine

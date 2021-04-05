@@ -179,13 +179,16 @@ class Office(db.Model):
     def prettyInvoice(invoice):
 
         res = f"""
-        Sender's Address: {invoice["sender"]["address"]}, {invoice["sender"]["city"]}
-        Receiver's Address: {invoice["receiver"]["address"]}, {invoice["receiver"]["city"]}
-        Volume: {invoice["volume"]}
-        Order Placement Time: {invoice["placetime"].strftime('%d-%b-%Y, %H:%M')}
+Sender's Address: {invoice["sender"]["address"]}, {invoice["sender"]["city"]}
 
-        Amount: \u20B9 {invoice["charge"]}
-        """
+Receiver's Address: {invoice["receiver"]["address"]}, {invoice["receiver"]["city"]}
+
+Volume: {invoice["volume"]}
+
+Order Placement Time: {invoice["placetime"].strftime('%d-%b-%Y, %H:%M')}
+
+Amount: \u20B9 {invoice["charge"]}
+"""
         return res
 
     @ staticmethod
