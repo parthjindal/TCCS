@@ -67,9 +67,10 @@ class Consignment(db.Model):
 
     senderID = db.Column(db.Integer, db.ForeignKey('address.id'))
     receiverID = db.Column(db.Integer, db.ForeignKey('address.id'))
-
+    senderName = db.Column(db.String(64))
     senderAddress = db.relationship(
         'Address', uselist=False, foreign_keys=senderID)
+    receiverName = db.Column(db.String(64))
     receiverAddress = db.relationship(
         'Address', uselist=False, foreign_keys=receiverID)
 
@@ -114,11 +115,13 @@ class Consignment(db.Model):
             "placetime": self.placetime,
             "charge": self.charge,
             "sender": {
+                "name": self.senderName,
                 "city": self.senderAddress.city,
                 "address": self.senderAddress.addrLine,
                 "zipCode": self.senderAddress.zipCode
             },
             "receiver": {
+                "name": self.receiverName,
                 "city": self.receiverAddress.city,
                 "address": self.receiverAddress.addrLine,
                 "zipCode": self.receiverAddress.zipCode

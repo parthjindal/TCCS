@@ -9,11 +9,12 @@ class ConsignmentForm(FlaskForm):
 
     '''
     volume = IntegerField("Volume", validators=[DataRequired(), NumberRange(min=1,max =500)])
-
+    sName = StringField("Name", validators=[DataRequired(), Length(max=60)])
     sAddrLine = StringField("Address Line", validators=[DataRequired(), Length(max=60)])
     sCity = StringField("City", validators=[DataRequired()])
     sZipCode = StringField("Zip Code", validators=[DataRequired(), Length(min=6, max=6)])
 
+    rName = StringField("Name", validators=[DataRequired(), Length(max=60)])
     rAddrLine = StringField("Address Line", validators=[DataRequired(), Length(max=60)])
     rCity = StringField("City", validators=[DataRequired()])
     rZipCode = StringField("Zip Code", validators=[DataRequired(), Length(min=6, max=6)])

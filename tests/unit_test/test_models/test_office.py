@@ -78,7 +78,7 @@ def test_branch_office(test_client, database):
     """
 
     """
-    addr = Address(city="Delhi", addrLine="TCCS Branch Town", zipCode="110009")
+    addr = Address(city="Delhi", addrLine="Egret Branch Town", zipCode="110009")
     addr1 = Address(city="Delhi", addrLine="C-28,Model Town-3", zipCode="110009")
     addr2 = Address(city="Mumbai", addrLine="H-Block", zipCode="100120")
     addr3 = Address(city="Kolkata", addrLine="H-Block", zipCode="101120")
@@ -102,8 +102,11 @@ def test_branch_office(test_client, database):
     database.session.add(t1)
     database.session.add(t2)
     database.session.add(t3)
+    database.session.commit()
 
     bOffice.addConsignment(consign1)
+    database.session.commit()
+
     flag = False
     flag1 = False
     flag2 = False
@@ -119,6 +122,8 @@ def test_branch_office(test_client, database):
     bOffice1.addConsignment(consign)
     bOffice.addTruck(t1)
     bOffice.addTruck(t2)
+    database.session.commit()
+    
     t2.addConsignment(consign1)
     database.session.commit()
     
@@ -136,8 +141,8 @@ def test_branch_office(test_client, database):
     try:
         t1.addConsignment(consign1)
     except:
-        print (t1.branchID)
-        print (consign1.srcBranchID)
+        print("Consignment already alloted to a truck")
+    
     t3.addConsignment(consign)
 
     consign2 = Consignment(volume=300, senderAddress=addr2,
@@ -157,10 +162,11 @@ def test_branch_office(test_client, database):
 
     employee = Employee(name="Shristi",  email="shristi21singh@gmail.com", branchID=bOffice.id)
     employee1 = Employee(name="Parth", email="pmjindal2344@gmail.com", branchID=bOffice.id)
+
     database.session.add(employee)
     database.session.add(employee1)
-
     database.session.commit()
+
     bOffice_ = BranchOffice.query.filter_by(address=addr).first()
 
     t3 = Truck.query.filter_by(plateNo="01TK0421").first()
@@ -213,6 +219,7 @@ def test_branch_office(test_client, database):
     f = False
     f1 = False
     lst = bOffice_.receiveTruck(t5)
+    database.session.commit()
 
     try:
         for i in lst:
@@ -232,17 +239,17 @@ def test_branch_office(test_client, database):
 
 
     f = False
+
     bOffice.dispatchTruck(t2)
     database.session.commit()
     lst1 = bOffice1.receiveTruck(t2)
-    print (lst1)
+    database.session.commit()
+
     for i in lst1:
         if (i == consign1):
             f = True
     
     assert f == True
-
-    database.session.commit()
 
     consign4 = Consignment(volume=300, senderAddress=addr1,
                           receiverAddress=addr2)
@@ -258,12 +265,11 @@ def test_branch_office(test_client, database):
     database.session.commit()
 
     Office.allotTruck(bOffice)
+    database.session.commit()
+
     assert t1.volumeLeft == 200
     assert consign4.status == ConsignmentStatus.ALLOTED
     assert consign5.status == ConsignmentStatus.PENDING
-
-    database.session.commit()
-
 
 
 def test_head_office(test_client, database):
@@ -290,13 +296,17 @@ def test_head_office(test_client, database):
     consign = Consignment(volume=300, senderAddress=addr1,
                           receiverAddress=addr2)
     
+    database.session.add(manager)
     database.session.add(consign)
     database.session.add(consign1)
     database.session.add(t1)
     database.session.add(t2)
     database.session.add(t3)
+    database.session.commit()
 
     hOffice.addConsignment(consign1)
+    database.session.commit()
+
     flag = False
     flag1 = False
     flag2 = False
@@ -312,6 +322,8 @@ def test_head_office(test_client, database):
     bOffice1.addConsignment(consign)
     hOffice.addTruck(t1)
     hOffice.addTruck(t2)
+    database.session.commit()
+
     t2.addConsignment(consign1)
     database.session.commit()
     
@@ -331,7 +343,9 @@ def test_head_office(test_client, database):
     except:
         print (t1.branchID)
         print (consign1.srcBranchID)
+    
     t3.addConsignment(consign)
+    database.session.commit()
 
     consign2 = Consignment(volume=300, senderAddress=addr2,
                            receiverAddress=addr1, dstBranchID=hOffice.id)
@@ -341,19 +355,22 @@ def test_head_office(test_client, database):
 
     bOffice1.addConsignment(consign2)
     bOffice1.addConsignment(consign3)
-    bOffice1.addTruck(t5)
-    
+    database.session.add(t5)
+    database.session.commit()
+
+    bOffice1.addTruck(t5)    
+    database.session.commit()
+
     t5.addConsignment(consign2)
     t5.addConsignment(consign3)
-    database.session.add(t5)
     database.session.commit()
 
     employee = Employee(name="Shristi",  email="shristi21singh@gmail.com", branchID=hOffice.id)
     employee1 = Employee(name="Parth", email="pmjindal2344@gmail.com", branchID=hOffice.id)
     database.session.add(employee)
     database.session.add(employee1)
-
     database.session.commit()
+    
     hOffice_ = HeadOffice.query.filter_by(address=addr).first()
 
     t3 = Truck.query.filter_by(plateNo="01TK0421").first()
@@ -406,7 +423,9 @@ def test_head_office(test_client, database):
 
     f = False
     f1 = False
+
     lst = hOffice_.receiveTruck(t5)
+    database.session.add(t5)
 
     try:
         for i in lst:
@@ -438,11 +457,12 @@ def test_head_office(test_client, database):
     database.session.commit()
 
     Office.allotTruck(hOffice)
+    database.session.add(t5)
+    database.session.commit()
+
     assert t1.volumeLeft == 200
     assert consign4.status == ConsignmentStatus.ALLOTED
     assert consign5.status == ConsignmentStatus.PENDING
-
-    database.session.commit()
 
 
 

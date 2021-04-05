@@ -29,11 +29,13 @@ class ReceiveTruckForm(FlaskForm):
     '''
 
     '''
-    plateNo = StringField("Plate No.", validators=[DataRequired()])
-    submit = SubmitField("Create")
+    plateNo = SelectField("Plate No.", coerce=int)
+    submit = SubmitField("Receive")
 
     def __init__(self, branchID, **kwargs):
         '''
         '''
         super().__init__(**kwargs)
         self.branchID = branchID
+        self.plateNo.choices = [(x.id, f'{x.plateNo}')
+                               for x in Truck.query.filter_by(dstBranchID=self.branchID) if x.status.name=="ENROUTE"]

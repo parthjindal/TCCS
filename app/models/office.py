@@ -179,8 +179,12 @@ class Office(db.Model):
     def prettyInvoice(invoice):
 
         res = f"""
-Sender's Address: {invoice["sender"]["address"]}, {invoice["sender"]["city"]}
+Sender's Details
+Name: {invoice["sender"]["name"]}
+Address: {invoice["sender"]["address"]}, {invoice["sender"]["city"]}
 
+Receiver's Details
+Name: {invoice["receiver"]["name"]}
 Receiver's Address: {invoice["receiver"]["address"]}, {invoice["receiver"]["city"]}
 
 Volume: {invoice["volume"]}
@@ -317,7 +321,7 @@ class BranchOffice(Office):
             Returns:
                 str
         """
-        return f'<Branch Office, {self.name}, Address: {self.address}>'
+        return f'<Branch Office, {self.id}, Address: {self.address}>'
 
 
 class HeadOffice(Office):
@@ -372,4 +376,4 @@ class HeadOffice(Office):
             Returns:
                 str
         """
-        return f'<Head Office, {self.name}, Address: {self.address}>'
+        return f'<Head Office, {self.id}, Address: {self.address}>'

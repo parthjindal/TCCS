@@ -12,7 +12,8 @@
             <h3>Branch: {{ data.srcBranchID }}</h3>
             <p>Status: {{ data.status.name }}</p>
             <p>Volume: {{ data.volume }}</p>
-            <button class="ghost-btn" onclick="location.href='/consign/view/{{ data.id }}';">View</button>
+            <p>Sender: {{ data.senderName }}</p>
+            <button class="ghost-btn" onclick="location.href='/consign/view/{{ data.id }}';">View Bill</button>
         </div>
     </div>
     {% endfor %}

@@ -136,11 +136,10 @@ def receive():
         return render_template('errors/403.html'), 403
     form = ReceiveTruckForm(current_user.branchID)
     if form.validate_on_submit():
-        truck_ = Truck.query.filter_by(plateNo=form.plateNo.data).first()
+        truck_ = Truck.query.filter_by(id=form.plateNo.data).first()
         if truck_ is None or truck_.dstBranchID != current_user.branchID or truck_.status.name != "ENROUTE":
             flash("Bad request: truck not found/not applicable", 'warning')
             return redirect(url_for("main.home"), code=302)
-
 
         branch = Office.query.filter_by(id=current_user.branchID).first()
         branch.receiveTruck(truck_)

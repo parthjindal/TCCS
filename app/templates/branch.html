@@ -24,7 +24,7 @@
     {% endfor %}
 </div>
 {% else %}
-<p>No trucks in the branch</p>
+<h2>No trucks in the branch</h2>
 {% endif %}
 <br>
 {% if consign %}
@@ -39,13 +39,13 @@
             <h3>Branch: {{ data.srcBranchId }}</h3>
             <p>Status: {{ data.status.name }}</p>
             <p>Volume: {{ data.volume }}</p>
-            <button class="ghost-btn" onclick="location.href='/consign/view/{{ data.id }}';">View</button>
+            <button class="ghost-btn" onclick="location.href='/consign/view/{{ data.id }}';">View Bill</button>
         </div>
     </div>
     {% endfor %}
 </div>
 {% else %}
-<p>No consignments in the branch</p>
+<h2>No consignments in the branch</h2>
 {% endif %}
 <br>
 
@@ -100,7 +100,6 @@ var myChart = new Chart(ctx, {
 });
 </script>
 </div>
-
-<!-- bar chart canvas element -->
-
+<br>
+<br>
 {% endblock %}

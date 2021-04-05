@@ -21,8 +21,10 @@ truck3 = Truck(plateNo="12IJKL")
 
 db.session.add(bOffice)
 db.session.add(hOffice)
+db.session.add(bOffice2)
 db.session.commit()
 
 bOffice.addTruck(truck1)
 hOffice.addTruck(truck2)
 bOffice2.addTruck(truck3)
+db.session.commit()

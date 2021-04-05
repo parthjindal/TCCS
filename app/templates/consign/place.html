@@ -19,7 +19,20 @@
                 {% endif %}
             </div>
             <div class="form-group">
-                <h4>Sender's Address</h4>
+                <h4>Sender's Details</h4>
+                <div class="form-group">
+                    {{ form.sName.label(class = "form-control-label") }}
+                    {% if form.sName.errors %}
+                    {{ form.sName(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.sName.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.sName(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
                 <div class="form-group">
                     {{ form.sCity.label(class = "form-control-label") }}
                     {% if form.sCity.errors %}
@@ -62,7 +75,20 @@
 
             </div>
             <div class="form-group">
-                <h4>Receiver's Address</h4>
+                <h4>Receiver's Details</h4>
+                <div class="City">
+                    {{ form.rName.label(class = "form-control-label") }}
+                    {% if form.rName.errors %}
+                    {{ form.rName(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.rName.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.rName(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
                 <div class="City">
                     {{ form.rCity.label(class = "form-control-label") }}
                     {% if form.rCity.errors %}

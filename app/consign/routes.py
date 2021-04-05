@@ -53,12 +53,14 @@ def place():
     form = ConsignmentForm(current_user.branchID)
     if form.validate_on_submit():
 
+        senderName = form.sName.data
         senderAddress = Address(addrLine=form.sAddrLine.data,
                                 city=form.sCity.data, zipCode=form.sZipCode.data)
+        receiverName = form.rName.data
         receiverAddress = Address(addrLine=form.rAddrLine.data,
                                   city=form.rCity.data, zipCode=form.rZipCode.data)
         consign = Consignment(
-            volume=form.volume.data, senderAddress=senderAddress, receiverAddress=receiverAddress,
+            volume=form.volume.data, senderName=senderName, receiverName=receiverName,senderAddress=senderAddress, receiverAddress=receiverAddress,
             dstBranchID=form.branch.data)
 
         db.session.add(consign)
