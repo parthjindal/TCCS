@@ -33,7 +33,6 @@ def view(id):
 @login_required
 def dispatch():
     trucks = Truck.query.filter_by(branchID=current_user.branchID)
-    trucks = [x for x in trucks if x.volumeLeft < 5]
     return render_template("dispatch.html", data=trucks), 200
 
 
@@ -84,9 +83,14 @@ def add():
         form = TruckForm()
         if form.validate_on_submit():
 
-            truck_ = Truck(plateNo=form.plateNo.data, branchID=form.branch.data)
+            truck_ = Truck(plateNo=form.plateNo.data)
             db.session.add(truck_)
             db.session.commit()
+
+            branch = Office.query.get(form.branch.data)
+            branch.addTruck(truck_)
+
+            Office.allotTruck(branch)
 
             flash("Truck Added", 'success')
             return redirect(url_for("main.home"), code=302)
@@ -97,5 +101,15 @@ def add():
 @truck.route("/receive", methods=["GET", "POST"])
 @login_required
 def receive():
-    ############ TODO ####################
-    branchID = current_user.branchID
+    form = TruckForm()
+    if form.validate_on_submit():
+        truck_ = Truck.query.filter_by(plateNo=form.plateNo.data)
+        if truck_ is None:
+            return redirect(url_for("main.home"), code=302)
+        branch = Office.query.get(id=current_user.branchID)
+
+        branch.receiveTruck(truck_)
+        db.session.commit()
+
+        Office.allotTruck(branch)
+        db.session.commit()

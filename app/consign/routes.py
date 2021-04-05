@@ -59,9 +59,15 @@ def place():
                                   city=form.rCity.data, zipCode=form.rZipCode.data)
         consign = Consignment(
             volume=form.volume.data, senderAddress=senderAddress, receiverAddress=receiverAddress,
-            dstBranchID=form.branch.data, srcBranchID=id)
+            dstBranchID=form.branch.data)
 
         db.session.add(consign)
+        office = Office.query.get(id)
+        office.addConsignment(consign)
+
+        db.session.commit()
+        Office.allotTruck(Office.query.get(id))
+
         db.session.commit()
 
         flash("Consignment Placed for Delivery", 'info')
@@ -76,7 +82,7 @@ def view_all():
     '''
         If the user is an Employee, this function allows him to view all the consignments
                 that are placed in his office
-        
+
         If the user is the Manager, he can view all the consignments 
                 irrepective of their source office
     '''
@@ -104,4 +110,6 @@ def view(id):
     if consign is None:
         flash("Bad request, consignment not found", "warning")
         return redirect(url_for("main.home", role=current_user.role), code=302)
-    return f'{consign}'
+        
+    ############################ TODO #####################################################
+    return consign.bill.invoice

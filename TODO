@@ -2,3 +2,8 @@ view trucks if no truck then show message
 view consignments -> view button -> show consignment
 dispatch truck-> 
 receive truck -> 
+
+
+working
+1.auth 
+2.

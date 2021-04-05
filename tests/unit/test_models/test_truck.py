@@ -29,9 +29,9 @@ def test_truck(test_client, database):
 
     t1.addConsignment(consign1)
     t1.addConsignment(consign2)
-    
+
     database.session.commit()
-    
+
     consign = Consignment(volume=200, senderAddress=addr3, receiverAddress=addr4)
     o1.addConsignment(consign)
     try:
