@@ -1,4 +1,4 @@
-from app.models import address, consignment
+# from app.models import address, consignment
 from app.models import Address, Bill
 from app.models import Employee, Manager
 from app.models import Consignment, ConsignmentStatus
@@ -10,6 +10,9 @@ import time
 
 
 def test_allotment(test_client, database):
+    '''
+    To check that the consignments are alloted properly to the trucks in an office
+    '''
     a1 = Address(city="Delhi")
     a2 = Address(city="Mumbai")
     a3 = Address(city="Chennai")
@@ -76,9 +79,9 @@ def test_allotment(test_client, database):
 
 def test_branch_office(test_client, database):
     """
-
+    Unit test function to test BranchOffice class
     """
-    addr = Address(city="Delhi", addrLine="Egret Branch Town", zipCode="110009")
+    addr = Address(city="Delhi", addrLine="TCCS Branch Town", zipCode="110009")
     addr1 = Address(city="Delhi", addrLine="C-28,Model Town-3", zipCode="110009")
     addr2 = Address(city="Mumbai", addrLine="H-Block", zipCode="100120")
     addr3 = Address(city="Kolkata", addrLine="H-Block", zipCode="101120")
@@ -87,6 +90,15 @@ def test_branch_office(test_client, database):
     database.session.add(bOffice)
     database.session.add(bOffice1)
     database.session.commit()
+    
+    '''
+    bOffice_1 = BranchOffice.query.filter_by(id=1).first() ensures that the object is created properly and 
+                        returned correctly on being filtered by id
+    bOffice1_1 = BranchOffice.query.filter_by(address=addr3).first() ensures that the object is created properly and 
+                        returned correctly on being filtered by address
+    '''
+    bOffice_1 = BranchOffice.query.filter_by(id=1).first()
+    bOffice1_1 = BranchOffice.query.filter_by(address=addr3).first()
 
     t1 = Truck(plateNo="01TK0421")
     t2 = Truck(plateNo="01TK0422", dstBranchID=bOffice1.id)
@@ -106,7 +118,22 @@ def test_branch_office(test_client, database):
 
     bOffice.addConsignment(consign1)
     database.session.commit()
+    
+    '''
+    flag = False
+    flag1 = False
+    flag2 = False
+    for i in bOffice.transactions:
+        if(i.invoice == consign1.bill.invoice):
+            flag = True
+        if(i.amount == consign1.bill.amount):
+            flag1 = True
+        if(i.branchID == bOffice.id):
+            flag2 = True
+    assert flag == True and flag1 == True and flag2 == True
 
+    Ensures that the transactions list of the branch office contains the bill of consign
+    '''
     flag = False
     flag1 = False
     flag2 = False
@@ -127,7 +154,26 @@ def test_branch_office(test_client, database):
     t2.addConsignment(consign1)
     database.session.commit()
     
-    #print (t2.dstBranchID)
+    '''
+    try:
+        bOffice.addTruck(t3)
+    except AttributeError:
+        print("Truck has already been assigned to another office")
+    Ensures that no truck can be added to an office if it has already been assigned to another office
+
+    try:
+        bOffice1.addTruck(t3)
+    except AttributeError:
+        print("Truck already present in the Office")
+    Ensures that no truck can be added again to an office if it has already been assigned to it  
+
+    try:
+        t1.addConsignment(consign1)
+    except:
+        print("Consignment already alloted to a truck")
+
+    Ensures that no consignment can be alloted to a truck again if it was already alloted to a truck
+    '''
     try:
         bOffice.addTruck(t3)
     except AttributeError:
@@ -162,9 +208,9 @@ def test_branch_office(test_client, database):
 
     employee = Employee(name="Shristi",  email="shristi21singh@gmail.com", branchID=bOffice.id)
     employee1 = Employee(name="Parth", email="pmjindal2344@gmail.com", branchID=bOffice.id)
-
     database.session.add(employee)
     database.session.add(employee1)
+
     database.session.commit()
 
     bOffice_ = BranchOffice.query.filter_by(address=addr).first()
@@ -174,9 +220,16 @@ def test_branch_office(test_client, database):
     e1 = Employee.query.filter_by(email="pmjindal2344@gmail.com").first()
     e2 = Employee.query.filter_by(email="shristi21singh@gmail.com").first()
 
-    assert addr == bOffice_.address
-    assert "branch" == bOffice_.type
-    assert bOffice_.isBranch() == True
+    '''
+    assert t3.branchID == bOffice_.id ensures that branchID of the truck is same as the office 
+                                        to which it was added
+    assert t4.branchID == bOffice_.id ensures that branchID of the truck is same as the office 
+                                        to which it was added
+    assert e1.branchID == bOffice_.id ensures that branchID of the employee is same as the office 
+                                        which he was assigned
+    assert e2.branchID == bOffice_.id ensures that branchID of the employee is same as the office 
+                                        which he was assigned
+    '''
 
     assert t3.branchID == bOffice_.id
     assert t4.branchID == bOffice_.id
@@ -184,7 +237,15 @@ def test_branch_office(test_client, database):
     assert e2.branchID == bOffice_.id
 
     f = False
+    
+    '''
+    for i in bOffice_.consignments:
+        if (i == consign1):
+            f = True
 
+    assert f == True ensures that consignment added to a branch office is correctly added to 
+                        its consignments list
+    '''
     for i in bOffice_.consignments:
         if (i == consign1):
             f = True
@@ -195,7 +256,10 @@ def test_branch_office(test_client, database):
     f2 = False
     f3 = False
     f4 = False
-
+    
+    '''
+    To ensure that the trucks and employees added to a branch office are correctky added to the corresponding list
+    '''
     for i in bOffice_.trucks:
         if (i == t3):
             f1 = True
@@ -220,7 +284,22 @@ def test_branch_office(test_client, database):
     f1 = False
     lst = bOffice_.receiveTruck(t5)
     database.session.commit()
+    
+    '''
+    try:
+        for i in lst:
+            if (i == consign2):
+                f = True
 
+            if (i == consign3):
+                f1 = True
+
+        assert f == True
+        assert f1 == True
+    except:
+        print(lst)
+    Ensures that trucks no truck is received by any office if its status is ENROUTE
+    '''
     try:
         for i in lst:
             if (i == consign2):
@@ -242,6 +321,18 @@ def test_branch_office(test_client, database):
 
     bOffice.dispatchTruck(t2)
     database.session.commit()
+
+    '''
+    lst1 = bOffice1.receiveTruck(t2)
+    database.session.commit()
+
+    for i in lst1:
+        if (i == consign1):
+            f = True
+    
+    assert f == True
+    Ensures that a truck is received properly if its dstBranchID is same as the id of the office
+    '''
     lst1 = bOffice1.receiveTruck(t2)
     database.session.commit()
 
@@ -266,7 +357,10 @@ def test_branch_office(test_client, database):
 
     Office.allotTruck(bOffice)
     database.session.commit()
-
+    
+    '''
+    Ensures that only consign4 gets added to the truck because there is no space to accomodate consign5
+    '''
     assert t1.volumeLeft == 200
     assert consign4.status == ConsignmentStatus.ALLOTED
     assert consign5.status == ConsignmentStatus.PENDING
@@ -274,7 +368,7 @@ def test_branch_office(test_client, database):
 
 def test_head_office(test_client, database):
     """
-
+    Unit test function to test HeadOffice class
     """
     addr = Address(city="Mumbai", addrLine="H-Block", zipCode="100120")
     addr1 = Address(city="Mumbai", addrLine="H-Block", zipCode="100120")
@@ -306,7 +400,22 @@ def test_head_office(test_client, database):
 
     hOffice.addConsignment(consign1)
     database.session.commit()
+    
+    '''
+    flag = False
+    flag1 = False
+    flag2 = False
+    for i in hOffice.transactions:
+        if(i.invoice == consign1.bill.invoice):
+            flag = True
+        if(i.amount == consign1.bill.amount):
+            flag1 = True
+        if(i.branchID == hOffice.id):
+            flag2 = True
+    assert flag == True and flag1 == True and flag2 == True
 
+    Ensures that the transactions list of the head office contains the bill of consign
+    '''
     flag = False
     flag1 = False
     flag2 = False
@@ -327,7 +436,26 @@ def test_head_office(test_client, database):
     t2.addConsignment(consign1)
     database.session.commit()
     
-    #print (t2.dstBranchID)
+    '''
+    try:
+        hOffice.addTruck(t3)
+    except AttributeError:
+        print("Truck has already been assigned to another office")
+    Ensures that no truck can be added to an office if it has already been assigned to another office
+
+    try:
+        bOffice1.addTruck(t3)
+    except AttributeError:
+        print("Truck already present in the Office")
+    Ensures that no truck can be added again to an office if it has already been assigned to it  
+
+    try:
+        t1.addConsignment(consign1)
+    except:
+        print("Consignment already alloted to a truck")
+
+    Ensures that no consignment can be alloted to a truck again if it was already alloted to a truck
+    '''
     try:
         hOffice.addTruck(t3)
     except AttributeError:
@@ -377,11 +505,25 @@ def test_head_office(test_client, database):
     t4 = Truck.query.filter_by(plateNo="01TK0422").first()
     e1 = Employee.query.filter_by(email="pmjindal2344@gmail.com").first()
     e2 = Employee.query.filter_by(email="shristi21singh@gmail.com").first()
-
+    
+    '''
+    To ensure that the object is returned correctly on being filtered by address
+    '''
     assert addr == hOffice_.address
     assert "head" == hOffice_.type
     assert hOffice_.isBranch() == False
     assert manager.branchID == hOffice_.id
+
+    '''
+    assert t3.branchID == hOffice_.id ensures that branchID of the truck is same as the office 
+                                        to which it was added
+    assert t4.branchID == hOffice_.id ensures that branchID of the truck is same as the office 
+                                        to which it was added
+    assert e1.branchID == hOffice_.id ensures that branchID of the employee is same as the office 
+                                        which he was assigned
+    assert e2.branchID == hOffice_.id ensures that branchID of the employee is same as the office 
+                                        which he was assigned
+    '''
 
     assert t3.branchID == hOffice_.id
     assert t4.branchID == hOffice_.id
@@ -389,7 +531,11 @@ def test_head_office(test_client, database):
     assert e2.branchID == hOffice_.id
 
     f = False
-
+    
+    '''
+    To ensure that all the consignments, trucks and employees that were added to the head office
+                are present in their respective lists
+    '''
     for i in hOffice_.consignments:
         if (i == consign1):
             f = True
@@ -423,7 +569,22 @@ def test_head_office(test_client, database):
 
     f = False
     f1 = False
+    
+    '''
+    try:
+        for i in lst:
+            if (i == consign2):
+                f = True
 
+            if (i == consign3):
+                f1 = True
+
+        assert f == True
+        assert f1 == True
+    except:
+        print(lst)  
+    Ensures no truck is received if its status is not ENROUTE
+    '''
     lst = hOffice_.receiveTruck(t5)
     database.session.add(t5)
 
@@ -459,7 +620,10 @@ def test_head_office(test_client, database):
     Office.allotTruck(hOffice)
     database.session.add(t5)
     database.session.commit()
-
+    
+    '''
+    Ensures that only consign4 gets added to the truck because there is no space to accomodate consign5
+    '''
     assert t1.volumeLeft == 200
     assert consign4.status == ConsignmentStatus.ALLOTED
     assert consign5.status == ConsignmentStatus.PENDING

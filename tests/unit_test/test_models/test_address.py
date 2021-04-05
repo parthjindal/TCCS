@@ -11,9 +11,19 @@ def test_address(test_client, database):
     addr = Address(city = "Delhi",addrLine = "C-28,Model Town-3",zipCode = "110009")
     database.session.add(addr)
     database.session.commit()
-    addr1 = Address.query.filter_by(city = "Delhi")[-1]
+    addr1 = Address.query.filter_by(city = "Delhi").first()
+    addr2 = Address.query.filter_by(addrLine = "C-28,Model Town-3").first()
+    addr3 = Address.query.filter_by(zipCode = "110009").first()
+    addr4 = Address.query.filter_by(id = 1).first()
     
-    assert "Delhi" == addr1.city
-    assert "C-28,Model Town-3" == addr1.addrLine
-    assert "110009" == addr1.zipCode    
+    '''
+    assert addr1 == addr ensures that the object is created properly and returned correctly when filtered by city
+    assert addr2 == addr ensures that the object is created properly and returned correctly when filtered by addrLine
+    assert addr3 == addr ensures that the object is created properly and returned correctly when filtered by zipCode
+    assert addr4 == addr ensures that the object is created properly and returned correctly when filtered by id
+    '''
+    assert addr1 == addr   
+    assert addr2 == addr   
+    assert addr3 == addr   
+    assert addr4 == addr   
     
