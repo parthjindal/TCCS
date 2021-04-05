@@ -66,7 +66,7 @@ class Truck(db.Model):
     ############################## ORM ########################################
     __tablename__ = "truck"
     id = db.Column(db.Integer, primary_key=True)            # id
-    plateNo = db.Column(db.String(16))                      # plateNo
+    plateNo = db.Column(db.String(16), unique=True)                      # plateNo
 
     branchID = db.Column(                                   # branchID
         db.Integer, db.ForeignKey("office.id"), index=True)

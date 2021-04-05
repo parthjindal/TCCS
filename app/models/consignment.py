@@ -63,7 +63,6 @@ class Consignment(db.Model):
 
     charge = db.Column(db.Integer, index=True)
 
-    ######################################## TODO ###########################################
     # invoice = db.relationship('Bill',uselist = False,lazy = False)
 
     senderID = db.Column(db.Integer, db.ForeignKey('address.id'))

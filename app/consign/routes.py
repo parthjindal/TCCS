@@ -111,5 +111,4 @@ def view(id):
         flash("Bad request, consignment not found", "warning")
         return redirect(url_for("main.home", role=current_user.role), code=302)
 
-    ############################ TODO #####################################################
     return render_template('consign/view2.html', data=consign), 200

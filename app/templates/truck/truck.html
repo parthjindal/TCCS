@@ -9,100 +9,76 @@
 <div class="container cont">
 <canvas id="usageChart" width="600" height="400"></canvas>
 <script>
-    var timeFormat = 'MMMM Do YYYY, h:mm:ss a';
-
-function newDateString(hours, minutes, seconds, date, month, year) {
-    return moment().hour(hours).minute(minutes).second(seconds).date(date).month(month).year(year).format(timeFormat);
-}
-
-
-var chartData = {
-    labels: [{% for item in labels %}
-newDateString({{ item.hour }}, {{ item.minute }}, {{ item.second }}, {{ item.day }}, {{ item.month }}, {{ item.year }}),
-    {% endfor %}],
-datasets: [{
-    label: 'Usage Time',
-    fill: true,
-    lineTension: 0.1,
-    backgroundColor: "rgba(75,192,192,0.4)",
-    borderColor: "rgba(75,192,192,1)",
-    borderCapStyle: 'butt',
-    borderDash: [],
-    borderDashOffset: 0.0,
-    borderJoinStyle: 'miter',
-    pointBorderColor: "rgba(75,192,192,1)",
-    pointBackgroundColor: "#fff",
-    pointBorderWidth: 1,
-    pointHoverRadius: 5,
-    pointHoverBackgroundColor: "rgba(75,192,192,1)",
-    pointHoverBorderColor: "rgba(220,220,220,1)",
-    pointHoverBorderWidth: 2,
-    pointRadius: 1,
-    pointHitRadius: 10,
-    data: [{% for item in values %}
-                  {{ item }},
-{% endfor %}],
-    spanGaps: false
-    }]
-  }
-
-// get chart canvas
-var ctx = document.getElementById("myChart").getContext("2d");
-
-// create the chart using the chart canvas
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: chartData,
+    var ctx = document.getElementById("usageChart").getContext("2d");
+    var usageChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: {{ labels | safe }},
+                        datasets: [
+                            {
+                                label: "Usage Time",
+                                data: {{ values | safe }},
+                                fill: true,
+                                lineTension: 0.1,
+                                backgroundColor: "rgba(75,192,192,0.4)",
+                                borderColor: "rgba(75,192,192,1)",
+                                borderCapStyle: 'butt',
+                                borderDash: [],
+                                borderDashOffset: 0.0,
+                                borderJoinStyle: 'miter',
+                                pointBorderColor: "rgba(75,192,192,1)",
+                                pointBackgroundColor: "#fff",
+                                pointBorderWidth: 1,
+                                pointHoverRadius: 5,
+                                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                                pointHoverBorderColor: "rgba(220,220,220,1)",
+                                pointHoverBorderWidth: 2,
+                                pointRadius: 1,
+                                pointHitRadius: 10
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: false
+                    }
 });
 </script>
 </div>
 <div class="container cont">
 <canvas id="idleChart" width="600" height="400"></canvas>
 <script>
-    var timeFormat = 'MMMM Do YYYY, h:mm:ss a';
-
-function newDateString(hours, minutes, seconds, date, month, year) {
-    return moment().hour(hours).minute(minutes).second(seconds).date(date).month(month).year(year).format(timeFormat);
-}
-
-
-var chartData = {
-    labels: [{% for item in labels2 %}
-newDateString({{ item.hour }}, {{ item.minute }}, {{ item.second }}, {{ item.day }}, {{ item.month }}, {{ item.year }}),
-    {% endfor %}],
-datasets: [{
-    label: 'Idle Time',
-    fill: true,
-    lineTension: 0.1,
-    backgroundColor: "rgba(75,192,192,0.4)",
-    borderColor: "rgba(75,192,192,1)",
-    borderCapStyle: 'butt',
-    borderDash: [],
-    borderDashOffset: 0.0,
-    borderJoinStyle: 'miter',
-    pointBorderColor: "rgba(75,192,192,1)",
-    pointBackgroundColor: "#fff",
-    pointBorderWidth: 1,
-    pointHoverRadius: 5,
-    pointHoverBackgroundColor: "rgba(75,192,192,1)",
-    pointHoverBorderColor: "rgba(220,220,220,1)",
-    pointHoverBorderWidth: 2,
-    pointRadius: 1,
-    pointHitRadius: 10,
-    data: [{% for item in values2 %}
-                  {{ item }},
-{% endfor %}],
-    spanGaps: false
-    }]
-  }
-
-// get chart canvas
-var ctx = document.getElementById("myChart").getContext("2d");
-
-// create the chart using the chart canvas
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: chartData,
+    var ctx = document.getElementById("idleChart").getContext("2d");
+    var idleChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: {{ labels2 | safe }},
+                        datasets: [
+                            {
+                                label: "Idle Time",
+                                data: {{ values2 | safe }},
+                                fill: true,
+                                lineTension: 0.1,
+                                backgroundColor: "rgba(75,192,192,0.4)",
+                                borderColor: "rgba(75,192,192,1)",
+                                borderCapStyle: 'butt',
+                                borderDash: [],
+                                borderDashOffset: 0.0,
+                                borderJoinStyle: 'miter',
+                                pointBorderColor: "rgba(75,192,192,1)",
+                                pointBackgroundColor: "#fff",
+                                pointBorderWidth: 1,
+                                pointHoverRadius: 5,
+                                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                                pointHoverBorderColor: "rgba(220,220,220,1)",
+                                pointHoverBorderWidth: 2,
+                                pointRadius: 1,
+                                pointHitRadius: 10
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: false
+                    }
 });
 </script>
 </div>

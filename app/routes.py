@@ -73,7 +73,7 @@ def branch(token):
         branch = Office.query.filter_by(id=token).first()
         labels = [x.time for x in branch.waitingtime]
         values = [x.value for x in branch.waitingtime]
-        revenue = branch.getRevenue()
+        revenue = round(branch.getRevenue())
 
         return render_template('branch.html', name=branch.address.city, trck=branch.trucks, consign=branch.consignments, revenue=revenue, labels=labels, values=values), 200
     return render_template('errors/403.html'), 403
