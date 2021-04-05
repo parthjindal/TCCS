@@ -82,6 +82,12 @@ class Truck(db.Model):
     usage = db.relationship('Logger', foreign_keys="Logger.branchID1", uselist=True)
     idle = db.relationship('Logger', foreign_keys="Logger.branchID2", uselist=True)
 
+
+    #####################
+    ##truck.usage -> list ->(value,)->x:float,y:time
+    #truck.usage[0].value ->y
+    #truck.usage[0].time->time
+
     consignments = db.relationship(
         "Consignment", secondary=join_table, back_populates="trucks")
 

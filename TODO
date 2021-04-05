@@ -1,9 +1,10 @@
-view trucks if no truck then show message
-view consignments -> view button -> show consignment
-dispatch truck-> 
-receive truck -> 
+consignment->print->page
+view
+waiting period of consignment
+idle time of truck in a period of time
+usage time of truck in a period of time
+
+dispatch/id=1 -> 
 
 
-working
-1.auth 
-2.
+branc

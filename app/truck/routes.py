@@ -53,7 +53,7 @@ def dispatch_truck(id):
     return redirect(url_for("main.home"))
 
 
-@truck.route("/request/", methods=['GET', 'POST'])
+@truck.route("/request-for", methods=['GET', 'POST'])
 @login_required
 def request_truck():
     '''
