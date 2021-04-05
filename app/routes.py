@@ -4,6 +4,8 @@ from flask_login import current_user, login_required
 from werkzeug.utils import redirect
 from werkzeug.urls import url_parse
 from app.models import Consignment, BranchOffice, Truck, Office
+from app import db
+from .forms import ChangeRate
 
 main = Blueprint("main", import_name=__name__, template_folder="templates")
 
@@ -25,9 +27,9 @@ def home():
     return render_template(f"{current_user.role}.html", title='TL;DR'), 200
 
 
-@main.route('/branches')
+@main.route('/branch/view/all')
 @login_required
-def branches():
+def branch_all():
     '''
         If the user is the manager, this function allows him to view the records of all the branches
         Else the access is forbidden and error 403 is displayed
@@ -39,7 +41,22 @@ def branches():
     return render_template('errors/403.html'), 403
 
 
-@main.route('/branches/<token>')
+@main.route('/branch/rate', methods=["GET", "POST"])
+@login_required
+def change_rate():
+    if current_user.role == "manager":
+        form = ChangeRate()
+        if form.validate_on_submit():
+            Office.rate = form.rate.data
+            db.session.commit()
+            flash("Rate value changed", 'success')
+            return redirect(url_for("main.home"), code=302)
+        return render_template("rate.html", form=form), 200
+
+    return render_template('errors/403.html'), 403
+
+
+@main.route('/branch/view/<token>')
 @login_required
 def branch(token):
     '''
@@ -48,14 +65,12 @@ def branch(token):
                 with the given token as id, are displayed
         ....
 
-        Parameters:
+        Parameters: 
             token: int
                 stores the id of the branch which is enquired
 
     '''
     if current_user.role == "manager":
         branch = Office.query.filter_by(id=token).first()
-        return render_template('branch.html', name= branch.address.city, trck=branch.trucks, consign=branch.consignments), 200
-    # flash('You are not authorized to access this page', 'warning')
-    # return redirect(url_for('main.home', role=current_user.role), code=302)
+        return render_template('branch.html', name=branch.address.city, trck=branch.trucks, consign=branch.consignments), 200
     return render_template('errors/403.html'), 403

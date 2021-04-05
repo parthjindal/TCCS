@@ -71,8 +71,6 @@ class Office(db.Model):
 
   ############################################################################
 
-    rate = 5
-
     def __init__(self, **kwargs):
         """
             The constructor of the Office class called automatically whenever an object of the
@@ -85,7 +83,6 @@ class Office(db.Model):
 
         """
         super().__init__(**kwargs)
-        self.transactions = []
 
     def isBranch(self):
         """
@@ -96,6 +93,12 @@ class Office(db.Model):
                 bool
         """
         pass
+
+    def getRevenue(self):
+        amount = 0
+        for bill in self.transactions:
+            amount += bill.amount
+        return amount
 
     def addTruck(self, truck) -> None:
         """
@@ -139,7 +142,6 @@ class Office(db.Model):
         consign.charge = Interface.computeBill(consign, rate=Office.rate)
 
         invoice = Office.prettyInvoice(consign.getInvoice())
-        
         bill = Bill(amount=consign.charge, invoice=invoice)
         consign.bill = bill
         self.consignments.append(consign)

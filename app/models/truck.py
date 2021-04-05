@@ -203,7 +203,6 @@ class Truck(db.Model):
             consignment.trucks.append(self)
 
             self.volumeLeft -= consignment.volume
-            consignment.volumeLeft = 0
             consignment.status = ConsignmentStatus.ALLOTED
 
             if self.volumeLeft == 0:
@@ -218,7 +217,6 @@ class Truck(db.Model):
             consignment.trucks.append(self)
 
             self.volumeLeft -= consignment.volume
-            consignment.volumeLeft = 0
             consignment.status = ConsignmentStatus.ALLOTED
 
             if self.volumeLeft == 0:

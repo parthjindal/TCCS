@@ -1,29 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <title>{% block title %}{% endblock %}</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+		integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<title>{% block title %}{% endblock %}</title>
+	<style>
+		.show-white-space {
+			white-space: pre-wrap;
+		}
+	</style>
 </head>
+
 <body>
-    <br>
+	<br>
 	<div class="container">
-	<div class="row" style="border-style:solid;padding:20px; text-align: right;">
-		<b>{% block pagetitle %}{% endblock %}</b>
-	</div>
-	<div class="row">
-	<div class="col-sm-1" style="border-right:groove;">
-	{% block invoiceList %}{% endblock %}
-	</div>
-	<div class="col-sm" style="margin-top:5%">
-	{% block content %}{% endblock %}
-	</div>
-	</div>
-	
-	<div class="row">
-	<div id="footer" style="border-top:groove;">
-        Copyright 2021 by Egret
-    </div>
-	</div>
+		<div class="row" style="border-style:solid;padding:20px; text-align: right;">
+			<b>{% block pagetitle %}{% endblock %}</b>
+		</div>
+		<div class="row">
+			<div class="col-sm-1" style="border-right:groove;">
+				{% block invoiceList %}{% endblock %}
+			</div>
+			<div class="col-sm" style="margin-top:5%">
+				{% block content %}{% endblock %}
+			</div>
+		</div>
+
+		<div class="row">
+			<div id="footer" style="border-top:groove;">
+				Copyright 2021 by Egret
+			</div>
+		</div>
 	</div>
 </body>
+
 </html>
