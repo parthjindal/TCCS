@@ -6,6 +6,7 @@
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Change Rate</legend>
             <div class="form-group">
+                <h3>Current Rate: {{ rate }}</h3>
                 {{ form.rate.label(class = "form-control-label") }}
                 {% if form.rate.errors %}
                     {{ form.rate(class = "form-control form-control-lg is-invalid") }}

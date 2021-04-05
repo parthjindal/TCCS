@@ -58,6 +58,7 @@ class Consignment(db.Model):
     status = db.Column(db.Enum(ConsignmentStatus), index=True)
 
     placetime = db.Column(db.DateTime)
+    dispatchtime = db.Column(db.DateTime)
     arrivaltime = db.Column(db.DateTime)
 
     charge = db.Column(db.Integer, index=True)

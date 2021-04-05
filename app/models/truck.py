@@ -18,9 +18,11 @@ class Logger(db.Model):
     time = db.Column(db.DateTime)
     branchID1 = db.Column(db.Integer, db.ForeignKey('truck.id'))
     branchID2 = db.Column(db.Integer, db.ForeignKey('truck.id'))
+    branchID3 = db.Column(db.Integer, db.ForeignKey('office.id'))
 
     def __repr__(self):
         return f'<Value:{self.value}, Timestamp:{self.time.strftime("%d-%b-%Y, %H:%M") }>'
+
 
 class Truck(db.Model):
     """
@@ -82,11 +84,10 @@ class Truck(db.Model):
     usage = db.relationship('Logger', foreign_keys="Logger.branchID1", uselist=True)
     idle = db.relationship('Logger', foreign_keys="Logger.branchID2", uselist=True)
 
-
     #####################
-    ##truck.usage -> list ->(value,)->x:float,y:time
-    #truck.usage[0].value ->y
-    #truck.usage[0].time->time
+    # truck.usage -> list ->(value,)->x:float,y:time
+    # truck.usage[0].value ->y
+    # truck.usage[0].time->time
 
     consignments = db.relationship(
         "Consignment", secondary=join_table, back_populates="trucks")
@@ -163,6 +164,7 @@ class Truck(db.Model):
         self.status = TruckStatus.ENROUTE
         for consignment in self.consignments:
             consignment.status = ConsignmentStatus.ENROUTE
+            consignment.dispatchtime = datetime.now()
 
     def addConsignment(self, consignment: Consignment) -> None:
         """

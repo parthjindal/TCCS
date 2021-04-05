@@ -2,11 +2,11 @@
   box-sizing: border-box;
 }
 :root {
-  --boxwidth: 400px;
-  --boxheight: 320px;
-  --icon-box-dimensions: 200px;
+  --boxwidth: 340px;
+  --boxheight: 420px;
+  --icon-box-dimensions: 250px;
   --icon-box-dimensions-half: calc(var(--icon-box-dimensions) /2);
-  --icon-offset: 0%;
+  --icon-offset: -10%;
   --content-fontsize: 1.1em;
   --accentcolor: maroon;
   --light: #428bca;
@@ -16,11 +16,8 @@
 
 body {
   background: #f1f1f1;
-  color: #030303;
+  color: #333333;
   margin-top: 5rem;
-  font-family:sans-serif;
-  padding: 0px;
-  font-weight: 500;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -278,7 +275,7 @@ button.ghost-btn:hover {
 
 @media screen and (min-width:600px) {
   :root {
-    --boxheight: 320px;
+    --boxheight: 420px;
   }
 }
 

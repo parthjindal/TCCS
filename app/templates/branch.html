@@ -14,7 +14,7 @@
             <p>Status: {{ data.status.name }}</p>
             <p>Consignment IDs:
                 {% for cids in data.consignments %}
-                {{ cids.id }}  
+                {{ cids.id }}
                 {% endfor %}
             </p>
             <button class="ghost-btn" onclick="location.href='/trucks/{{ data.id }}';">Go to this truck page</button>
@@ -23,15 +23,16 @@
     {% endfor %}
 </div>
 {% else %}
-    <p>No trucks in the branch</p>
-    {% endif %}
+<p>No trucks in the branch</p>
+{% endif %}
 <br>
 {% if consign %}
 <h2>Consignments in the branch are:</h2>
 <div class="container cont">
     {% for data in consign %}
     <div class="box">
-        <div class="img-box" title={{ data.id }}><img src="{{ url_for('static', filename='consign.png') }}" alt=""></div>
+        <div class="img-box" title={{ data.id }}><img src="{{ url_for('static', filename='consign.png') }}" alt="">
+        </div>
         <div class="content">
             <h2>Consignment ID: {{ data.id }}</h2>
             <h3>Branch: {{ data.srcBranchId }}</h3>
@@ -42,7 +43,62 @@
     {% endfor %}
 </div>
 {% else %}
-    <p>No trucks in the branch</p>
-    {% endif %}
-    <br>
+<p>No consignments in the branch</p>
+{% endif %}
+<br>
+
+<h2>Average Waiting time</h2>
+<div class = "container cont">
+<canvas id="myChart" width="600" height="400"></canvas>
+<script>
+    var timeFormat = 'MMMM Do YYYY, h:mm:ss a';
+
+function newDateString(hours, minutes, seconds, date, month, year) {
+    return moment().hour(hours).minute(minutes).second(seconds).date(date).month(month).year(year).format(timeFormat);
+}
+
+
+var chartData = {
+    labels: [{% for item in labels %}
+newDateString({{ item.hour }}, {{ item.minute }}, {{ item.second }}, {{ item.day }}, {{ item.month }}, {{ item.year }}),
+    {% endfor %}],
+datasets: [{
+    label: '{{ legend }}',
+    fill: true,
+    lineTension: 0.1,
+    backgroundColor: "rgba(75,192,192,0.4)",
+    borderColor: "rgba(75,192,192,1)",
+    borderCapStyle: 'butt',
+    borderDash: [],
+    borderDashOffset: 0.0,
+    borderJoinStyle: 'miter',
+    pointBorderColor: "rgba(75,192,192,1)",
+    pointBackgroundColor: "#fff",
+    pointBorderWidth: 1,
+    pointHoverRadius: 5,
+    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+    pointHoverBorderColor: "rgba(220,220,220,1)",
+    pointHoverBorderWidth: 2,
+    pointRadius: 1,
+    pointHitRadius: 10,
+    data: [{% for item in values %}
+                  {{ item }},
+{% endfor %}],
+    spanGaps: false
+    }]
+  }
+
+// get chart canvas
+var ctx = document.getElementById("myChart").getContext("2d");
+
+// create the chart using the chart canvas
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: chartData,
+});
+</script>
+</div>
+
+<!-- bar chart canvas element -->
+
 {% endblock %}

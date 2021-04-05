@@ -47,11 +47,10 @@ def change_rate():
     if current_user.role == "manager":
         form = ChangeRate()
         if form.validate_on_submit():
-            Office.rate = form.rate.data
-            db.session.commit()
+            Office.setRate(form.rate.data)
             flash("Rate value changed", 'success')
             return redirect(url_for("main.home"), code=302)
-        return render_template("rate.html", form=form), 200
+        return render_template("rate.html", form=form,rate = Office.getRate()), 200
 
     return render_template('errors/403.html'), 403
 
@@ -72,5 +71,8 @@ def branch(token):
     '''
     if current_user.role == "manager":
         branch = Office.query.filter_by(id=token).first()
-        return render_template('branch.html', name=branch.address.city, trck=branch.trucks, consign=branch.consignments), 200
+        labels = [x.time for x in branch.waitingtime]
+        values = [x.value for x in branch.waitingtime]
+
+        return render_template('branch.html', name=branch.address.city, trck=branch.trucks, consign=branch.consignments, labels=labels, values=values), 200
     return render_template('errors/403.html'), 403
