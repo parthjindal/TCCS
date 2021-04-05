@@ -30,17 +30,12 @@ def view(id):
     if truck_ is not None:
         consigns = truck_.consignments
         x = len(consigns)
-        value = []
-        ts = []
-        for i in truck_.usage:
-            value.append(i.value)
-            ts.append(datetime.timestamp(i.time))
-        value2 = []
-        ts2 = []
-        for i in truck_.idle:
-            value2.append(i.value)
-            ts2.append(datetime.timestamp(i.time))
-        return render_template("truck.html", role=current_user.role, truck=truck_, data=consigns, len=x, values=value, labels=ts, values2=value2, labels2=ts2), 200
+        labels = [x.time for x in truck_.usage]
+        values = [x.value for x in truck_.usage]
+        labels2 = [x.time for x in truck_.idle]
+        values2 = [x.value for x in truck_.idle]
+        return render_template("truck.html", role=current_user.role, truck=truck_, data=consigns, len=x, values=values, \
+            labels=labels, values2=values2, labels2=labels2), 200
     flash("Truck not registered", "warning")
     return redirect(url_for("main.home"), code=302)
 

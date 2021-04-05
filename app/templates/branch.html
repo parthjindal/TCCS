@@ -39,6 +39,7 @@
             <h3>Branch: {{ data.srcBranchId }}</h3>
             <p>Status: {{ data.status.name }}</p>
             <p>Volume: {{ data.volume }}</p>
+            <button class="ghost-btn" onclick="location.href='/consign/view/{{ data.id }}';">View</button>
         </div>
     </div>
     {% endfor %}
@@ -48,7 +49,7 @@
 {% endif %}
 <br>
 
-<h2>Average Consignment Waiting Time</h2>
+<h2>Average Consignment Waiting Period</h2>
 <div class = "container cont">
 <canvas id="myChart" width="600" height="400"></canvas>
 <script>
@@ -64,7 +65,7 @@ var chartData = {
 newDateString({{ item.hour }}, {{ item.minute }}, {{ item.second }}, {{ item.day }}, {{ item.month }}, {{ item.year }}),
     {% endfor %}],
 datasets: [{
-    label: '{{ legend }}',
+    label: 'Average Waiting Period',
     fill: true,
     lineTension: 0.1,
     backgroundColor: "rgba(75,192,192,0.4)",
