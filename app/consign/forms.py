@@ -8,7 +8,7 @@ class ConsignmentForm(FlaskForm):
     '''
 
     '''
-    volume = IntegerField("Volume", validators=[DataRequired(), NumberRange(min=1)])
+    volume = IntegerField("Volume", validators=[DataRequired(), NumberRange(min=1,max =500)])
 
     sAddrLine = StringField("Address Line", validators=[DataRequired(), Length(max=60)])
     sCity = StringField("City", validators=[DataRequired()])
@@ -22,13 +22,13 @@ class ConsignmentForm(FlaskForm):
 
     submit = SubmitField("Create")
 
-    def __init__(self, **kwargs):
+    def __init__(self,branchID,**kwargs):
         '''
 
         '''
         super().__init__(**kwargs)
         self.branch.choices = [(x.id, f'{x.address.city} Office')
-                               for x in Office.query.order_by("id")]
+                               for x in Office.query.order_by("id") if x.id != branchID]
 
     def validate_rZipCode(self, field):
         '''

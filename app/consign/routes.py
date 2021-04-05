@@ -50,7 +50,7 @@ def place():
         flash("Bad request", "warning")
         return redirect(url_for("main.home"), code=302)
 
-    form = ConsignmentForm()
+    form = ConsignmentForm(current_user.branchID)
     if form.validate_on_submit():
 
         senderAddress = Address(addrLine=form.sAddrLine.data,
