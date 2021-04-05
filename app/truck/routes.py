@@ -48,6 +48,7 @@ def dispatch_truck(id):
     branch.dispatch(truck_)
     db.session.commit()
 
+    ################### SHOW DETAILS OF ALL CONSIGNMENTS IN SIDE IT BEFORE DISPATCH ###################
     flash("Truck Logged as dispatched", "info")
     return redirect(url_for("main.home"))
 
