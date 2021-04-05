@@ -138,7 +138,7 @@ class Office(db.Model):
         value = 0
         for consign in truck.consignments:
             value += (consign.dispatchtime-consign.placetime).total_seconds() / 3600.0
-        value /= len(consign)
+        value /= len(truck.consignments)
 
         self.waitingtime.append(Logger(value=value, time=datetime.now()))
         if len(self.waitingtime) > 10:
