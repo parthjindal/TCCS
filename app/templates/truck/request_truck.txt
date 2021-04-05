@@ -6,6 +6,6 @@ To buy a new truck for the branch, please go to the following web address:
 {{ url_for('truck.add', _external=True) }}
 
 To check the statistics of the branches, please visit:
-{{ url_for('main.branch/view/all', _external=True) }}
+{{ url_for('main.branch_all', _external=True) }}
 
 Team Egret
