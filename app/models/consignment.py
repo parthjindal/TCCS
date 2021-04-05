@@ -26,9 +26,6 @@ class Consignment(db.Model):
         volume: int
             volume of the consignment
 
-        volumeLeft: int
-            volume of the consignment that has yet not been assigned to a truck
-
         senderAddress: Address
             address of the sender of the consignment
 
@@ -58,10 +55,10 @@ class Consignment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     volume = db.Column(db.Integer, index=True)
-    volumeLeft = db.Column(db.Integer, index=True)
     status = db.Column(db.Enum(ConsignmentStatus), index=True)
 
     placetime = db.Column(db.DateTime)
+    dispatchtime = db.Column(db.DateTime)
     arrivaltime = db.Column(db.DateTime)
 
     charge = db.Column(db.Integer, index=True)
@@ -109,8 +106,7 @@ class Consignment(db.Model):
 
         super().__init__(**kwargs)
         self.status = ConsignmentStatus.PENDING
-        self.volumeLeft = self.volume
-        self.charge = 0  # FIXME
+        self.charge = 0
         self.placetime = datetime.now()
 
     def getInvoice(self) -> dict:

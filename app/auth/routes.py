@@ -65,6 +65,7 @@ def logout():
         It redirects the user to the About page location
     '''
     logout_user()
+    flash("Logged out",category="success")
     return redirect(url_for('main.about'), code=302)
 
 

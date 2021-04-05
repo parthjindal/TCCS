@@ -18,6 +18,7 @@ def view_all():
         trucks = Truck.query.filter_by(branchID=current_user.branchID)
     if trucks is None:
         x = 0
+    
     return render_template("view_all.html", data=trucks, len=x), 200
 
 

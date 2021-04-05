@@ -6,7 +6,7 @@
 <h4>Status: {{ truck.status.name }}</h4><br>
 {% if role=="manager" %}
 <h3>Statistics</h3>
-<div class="container cont"></div>
+<div class="container cont">
 <canvas id="usageChart" width="600" height="400"></canvas>
 <script>
     var ctx = document.getElementById("usageChart").getContext("2d");
@@ -44,7 +44,7 @@
 });
 </script>
 </div>
-<div class="container cont"></div>
+<div class="container cont">
 <canvas id="idleChart" width="600" height="400"></canvas>
 <script>
     var ctx = document.getElementById("idleChart").getContext("2d");
@@ -92,13 +92,12 @@
 <div class="container cont">
     {% for data in data %}
     <div class="box">
-        <div class="img-box" title={{ data.id }}><img src="{{ url_for('static', filename='consign.jpg') }}" alt=""></div>
+        <div class="img-box" title={{ data.id }}><img src="{{ url_for('static', filename='consign.png') }}" alt=""></div>
         <div class="content">
             <h2>Consignment ID: {{ data.id }}</h2>
             <h3>Branch: {{ data.srcBranchID }}</h3>
             <p>Status: {{ data.status.name }}</p>
             <p>Volume: {{ data.volume }}</p>
-            <p>Volume Left: {{ data.volumeLeft }}</p>
             <button class="ghost-btn" onclick="location.href='/consign/view/{{ data.id }}';">View</button>
         </div>
     </div>

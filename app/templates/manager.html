@@ -1,16 +1,19 @@
 {% extends "auth/layout.html" %}
 
+
 {% block content %}
+<div style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
 {% if current_user.is_authenticated %}
-    <h1>Hello, {{ current_user.name }}! You are {{current_user.role}}.</h1>
+    <h1>Hello, {{ current_user.name }}!</h1>
     <h3>What would you like to do?</h3>
 {% endif %}
+</div >
 <div class="mngrcf container-fluid">
     <button type="button" class="button mngrbtn" onclick="location.href='/truck/view/all';"> View Trucks</button>
-    <button type="button" class="button mngrbtn" onclick="location.href='/branches';"> View Branches</button>
+    <button type="button" class="button mngrbtn" onclick="location.href='/branch/view/all';"> View Branch Offices</button>
     <button type="button" class="button mngrbtn" onclick="location.href='/consign/view/all';"> View Consignments</button>
     <button type="button" class="button mngrbtn" onclick="location.href='/auth/register';"> Add Employee</button>
     <button type="button" class="button mngrbtn" onclick="location.href='/truck/add';"> Buy New Truck</button>
-    <button type="button" class="button mngrbtn"> Change Rate</button>
+    <button type="button" class="button mngrbtn" onclick="location.href='/branch/rate';"> Change Rate</button>
 </div>
 {% endblock %}

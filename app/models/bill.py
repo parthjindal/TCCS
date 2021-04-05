@@ -1,4 +1,5 @@
 from app import db
+from datetime import datetime
 
 
 class Bill(db.Model):
@@ -27,6 +28,7 @@ class Bill(db.Model):
     amount = db.Column(db.Integer, index=True, nullable=False)
     invoice = db.Column(db.String(256))
     branchID = db.Column(db.Integer, db.ForeignKey('office.id'), index=True)
+    time = db.Column(db.DateTime, index=True)
     #######################################################################
 
     def __init__(self, **kwargs) -> None:
@@ -42,6 +44,7 @@ class Bill(db.Model):
 
         """
         super().__init__(**kwargs)
+        self.time = datetime.now()
 
     def __repr__(self) -> str:
         """

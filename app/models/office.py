@@ -6,6 +6,8 @@ from .consignment import ConsignmentStatus, Consignment
 from app.interface import Interface
 from .bill import Bill
 from datetime import datetime
+from .truck import Logger
+import pickle
 
 
 class Office(db.Model):
@@ -62,7 +64,11 @@ class Office(db.Model):
         "Truck", foreign_keys='Truck.branchID', uselist=True, lazy=False)
 
     transactions = db.relationship(
-        "Bill", foreign_keys='Bill.branchID', uselist=True, lazy=False, viewonly=True)
+        "Bill", foreign_keys='Bill.branchID', uselist=True, lazy=False)
+
+    waitingtime = db.relationship(
+        "Logger", foreign_keys="Logger.branchID3", uselist=True, lazy=False
+    )
 
     __mapper_args__ = {
         'polymorphic_identity': 'office',
@@ -70,8 +76,6 @@ class Office(db.Model):
     }
 
   ############################################################################
-
-    rate = 5
 
     def __init__(self, **kwargs):
         """
@@ -85,7 +89,6 @@ class Office(db.Model):
 
         """
         super().__init__(**kwargs)
-        self.transactions = []
 
     def isBranch(self):
         """
@@ -96,6 +99,12 @@ class Office(db.Model):
                 bool
         """
         pass
+
+    def getRevenue(self):
+        amount = 0
+        for bill in self.transactions:
+            amount += bill.amount
+        return amount
 
     def addTruck(self, truck) -> None:
         """
@@ -126,6 +135,14 @@ class Office(db.Model):
         '''
         '''
         truck.dispatch()
+        value = 0
+        for consign in truck.consignments:
+            value += (consign.dispatchtime-consign.placetime).total_seconds() / 3600.0
+        value /= len(truck.consignments)
+
+        self.waitingtime.append(Logger(value=value, time=datetime.now()))
+        if len(self.waitingtime) > 10:
+            self.waitingtime.pop(0)
 
     def addConsignment(self, consign) -> None:
         """
@@ -136,16 +153,29 @@ class Office(db.Model):
         if consign in self.consignments:
             raise Exception("Consignment already added")
 
-        consign.charge = Interface.computeBill(consign, rate=Office.rate)
+        consign.charge = Interface.computeBill(consign, rate=Office.getRate())
 
         invoice = Office.prettyInvoice(consign.getInvoice())
-        
         bill = Bill(amount=consign.charge, invoice=invoice)
         consign.bill = bill
         self.consignments.append(consign)
-        self.transactions.append(bill)
+        billcopy = Bill(amount=consign.charge, invoice=invoice, branchID=self.id)
+        self.transactions.append(billcopy)
 
     @staticmethod
+    def getRate():
+        with open("rate.pkl", 'rb') as inp:
+
+            print()
+            rate = pickle.load(inp)
+        return rate["rate"]
+
+    @staticmethod
+    def setRate(rate):
+        with open("rate.pkl", 'wb') as outp:
+            pickle.dump({"rate": rate}, outp)
+
+    @ staticmethod
     def prettyInvoice(invoice):
 
         res = f"""
@@ -158,7 +188,7 @@ class Office(db.Model):
         """
         return res
 
-    @staticmethod
+    @ staticmethod
     def allotTruck(branch):
         """
         """
@@ -192,7 +222,7 @@ class Office(db.Model):
             The function to receive a truck and its consignments if all the following conditions are satisfed:
                 a. the destination branchID of the truck matches with the id of the office
                 b. current status of the truck is ENROUTE
-                The function changes empties the truck and changes the status of all the consignments 
+                The function changes empties the truck and changes the status of all the consignments
                             that were alloted to the truck to DELIVERED
             If the above conditions are not satisfied, the function raises a suitable error
             ....
@@ -255,7 +285,7 @@ class BranchOffice(Office):
 
     def __init__(self, **kwargs) -> None:
         """
-            The constructor of the BranchOffice class called automatically whenever an object of the 
+            The constructor of the BranchOffice class called automatically whenever an object of the
                         BranchOffice class is created
             ....
 
@@ -310,7 +340,7 @@ class HeadOffice(Office):
 
     def __init__(self, **kwargs) -> None:
         """
-            The constructor of the HeadOffice class called automatically whenever an object of the 
+            The constructor of the HeadOffice class called automatically whenever an object of the
                         HeadOffice class is created
             ....
 

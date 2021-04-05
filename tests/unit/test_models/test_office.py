@@ -74,150 +74,176 @@ def test_allotment(test_client, database):
 
     database.session.commit()
 
-# def test_branch_office(test_client, database):
-#     """
 
-#     """
-#     addr = Address(city="Delhi", addrLine="TCCS Branch Town", zipCode="110009")
-#     addr1 = Address(city="Delhi", addrLine="C-28,Model Town-3", zipCode="110009")
-#     addr2 = Address(city="Mumbai", addrLine="H-Block", zipCode="100120")
-#     addr3 = Address(city="Kolkata", addrLine="H-Block", zipCode="101120")
-#     bOffice = BranchOffice(address=addr)
-#     bOffice1 = BranchOffice(address=addr3)
-#     database.session.add(bOffice)
-#     database.session.add(bOffice1)
-#     database.session.commit()
+def test_branch_office(test_client, database):
+    """
 
-#     t1 = Truck(plateNo="01TK0421")
-#     t2 = Truck(plateNo="01TK0422")
-#     t3 = Truck(plateNo="01TK049", branchID=bOffice1.id)
+    """
+    addr = Address(city="Delhi", addrLine="TCCS Branch Town", zipCode="110009")
+    addr1 = Address(city="Delhi", addrLine="C-28,Model Town-3", zipCode="110009")
+    addr2 = Address(city="Mumbai", addrLine="H-Block", zipCode="100120")
+    addr3 = Address(city="Kolkata", addrLine="H-Block", zipCode="101120")
+    bOffice = BranchOffice(address=addr)
+    bOffice1 = BranchOffice(address=addr3)
+    database.session.add(bOffice)
+    database.session.add(bOffice1)
+    database.session.commit()
 
-#     consign1 = Consignment(volume=300, senderAddress=addr1,
-#                            receiverAddress=addr2, srcBranchID=bOffice.id)
-#     t2.addConsignment(consign1)
-#     consign = Consignment(volume=300, senderAddress=addr1,
-#                           receiverAddress=addr2, srcBranchID=bOffice1.id)
-#     # t1.addConsignment(consign)
-#     bOffice.addTruck(t1)
-#     bOffice.addTruck(t2)
-#     try:
-#         bOffice.addTruck(t3)
-#     except AttributeError:
-#         print("Truck has already been assigned to another office")
+    t1 = Truck(plateNo="01TK0421")
+    t2 = Truck(plateNo="01TK0422", dstBranchID=bOffice1.id)
+    t3 = Truck(plateNo="01TK049", branchID=bOffice1.id)
 
-#     try:
-#         bOffice1.addTruck(t3)
-#     except AttributeError:
-#         print("Truck already present in the Office")
+    consign1 = Consignment(volume=300, senderAddress=addr1,
+                           receiverAddress=addr2, dstBranchID=bOffice1.id)
+    consign = Consignment(volume=300, senderAddress=addr1,
+                          receiverAddress=addr2)
 
-#     consign2 = Consignment(volume=300, senderAddress=addr2,
-#                            receiverAddress=addr1, dstBranchID=bOffice.id)
-#     consign3 = Consignment(volume=200, senderAddress=addr2,
-#                            receiverAddress=addr1, dstBranchID=bOffice.id)
-#     t5 = Truck(plateNo="01TK0424", dstBranchID=bOffice.id)
-#     t5.addConsignment(consign2)
-#     t5.addConsignment(consign3)
-#     bOffice1.addTruck(t5)
-#     # database.session.add(t5)
+    database.session.add(consign)
+    database.session.add(consign1)
+    database.session.add(t1)
+    database.session.add(t2)
+    database.session.add(t3)
 
-#     employee = Employee(name="Shristi",  email="shristi21singh@gmail.com", branchID=bOffice.id)
-#     employee1 = Employee(name="Parth", email="pmjindal2344@gmail.com", branchID=bOffice.id)
-#     database.session.add(employee)
-#     database.session.add(employee1)
+    bOffice.addConsignment(consign1)
+    bOffice1.addConsignment(consign)
+    bOffice.addTruck(t1)
+    bOffice.addTruck(t2)
+    t2.addConsignment(consign1)
+    database.session.commit()
 
-#     database.session.commit()
-#     bOffice_ = BranchOffice.query.filter_by(address=addr).first()
+    #print (t2.dstBranchID)
+    try:
+        bOffice.addTruck(t3)
+    except AttributeError:
+        print("Truck has already been assigned to another office")
 
-#     t3 = Truck.query.filter_by(plateNo="01TK0421").first()
-#     t4 = Truck.query.filter_by(plateNo="01TK0422").first()
-#     e1 = Employee.query.filter_by(email="pmjindal2344@gmail.com").first()
-#     e2 = Employee.query.filter_by(email="shristi21singh@gmail.com").first()
+    try:
+        bOffice1.addTruck(t3)
+    except AttributeError:
+        print("Truck already present in the Office")
 
-#     assert addr == bOffice_.address
-#     assert "branch" == bOffice_.type
-#     assert bOffice_.isBranch() == True
+    try:
+        t1.addConsignment(consign1)
+    except:
+        print(t1.branchID)
+        print(consign1.srcBranchID)
+    t3.addConsignment(consign)
 
-#     assert t3.branchID == bOffice_.id
-#     assert t4.branchID == bOffice_.id
-#     assert e1.branchID == bOffice_.id
-#     assert e2.branchID == bOffice_.id
+    consign2 = Consignment(volume=300, senderAddress=addr2,
+                           receiverAddress=addr1, dstBranchID=bOffice.id)
+    consign3 = Consignment(volume=200, senderAddress=addr2,
+                           receiverAddress=addr1, dstBranchID=bOffice.id)
+    t5 = Truck(plateNo="01TK0424", dstBranchID=bOffice.id)
 
-#     f = False
+    bOffice1.addConsignment(consign2)
+    bOffice1.addConsignment(consign3)
+    bOffice1.addTruck(t5)
 
-#     for i in bOffice_.consignments:
-#         if (i == consign1):
-#             f = True
+    t5.addConsignment(consign2)
+    t5.addConsignment(consign3)
+    database.session.add(t5)
+    database.session.commit()
 
-#     assert f == True
+    employee = Employee(name="Shristi",  email="shristi21singh@gmail.com", branchID=bOffice.id)
+    employee1 = Employee(name="Parth", email="pmjindal2344@gmail.com", branchID=bOffice.id)
+    database.session.add(employee)
+    database.session.add(employee1)
 
-#     f1 = False
-#     f2 = False
-#     f3 = False
-#     f4 = False
+    database.session.commit()
+    bOffice_ = BranchOffice.query.filter_by(address=addr).first()
 
-#     for i in bOffice_.trucks:
-#         if (i == t3):
-#             f1 = True
+    t3 = Truck.query.filter_by(plateNo="01TK0421").first()
+    t4 = Truck.query.filter_by(plateNo="01TK0422").first()
+    e1 = Employee.query.filter_by(email="pmjindal2344@gmail.com").first()
+    e2 = Employee.query.filter_by(email="shristi21singh@gmail.com").first()
 
-#         if (i == t4):
-#             f2 = True
+    assert addr == bOffice_.address
+    assert "branch" == bOffice_.type
+    assert bOffice_.isBranch() == True
 
-#     assert (f1 == True)
-#     assert (f2 == True)
+    assert t3.branchID == bOffice_.id
+    assert t4.branchID == bOffice_.id
+    assert e1.branchID == bOffice_.id
+    assert e2.branchID == bOffice_.id
 
-#     for i in bOffice_.employees:
-#         if (i == e1):
-#             f3 = True
+    f = False
 
-#         if (i == e2):
-#             f4 = True
+    for i in bOffice_.consignments:
+        if (i == consign1):
+            f = True
 
-#     assert (f3 == True)
-#     assert (f4 == True)
+    assert f == True
 
-#     f = False
-#     f1 = False
-#     lst = bOffice_.receiveTruck(t5)
+    f1 = False
+    f2 = False
+    f3 = False
+    f4 = False
 
-#     try:
-#         for i in lst:
-#             if (i == consign2):
-#                 f = True
+    for i in bOffice_.trucks:
+        if (i == t3):
+            f1 = True
 
-#             if (i == consign3):
-#                 f1 = True
+        if (i == t4):
+            f2 = True
 
-#         assert f == True
-#         assert f1 == True
-#     except:
-#         print(lst)
+    assert (f1 == True)
+    assert (f2 == True)
 
-#     # t5.status = TruckStatus.ENROUTE
-#     # database.session.commit()
-#     # lst = bOffice_.receiveTruck(t5)
-#     # for i in lst:
-# #         if (i == consign2):
-# #             f = True
+    for i in bOffice_.employees:
+        if (i == e1):
+            f3 = True
 
-# #         if (i == consign3):
-# #             f1 = True
+        if (i == e2):
+            f4 = True
 
-#     # assert f == True
-#     # assert f1 == True
+    assert (f3 == True)
+    assert (f4 == True)
 
-#     # assert t5.branchID == bOffice_.id
+    f = False
+    f1 = False
+    lst = bOffice_.receiveTruck(t5)
 
-#     f = False
-#     lst1 = bOffice_.receiveTruck(t2)
-#     try:
-#         for i in lst:
-#             if (i == consign1):
-#                 f = True
+    try:
+        for i in lst:
+            if (i == consign2):
+                f = True
 
-#         assert f == True
-#     except:
-#         print(lst)
+            if (i == consign3):
+                f1 = True
 
+        assert f == True
+        assert f1 == True
+    except:
+        print(lst)
+
+    bOffice_.dispatchTruck(t5)
+    database.session.commit()
+    # lst = bOffice_.receiveTruck(t5)
+    # for i in lst:
+    #     if (i == consign2):
+    #         f = True
+
+    #     if (i == consign3):
+    #         f1 = True
+
+    # assert f == True
+    # assert f1 == True
+
+    # assert t5.branchID == bOffice_.id
+
+    f = False
+    bOffice.dispatchTruck(t2)
+    database.session.commit()
+    print(t2.dstBranchID)
+    print(bOffice1.id)
+    lst1 = bOffice1.receiveTruck(t2)
+    print(lst1)
+    for i in lst1:
+        if (i == consign1):
+            f = True
+
+    assert f == True
+    database.session.commit()
 
 # def test_head_office(test_client, database):
 #     """

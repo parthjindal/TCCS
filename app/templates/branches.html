@@ -5,28 +5,22 @@
     {% if data %}
     {% for data in data %}
     <div class="box">
-        <div class="img-box" title={{ data.id }}><img src="{{ url_for('static', filename='branch2.jpg') }}" alt=""></div>
+        <div class="img-box" title={{ data.id }}><img src="{{ url_for('static', filename='office.png') }}" alt=""></div>
         <div class="content">
             <h2>Branch ID: {{ data.id }}</h2>
             <h3>City: {{ data.address.city }}</h3>
-            <h3>Name: {{ data.name }}</h3>
-            <p>Consignment IDs:
-                {% for cids in data.consignments %}
-                {{ cids.id }}  
-                {% endfor %}
+            <p>Consignments: {{ data.consignments|count }}
             </p>
-            <p>Truck IDs:
-                {% for tids in data.trucks %}
-                {{ tids.id }}  
-                {% endfor %}
+            <p>Trucks: {{ data.trucks|count }}
             </p>
+            
             <!-- <p>Revenue: {{ data.revenue }}</p> -->
-            <button class="ghost-btn" onclick="location.href='/branches/{{ data.id }}';">Go to this branch page</button>
+            <button class="ghost-btn" onclick="location.href='/branch/view/{{ data.id }}';">Go to this branch page</button>
         </div>
     </div>
     {% endfor %}
     {% else %}
-    <h2>No branches found</h2>
+    <h2>No branch found</h2>
     {% endif %}
 </div>
 <br>
