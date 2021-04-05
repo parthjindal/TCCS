@@ -14,6 +14,7 @@ def view_all():
         trucks = Truck.query.all()
     elif current_user.role == "employee":
         trucks = Truck.query.filter_by(branchID=current_user.branchID)
+    ############################ SHOW GRAPH ##################################
     return render_template("view_all.html", data=trucks), 200
 
 
@@ -24,6 +25,7 @@ def view(id):
 
     if truck_ is not None:
         consigns = truck_.consigns
+        ############################ SHOW STATISTICS GRAPH ##################################
         render_template("truck.html", truck=truck_, data=consigns), 200
     flash("Truck not registered", "warning")
     return redirect(url_for("main.home"), code=302)
@@ -39,8 +41,13 @@ def dispatch():
 @truck.route("/dispatch/<id>")
 @login_required
 def dispatch_truck(id):
+
     truck_ = Truck.query.get(id)
-    truck_.dispatch()
+    branch = Office.query.get(current_user.branchID)
+
+    branch.dispatch(truck_)
+    db.session.commit()
+
     flash("Truck Logged as dispatched", "info")
     return redirect(url_for("main.home"))
 
@@ -90,7 +97,10 @@ def add():
             branch = Office.query.get(form.branch.data)
             branch.addTruck(truck_)
 
+            db.session.commit()
             Office.allotTruck(branch)
+
+            db.session.commit()
 
             flash("Truck Added", 'success')
             return redirect(url_for("main.home"), code=302)
@@ -113,3 +123,8 @@ def receive():
 
         Office.allotTruck(branch)
         db.session.commit()
+
+        flash("Truck logged as received", 'info')
+        return redirect(url_for("main.home"), code=302)
+        ################################### TODO #################################################
+    # render_template()

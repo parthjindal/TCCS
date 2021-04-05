@@ -29,13 +29,13 @@ class Employee(db.Model, UserMixin):
         ----------------
         set_password(password: str):
             the function to reset the login password of the employee
-        
+
         check_password(password: str): bool
             the function to check if the given password is equal to login password of the employee
-        
+
         get_reset_token(expire_sec: int): str
             the function to generate a resent token whenever the employee tries to reset the password
-        
+
         verify_reset_token(token: str): int
             verifies the reset token and returns the id of the employee
 
@@ -92,7 +92,7 @@ class Employee(db.Model, UserMixin):
             The function to check if the hash value of the login password of the employee and 
                         the given password are same
             ...
-            
+
             Parameters:
                 password: string
                     the string with which the password of the employee has to be compared
@@ -121,7 +121,7 @@ class Employee(db.Model, UserMixin):
             The function to verify the reset token and return the id of the employee if 
                     the verification is successful
             ....
-            
+
             Parameters:
                 token: string
                     the token to be verified
@@ -202,7 +202,7 @@ def load_user(id):
         Pararmeters:
             id: int
                 the id of the employee to be returned
-        
+
         Returns:
             user: Employee
     '''
