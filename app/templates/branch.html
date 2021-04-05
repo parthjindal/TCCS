@@ -1,6 +1,7 @@
 {% extends "auth/layout.html" %}
 {% block content %}
-<h1>Branch {{ name }}</h1>
+<h1>Branch {{ name }} Office</h1>
+<h2>Revenue: {{ revenue }}</h2>
 {% if trck %}
 <h2>Trucks in the branch are:</h2>
 <div class="container cont">
@@ -47,7 +48,7 @@
 {% endif %}
 <br>
 
-<h2>Average Waiting time</h2>
+<h2>Average Consignment Waiting Time</h2>
 <div class = "container cont">
 <canvas id="myChart" width="600" height="400"></canvas>
 <script>

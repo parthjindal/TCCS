@@ -97,7 +97,7 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        flash('Employee added')
+        flash('Employee added', 'success')
         return redirect(url_for('main.home'), code=302)
 
     return render_template('register.html', title='Register', form=form), 200
