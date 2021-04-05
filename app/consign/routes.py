@@ -64,7 +64,7 @@ def place():
         db.session.add(consign)
         office = Office.query.get(id)
         office.addConsignment(consign)
-
+        db.session.add(office.transactions[-1])
         db.session.commit()
         Office.allotTruck(Office.query.get(id))
 
@@ -110,6 +110,6 @@ def view(id):
     if consign is None:
         flash("Bad request, consignment not found", "warning")
         return redirect(url_for("main.home", role=current_user.role), code=302)
-        
+
     ############################ TODO #####################################################
     return consign.bill.invoice

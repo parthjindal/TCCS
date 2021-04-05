@@ -49,8 +49,11 @@ def test_allotment(test_client, database):
     o1.addConsignment(c1)
     o1.addConsignment(c2)
     o1.addConsignment(c3)
-    print(len(o1.transactions))
 
+    # for x in o1.transactions:
+    #     database.session.add(x)
+
+    # database.session.commit()
     Office.allotTruck(o1)
 
     database.session.commit()
@@ -60,19 +63,17 @@ def test_allotment(test_client, database):
     o1.dispatchTruck(t3)
     o1.dispatchTruck(t2)
 
-    # time.sleep(10)
-
     o2.receiveTruck(t3)
 
     for i in o1.consignments:
         print(i)
     database.session.commit()
 
-    
     for i in o1.transactions:
         print(i.invoice)
 
     database.session.commit()
+
 # def test_branch_office(test_client, database):
 #     """
 
