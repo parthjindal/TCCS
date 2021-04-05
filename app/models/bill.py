@@ -27,6 +27,7 @@ class Bill(db.Model):
     amount = db.Column(db.Integer, index=True, nullable=False)
     invoice = db.Column(db.String(256))
     branchID = db.Column(db.Integer, db.ForeignKey('office.id'), index=True)
+    #######################################################################
 
     def __init__(self, **kwargs) -> None:
         """

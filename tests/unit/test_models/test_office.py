@@ -6,6 +6,7 @@ from app.models import Office, BranchOffice, HeadOffice
 from app.models import Truck, TruckStatus
 import unittest
 from app.interface import Interface
+import time
 
 
 def test_allotment(test_client, database):
@@ -49,8 +50,6 @@ def test_allotment(test_client, database):
     o1.addConsignment(c2)
     o1.addConsignment(c3)
 
-    database.session.commit()
-
     Office.allotTruck(o1)
 
     database.session.commit()
@@ -59,18 +58,18 @@ def test_allotment(test_client, database):
 
     o1.dispatchTruck(t3)
     o1.dispatchTruck(t2)
-    o2.receiveTruck(t3)
 
+    time.sleep(10)
+
+    o2.receiveTruck(t3)
 
     for i in o1.consignments:
         print(i)
 
     database.session.commit()
 
-    for i  in o1.transactions:
+    for i in o1.transactions:
         print(i.invoice)
-    
-
 
 # def test_branch_office(test_client, database):
 #     """

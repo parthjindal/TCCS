@@ -11,6 +11,17 @@ class TruckStatus(Enum):
     ENROUTE = 3
 
 
+class Logger(db.Model):
+    __tablename__ = "logger"
+    id = db.Column(db.Integer, primary_key=True, index=True)
+    value = db.Column(db.Float, index=True)
+    time = db.Column(db.DateTime)
+    branchID1 = db.Column(db.Integer, db.ForeignKey('truck.id'))
+    branchID2 = db.Column(db.Integer, db.ForeignKey('truck.id'))
+
+    def __repr__(self):
+        return f'<Value:{self.value}, Timestamp:{self.time.strftime("%d-%b-%Y, %H:%M") }>'
+
 class Truck(db.Model):
     """
         A class to represent a truck
@@ -65,10 +76,11 @@ class Truck(db.Model):
     volume = db.Column(db.Integer)        # volume-init
     volumeLeft = db.Column(db.Integer)    # volume-left
 
-    departureTime = db.Column(db.DateTime)  # departure time
+    assignmentTime = db.Column(db.DateTime)  # departure time
+    emptyTime = db.Column(db.DateTime)  # empty-time
 
-    usageTime = db.Column(db.Float)
-    idleTime = db.Column(db.Float)
+    usage = db.relationship('Logger', foreign_keys="Logger.branchID1", uselist=True)
+    idle = db.relationship('Logger', foreign_keys="Logger.branchID2", uselist=True)
 
     consignments = db.relationship(
         "Consignment", secondary=join_table, back_populates="trucks")
@@ -95,8 +107,10 @@ class Truck(db.Model):
         self.volume = volume
         self.volumeLeft = self.volume
         self.status = TruckStatus.AVAILABLE
-        self.usageTime = 0
-        self.idleTime = 0
+        self.emptyTime = datetime.now()
+        self.assignmentTime = datetime.now()
+        self.usage.append(Logger(value=0, time=datetime.now()))
+        self.idle.append(Logger(value=0, time=datetime.now()))
 
     def empty(self) -> list:
         """
@@ -107,15 +121,13 @@ class Truck(db.Model):
                 consignments: list of Consignment class objects
 
         """
+        self.emptyTime = datetime.now()
+        self.updateUsageTime(self.assignmentTime, self.emptyTime)
         consignments = self.consignments
 
         self.volumeLeft = self.volume
         self.status = TruckStatus.AVAILABLE
         self.branchID = None
-        ######################################### TODO ##############################
-        # update usage time/idletime
-        #############################################################################
-
         self.dstBranchID = None
         self.consignments = []
 
@@ -125,13 +137,24 @@ class Truck(db.Model):
 
         return consignments
 
+    def updateUsageTime(self, time1, time2):
+        log = Logger(value=(time2-time1).total_seconds() / 3600, time=time2)
+        self.usage.append(log)
+        if len(self.usage) > 10:
+            self.usage.remove(0)
+
+    def updateIdleTime(self, time1, time2):
+        log = Logger(value=(time2-time1).total_seconds() / 3600, time=time2)
+        self.idle.append(log)
+        if len(self.idle) > 10:
+            self.idle.remove(0)
+
     def dispatch(self) -> None:
         """
             The function to dispatch the truck and make neccessary changes to the truck and its consignments
 
         """
         self.status = TruckStatus.ENROUTE
-        self.departureTime = datetime.now()
         for consignment in self.consignments:
             consignment.status = ConsignmentStatus.ENROUTE
 
@@ -163,6 +186,9 @@ class Truck(db.Model):
             raise ValueError("Truck full/enroute ")
 
         if self.status == TruckStatus.AVAILABLE:
+
+            self.assignmentTime = datetime.now()
+            self.updateIdleTime(self.emptyTime, self.assignmentTime)
 
             self.status = TruckStatus.ASSIGNED
             self.dstBranchID = consignment.dstBranchID
