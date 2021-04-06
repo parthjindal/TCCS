@@ -3,6 +3,8 @@ env/
 *.pyc
 __pycache__/
 
+createModel.py
+
 instance/
 .vscode/
 
