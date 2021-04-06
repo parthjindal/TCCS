@@ -3,84 +3,87 @@
 <h1>Truck ID: {{ truck.id }}</h1>
 <h4>Plate No.: {{ truck.plateNo }}</h4>
 <h4>Branch ID: {{ truck.branchID }}</h4>
-<h4>Status: {{ truck.status.name }}</h4><br>
+<h4>Status: {{ truck.status.name }}</h4>
+<h4>Destination: {{ destination }}</h4>
+<h4>Volume Left: {{ truck.volumeLeft }}</h4><br>
+
 {% if role=="manager" %}
 <h3>Statistics</h3>
 <div class="container cont">
-<canvas id="usageChart" width="600" height="400"></canvas>
-<script>
-    var ctx = document.getElementById("usageChart").getContext("2d");
-    var usageChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: {{ labels | safe }},
-                        datasets: [
-                            {
-                                label: "Usage Time",
-                                data: {{ values | safe }},
-                                fill: true,
-                                lineTension: 0.1,
-                                backgroundColor: "rgba(75,192,192,0.4)",
-                                borderColor: "rgba(75,192,192,1)",
-                                borderCapStyle: 'butt',
-                                borderDash: [],
-                                borderDashOffset: 0.0,
-                                borderJoinStyle: 'miter',
-                                pointBorderColor: "rgba(75,192,192,1)",
-                                pointBackgroundColor: "#fff",
-                                pointBorderWidth: 1,
-                                pointHoverRadius: 5,
-                                pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                                pointHoverBorderColor: "rgba(220,220,220,1)",
-                                pointHoverBorderWidth: 2,
-                                pointRadius: 1,
-                                pointHitRadius: 10
+    <canvas id="usageChart" width="600" height="400"></canvas>
+    <script>
+        var ctx = document.getElementById("usageChart").getContext("2d");
+        var usageChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ labels | safe }},
+        datasets: [
+            {
+                label: "Usage Time",
+                data: {{ values | safe }},
+            fill: true,
+            lineTension: 0.1,
+            backgroundColor: "rgba(75,192,192,0.4)",
+            borderColor: "rgba(75,192,192,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(75,192,192,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10
                             }
-                        ]
+        ]
                     },
-                    options: {
-                        responsive: false
-                    }
+        options: {
+            responsive: false
+        }
 });
-</script>
+    </script>
 </div>
 <div class="container cont">
-<canvas id="idleChart" width="600" height="400"></canvas>
-<script>
-    var ctx = document.getElementById("idleChart").getContext("2d");
-    var idleChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: {{ labels2 | safe }},
-                        datasets: [
-                            {
-                                label: "Idle Time",
-                                data: {{ values2 | safe }},
-                                fill: true,
-                                lineTension: 0.1,
-                                backgroundColor: "rgba(75,192,192,0.4)",
-                                borderColor: "rgba(75,192,192,1)",
-                                borderCapStyle: 'butt',
-                                borderDash: [],
-                                borderDashOffset: 0.0,
-                                borderJoinStyle: 'miter',
-                                pointBorderColor: "rgba(75,192,192,1)",
-                                pointBackgroundColor: "#fff",
-                                pointBorderWidth: 1,
-                                pointHoverRadius: 5,
-                                pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                                pointHoverBorderColor: "rgba(220,220,220,1)",
-                                pointHoverBorderWidth: 2,
-                                pointRadius: 1,
-                                pointHitRadius: 10
+    <canvas id="idleChart" width="600" height="400"></canvas>
+    <script>
+        var ctx = document.getElementById("idleChart").getContext("2d");
+        var idleChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ labels2 | safe }},
+        datasets: [
+            {
+                label: "Idle Time",
+                data: {{ values2 | safe }},
+            fill: true,
+            lineTension: 0.1,
+            backgroundColor: "rgba(75,192,192,0.4)",
+            borderColor: "rgba(75,192,192,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(75,192,192,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10
                             }
-                        ]
+        ]
                     },
-                    options: {
-                        responsive: false
-                    }
+        options: {
+            responsive: false
+        }
 });
-</script>
+    </script>
 </div>
 <br>
 {% endif %}
@@ -92,7 +95,8 @@
 <div class="container cont">
     {% for data in data %}
     <div class="box">
-        <div class="img-box" title={{ data.id }}><img src="{{ url_for('static', filename='consign.png') }}" alt=""></div>
+        <div class="img-box" title={{ data.id }}><img src="{{ url_for('static', filename='consign.png') }}" alt="">
+        </div>
         <div class="content">
             <h2>Consignment ID: {{ data.id }}</h2>
             <h3>Branch: {{ data.srcBranchID }}</h3>

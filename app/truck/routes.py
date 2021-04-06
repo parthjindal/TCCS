@@ -18,7 +18,6 @@ def view_all():
         trucks = Truck.query.filter_by(branchID=current_user.branchID)
     if trucks is None:
         x = 0
-    
     return render_template("view_all.html", data=trucks, len=x), 200
 
 
@@ -40,7 +39,9 @@ def view(id):
         for i in truck_.idle:
             value2.append(i.value)
             ts2.append(datetime.timestamp(i.time))
-        return render_template("truck.html", role=current_user.role, truck=truck_, data=consigns, len=x, values=value, labels=ts, values2=value2, labels2=ts2), 200
+        destination = (Office.query.get(truck_.dstBranchID).address.city +
+                       " Office") if truck_.dstBranchID is not None else "Not Assigned yet"
+        return render_template("truck.html", role=current_user.role, truck=truck_, data=consigns, len=x, values=value, labels=ts, values2=value2, labels2=ts2, destination=destination), 200
     flash("Truck not registered", "warning")
     return redirect(url_for("main.home"), code=302)
 
