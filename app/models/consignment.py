@@ -2,6 +2,8 @@ from .address import Address
 from enum import Enum
 from app import db
 from datetime import datetime
+import pytz
+timezone = pytz.timezone("Asia/Kolkata")
 
 join_table = db.Table(
     'join_table', db.Model.metadata, db.Column(
@@ -107,7 +109,7 @@ class Consignment(db.Model):
         super().__init__(**kwargs)
         self.status = ConsignmentStatus.PENDING
         self.charge = 0
-        self.placetime = datetime.now()
+        self.placetime = timezone.localize(datetime.now())
 
     def getInvoice(self) -> dict:
         res = {

@@ -18,6 +18,8 @@ def view_all():
         trucks = Truck.query.filter_by(branchID=current_user.branchID)
     if trucks is None:
         x = 0
+    trucks = [(x, Office.query.get(x.branchID).address.city + " Office")
+              for x in trucks]
     return render_template("view_all.html", data=trucks, len=x), 200
 
 
@@ -29,19 +31,18 @@ def view(id):
     if truck_ is not None:
         consigns = truck_.consignments
         x = len(consigns)
-        value = []
-        ts = []
-        for i in truck_.usage:
-            value.append(i.value)
-            ts.append(datetime.timestamp(i.time))
-        value2 = []
-        ts2 = []
-        for i in truck_.idle:
-            value2.append(i.value)
-            ts2.append(datetime.timestamp(i.time))
+
+        ts = [x.time for x in truck_.usage]
+        value = [x.value for x in truck_.usage]
+        ts2 = [x.time for x in truck_.idle]
+
+        value2 = [x.value for x in truck_.idle]
+
         destination = (Office.query.get(truck_.dstBranchID).address.city +
                        " Office") if truck_.dstBranchID is not None else "Not Assigned yet"
-        return render_template("truck.html", role=current_user.role, truck=truck_, data=consigns, len=x, values=value, labels=ts, values2=value2, labels2=ts2, destination=destination), 200
+        branchName = Office.query.get(truck_.branchID).address.city + " Office"
+        return render_template("truck.html", role=current_user.role, truck=truck_, data=consigns, len=x, values=value, labels=ts, values2=value2, labels2=ts2,
+                               destination=destination, branchName=branchName), 200
     flash("Truck not registered", "warning")
     return redirect(url_for("main.home"), code=302)
 
@@ -120,8 +121,8 @@ def add():
             branch.addTruck(truck_)
 
             db.session.commit()
+            
             Office.allotTruck(branch)
-
             db.session.commit()
 
             flash("Truck Added", 'success')

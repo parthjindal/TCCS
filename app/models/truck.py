@@ -2,6 +2,8 @@ from enum import Enum
 from .consignment import ConsignmentStatus, join_table, Consignment
 from app import db
 from datetime import datetime
+import pytz
+timezone = pytz.timezone("Asia/Kolkata")
 
 
 class TruckStatus(Enum):
@@ -66,7 +68,8 @@ class Truck(db.Model):
     ############################## ORM ########################################
     __tablename__ = "truck"
     id = db.Column(db.Integer, primary_key=True)            # id
-    plateNo = db.Column(db.String(16), unique=True)                      # plateNo
+    # plateNo
+    plateNo = db.Column(db.String(16), unique=True)
 
     branchID = db.Column(                                   # branchID
         db.Integer, db.ForeignKey("office.id"), index=True)
@@ -81,8 +84,10 @@ class Truck(db.Model):
     assignmentTime = db.Column(db.DateTime)  # departure time
     emptyTime = db.Column(db.DateTime)  # empty-time
 
-    usage = db.relationship('Logger', foreign_keys="Logger.branchID1", uselist=True)
-    idle = db.relationship('Logger', foreign_keys="Logger.branchID2", uselist=True)
+    usage = db.relationship(
+        'Logger', foreign_keys="Logger.branchID1", uselist=True)
+    idle = db.relationship(
+        'Logger', foreign_keys="Logger.branchID2", uselist=True)
 
     #####################
     # truck.usage -> list ->(value,)->x:float,y:time
@@ -114,10 +119,10 @@ class Truck(db.Model):
         self.volume = volume
         self.volumeLeft = self.volume
         self.status = TruckStatus.AVAILABLE
-        self.emptyTime = datetime.now()
-        self.assignmentTime = datetime.now()
-        self.usage.append(Logger(value=0, time=datetime.now()))
-        self.idle.append(Logger(value=0, time=datetime.now()))
+        self.emptyTime = timezone.localize(datetime.now())
+        self.assignmentTime = timezone.localize(datetime.now())
+        self.usage.append(Logger(value=0, time=timezone.localize(datetime.now())))
+        self.idle.append(Logger(value=0, time=timezone.localize(datetime.now())))
 
     def empty(self) -> list:
         """
@@ -128,15 +133,15 @@ class Truck(db.Model):
                 consignments: list of Consignment class objects
 
         """
-        self.emptyTime = datetime.now()
+        self.emptyTime= timezone.localize(datetime.now())
         self.updateUsageTime(self.assignmentTime, self.emptyTime)
-        consignments = self.consignments
+        consignments=self.consignments
 
-        self.volumeLeft = self.volume
-        self.status = TruckStatus.AVAILABLE
-        self.branchID = None
-        self.dstBranchID = None
-        self.consignments = []
+        self.volumeLeft=self.volume
+        self.status=TruckStatus.AVAILABLE
+        self.branchID=None
+        self.dstBranchID=None
+        self.consignments=[]
 
         for consignment in consignments:
             if self in consignment.trucks:
@@ -145,13 +150,13 @@ class Truck(db.Model):
         return consignments
 
     def updateUsageTime(self, time1, time2):
-        log = Logger(value=(time2-time1).total_seconds() / 3600, time=time2)
+        log=Logger(value=(time2.replace(tzinfo=None)-time1.replace(tzinfo=None)).total_seconds() / 3600, time=time2)
         self.usage.append(log)
         if len(self.usage) > 10:
             self.usage.remove(0)
 
     def updateIdleTime(self, time1, time2):
-        log = Logger(value=(time2-time1).total_seconds() / 3600, time=time2)
+        log=Logger(value=(time2.replace(tzinfo=None)-time1.replace(tzinfo=None)).total_seconds() / 3600, time=time2)
         self.idle.append(log)
         if len(self.idle) > 10:
             self.idle.remove(0)
@@ -161,10 +166,10 @@ class Truck(db.Model):
             The function to dispatch the truck and make neccessary changes to the truck and its consignments
 
         """
-        self.status = TruckStatus.ENROUTE
+        self.status=TruckStatus.ENROUTE
         for consignment in self.consignments:
-            consignment.status = ConsignmentStatus.ENROUTE
-            consignment.dispatchtime = datetime.now()
+            consignment.status=ConsignmentStatus.ENROUTE
+            consignment.dispatchtime= timezone.localize(datetime.now())
 
     def addConsignment(self, consignment: Consignment) -> None:
         """
@@ -195,20 +200,20 @@ class Truck(db.Model):
 
         if self.status == TruckStatus.AVAILABLE:
 
-            self.assignmentTime = datetime.now()
+            self.assignmentTime= timezone.localize(datetime.now())
             self.updateIdleTime(self.emptyTime, self.assignmentTime)
 
-            self.status = TruckStatus.ASSIGNED
-            self.dstBranchID = consignment.dstBranchID
+            self.status=TruckStatus.ASSIGNED
+            self.dstBranchID=consignment.dstBranchID
             self.consignments.append(consignment)
 
             consignment.trucks.append(self)
 
             self.volumeLeft -= consignment.volume
-            consignment.status = ConsignmentStatus.ALLOTED
+            consignment.status=ConsignmentStatus.ALLOTED
 
             if self.volumeLeft == 0:
-                self.status = TruckStatus.READY
+                self.status=TruckStatus.READY
 
         elif self.status == TruckStatus.ASSIGNED:
 
@@ -219,10 +224,10 @@ class Truck(db.Model):
             consignment.trucks.append(self)
 
             self.volumeLeft -= consignment.volume
-            consignment.status = ConsignmentStatus.ALLOTED
+            consignment.status=ConsignmentStatus.ALLOTED
 
             if self.volumeLeft == 0:
-                self.status = TruckStatus.READY
+                self.status=TruckStatus.READY
 
     def __repr__(self) -> str:
         """

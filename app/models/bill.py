@@ -1,6 +1,7 @@
 from app import db
 from datetime import datetime
-
+import pytz
+timezone = pytz.timezone("Asia/Kolkata")
 
 class Bill(db.Model):
     """
@@ -44,7 +45,7 @@ class Bill(db.Model):
 
         """
         super().__init__(**kwargs)
-        self.time = datetime.now()
+        self.time = timezone.localize(datetime.now())
 
     def __repr__(self) -> str:
         """

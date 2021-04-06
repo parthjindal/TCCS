@@ -2,7 +2,7 @@
 {% block content %}
 <h1>Truck ID: {{ truck.id }}</h1>
 <h4>Plate No.: {{ truck.plateNo }}</h4>
-<h4>Branch ID: {{ truck.branchID }}</h4>
+<h4>Branch : {{ branchName }}</h4>
 <h4>Status: {{ truck.status.name }}</h4>
 <h4>Destination: {{ destination }}</h4>
 <h4>Volume Left: {{ truck.volumeLeft }}</h4><br>
@@ -13,10 +13,18 @@
     <canvas id="usageChart" width="600" height="400"></canvas>
     <script>
         var ctx = document.getElementById("usageChart").getContext("2d");
+        var timeFormat = 'MMMM Do YYYY, h:mm:ss a';
+
+        function newDateString(hours, minutes, seconds, date, month, year) {
+            return moment().hour(hours).minute(minutes).second(seconds).date(date).month(month).year(year).format(timeFormat);
+        }
+        
         var usageChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: {{ labels | safe }},
+                labels: [{% for item in labels %}
+                newDateString({{ item.hour }}, {{ item.minute }}, {{ item.second }}, {{ item.day }}, {{ item.month }}, {{ item.year }}),
+                    {% endfor %}],
         datasets: [
             {
                 label: "Usage Time",
@@ -54,7 +62,9 @@
         var idleChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: {{ labels2 | safe }},
+                labels: [{% for item in labels2 %}
+                newDateString({{ item.hour }}, {{ item.minute }}, {{ item.second }}, {{ item.day }}, {{ item.month }}, {{ item.year }}),
+                    {% endfor %}],
         datasets: [
             {
                 label: "Idle Time",

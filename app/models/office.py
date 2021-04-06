@@ -8,7 +8,8 @@ from .bill import Bill
 from datetime import datetime
 from .truck import Logger
 import pickle
-
+import pytz
+timezone = pytz.timezone("Asia/Kolkata")
 
 class Office(db.Model):
     """
@@ -137,10 +138,10 @@ class Office(db.Model):
         truck.dispatch()
         value = 0
         for consign in truck.consignments:
-            value += (consign.dispatchtime-consign.placetime).total_seconds() / 3600.0
+            value += (consign.dispatchtime.replace(tzinfo=None)-consign.placetime.replace(tzinfo=None)).total_seconds() / 3600.0
         value /= len(truck.consignments)
 
-        self.waitingtime.append(Logger(value=value, time=datetime.now()))
+        self.waitingtime.append(Logger(value=value, time=timezone.localize(datetime.now())))
         if len(self.waitingtime) > 10:
             self.waitingtime.pop(0)
 
@@ -185,13 +186,13 @@ Address: {invoice["sender"]["address"]}, {invoice["sender"]["city"]}
 
 Receiver's Details
 Name: {invoice["receiver"]["name"]}
-Receiver's Address: {invoice["receiver"]["address"]}, {invoice["receiver"]["city"]}
+Address: {invoice["receiver"]["address"]}, {invoice["receiver"]["city"]}
 
 Volume: {invoice["volume"]}
 
 Order Placement Time: {invoice["placetime"].strftime('%d-%b-%Y, %H:%M')}
 
-Amount: \u20B9 {invoice["charge"]}
+Amount: Rs. {invoice["charge"]}
 """
         return res
 
@@ -254,7 +255,7 @@ Amount: \u20B9 {invoice["charge"]}
 
         for consignment in consignments:
             consignment.status = ConsignmentStatus.DELIVERED
-            consignment.arrivaltime = datetime.now()
+            consignment.arrivaltime = timezone.localize(datetime.now())
 
         return consignments
 
