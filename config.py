@@ -4,9 +4,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://sql5403842:hrIi7NLY9c@sql5.freemysqlhosting.net:3306/sql5403842'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ECHO = True
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 465
     MAIL_USE_TLS = False
