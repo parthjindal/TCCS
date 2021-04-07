@@ -12,10 +12,7 @@
             <h2>Truck ID: {{ data.id }}</h2>
             <h3>Plate No.: {{ data.plateNo }}</h3>
             <p>Status: {{ data.status.name }}</p>
-            <p>Consignment IDs:
-                {% for cids in data.consignments %}
-                {{ cids.id }}
-                {% endfor %}
+            <p>Consignments: {{ data.consignments|count }}
             </p>
             <button class="ghost-btn" onclick="location.href='/truck/view/{{ data.id }}';">Go to this truck page</button>
         </div>
