@@ -13,7 +13,6 @@ def test_client():
     yield testing_client
     ctx.pop()
 
-
 @pytest.fixture()
 def database():
     db.create_all()

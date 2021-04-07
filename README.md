@@ -1,17 +1,7 @@
-# SOFTWARE ENGINEERING PROJECT
+## SOFTWARE ENGINEERING LAB PROJECT
 
-<h5>
-Installation
-</h5>
+[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/uses-css.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
 
-`$ git clone {....}`\
-`$ cd {....}`\
-`$ python3 -m venv venv`\
-`$ source venv/bin/activate`\
-`$ pip install -r requirements.txt`
+#### Transport Company Computerization Software 
 
-<h5>Running the application
-</h5>
-
-`$ flask run`
 

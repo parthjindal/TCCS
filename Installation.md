@@ -16,7 +16,6 @@
 Run the following command in the application
 `$ flask run`
 
-
 <h2>Running the tests</h2>
 `$ pytest`
 
