@@ -141,7 +141,7 @@ class Office(db.Model):
         for consign in truck.consignments:
             value += (consign.dispatchtime.replace(tzinfo=None) -
                       consign.placetime.replace(tzinfo=None)).total_seconds() / 3600.0
-            consign.dispatchtime = consign.dispatchtime.astime(timezone)
+            consign.dispatchtime = consign.dispatchtime.astimezone(timezone)
             consign.placetime = consign.placetime.astimezone(timezone)
 
         value /= len(truck.consignments)
