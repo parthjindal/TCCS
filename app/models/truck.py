@@ -153,7 +153,7 @@ class Truck(db.Model):
 
     def updateUsageTime(self, time1, time2):
         log = Logger(value=(time2.replace(
-            tzinfo=None)-time1.replace(tzinfo=None)).total_seconds() / 3600, time=time2)
+            tzinfo=None)-time1.replace(tzinfo=None)).total_seconds() / 3600, time=time2.astimezone(timezone))
         time2 = time2.astimezone(timezone)
         time1 = time1.astimezone(timezone)
 
@@ -163,10 +163,10 @@ class Truck(db.Model):
 
     def updateIdleTime(self, time1, time2):
         log = Logger(value=(time2.replace(
-            tzinfo=None)-time1.replace(tzinfo=None)).total_seconds() / 3600, time=time2)
+            tzinfo=None)-time1.replace(tzinfo=None)).total_seconds() / 3600, time=time2.astimezone(timezone))
         time2 = time2.astimezone(timezone)
         time1 = time1.astimezone(timezone)
-        
+
         self.idle.append(log)
         if len(self.idle) > 10:
             self.idle.remove(0)
