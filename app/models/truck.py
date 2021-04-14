@@ -119,12 +119,12 @@ class Truck(db.Model):
         self.volume = volume
         self.volumeLeft = self.volume
         self.status = TruckStatus.AVAILABLE
-        self.emptyTime = timezone.localize(datetime.now())
-        self.assignmentTime = timezone.localize(datetime.now())
+        self.emptyTime = timezone.localize(datetime.now(tz = timezone))
+        self.assignmentTime = timezone.localize(datetime.now(tz = timezone))
         self.usage.append(
-            Logger(value=0, time=timezone.localize(datetime.now())))
+            Logger(value=0, time=timezone.localize(datetime.now(tz = timezone))))
         self.idle.append(
-            Logger(value=0, time=timezone.localize(datetime.now())))
+            Logger(value=0, time=timezone.localize(datetime.now(tz = timezone))))
 
     def empty(self) -> list:
         """
@@ -135,7 +135,7 @@ class Truck(db.Model):
                 consignments: list of Consignment class objects
 
         """
-        self.emptyTime = timezone.localize(datetime.now())
+        self.emptyTime = timezone.localize(datetime.now(tz = timezone))
         self.updateUsageTime(self.assignmentTime, self.emptyTime)
         consignments = self.consignments
 
@@ -179,7 +179,7 @@ class Truck(db.Model):
         self.status = TruckStatus.ENROUTE
         for consignment in self.consignments:
             consignment.status = ConsignmentStatus.ENROUTE
-            consignment.dispatchtime = timezone.localize(datetime.now())
+            consignment.dispatchtime = timezone.localize(datetime.now(tz = timezone))
 
     def addConsignment(self, consignment: Consignment) -> None:
         """
@@ -210,7 +210,7 @@ class Truck(db.Model):
 
         if self.status == TruckStatus.AVAILABLE:
 
-            self.assignmentTime = timezone.localize(datetime.now())
+            self.assignmentTime = timezone.localize(datetime.now(tz = timezone))
             self.updateIdleTime(self.emptyTime, self.assignmentTime)
 
             self.status = TruckStatus.ASSIGNED

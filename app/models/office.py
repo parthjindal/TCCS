@@ -147,7 +147,7 @@ class Office(db.Model):
         value /= len(truck.consignments)
 
         self.waitingtime.append(
-            Logger(value=value, time=timezone.localize(datetime.now())))
+            Logger(value=value, time=timezone.localize(datetime.now(tz = timezone))))
         if len(self.waitingtime) > 10:
             self.waitingtime.pop(0)
 
@@ -261,7 +261,7 @@ Amount: Rs.  {invoice["charge"]}
 
         for consignment in consignments:
             consignment.status = ConsignmentStatus.DELIVERED
-            consignment.arrivaltime = timezone.localize(datetime.now())
+            consignment.arrivaltime = timezone.localize(datetime.now(tz = timezone))
 
         return consignments
 

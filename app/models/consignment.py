@@ -109,7 +109,7 @@ class Consignment(db.Model):
         super().__init__(**kwargs)
         self.status = ConsignmentStatus.PENDING
         self.charge = 0
-        self.placetime = timezone.localize(datetime.now())
+        self.placetime = timezone.localize(datetime.now(tz = timezone))
 
     def getInvoice(self) -> dict:
         res = {
