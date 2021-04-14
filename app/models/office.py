@@ -11,6 +11,7 @@ import pickle
 import pytz
 timezone = pytz.timezone("Asia/Kolkata")
 
+
 class Office(db.Model):
     """
         A class to represent an office
@@ -138,10 +139,15 @@ class Office(db.Model):
         truck.dispatch()
         value = 0
         for consign in truck.consignments:
-            value += (consign.dispatchtime.replace(tzinfo=None)-consign.placetime.replace(tzinfo=None)).total_seconds() / 3600.0
+            value += (consign.dispatchtime.replace(tzinfo=None) -
+                      consign.placetime.replace(tzinfo=None)).total_seconds() / 3600.0
+            consign.dispatchtime = timezone.localize(consign.dispatchtime)
+            consign.placetime = timezone.localize(consign.placetime)
+
         value /= len(truck.consignments)
 
-        self.waitingtime.append(Logger(value=value, time=timezone.localize(datetime.now())))
+        self.waitingtime.append(
+            Logger(value=value, time=timezone.localize(datetime.now())))
         if len(self.waitingtime) > 10:
             self.waitingtime.pop(0)
 
@@ -160,14 +166,13 @@ class Office(db.Model):
         bill = Bill(amount=consign.charge, invoice=invoice)
         consign.bill = bill
         self.consignments.append(consign)
-        billcopy = Bill(amount=consign.charge, invoice=invoice, branchID=self.id)
+        billcopy = Bill(amount=consign.charge,
+                        invoice=invoice, branchID=self.id)
         self.transactions.append(billcopy)
 
     @staticmethod
     def getRate():
         with open("rate.pkl", 'rb') as inp:
-
-            print()
             rate = pickle.load(inp)
         return rate["rate"]
 
@@ -192,7 +197,7 @@ Volume: {invoice["volume"]}
 
 Order Placement Time: {invoice["placetime"].strftime('%d-%b-%Y, %H:%M')}
 
-Amount: Rs. {invoice["charge"]}
+Amount: Rs.  {invoice["charge"]}
 """
         return res
 
@@ -208,7 +213,8 @@ Amount: Rs. {invoice["charge"]}
             else:
                 raise TypeError("Unknown Type")
 
-        consigns = [x for x in branch.consignments if x.status == ConsignmentStatus.PENDING]
+        consigns = [x for x in branch.consignments if x.status ==
+                    ConsignmentStatus.PENDING]
         consigns.sort(key=compare)
 
         trucks_ = [x for x in branch.trucks if (
